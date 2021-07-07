@@ -7,7 +7,7 @@ import store from "src/store/index";
 Vue.prototype.$axios = axios;
 
 //const api = axios.create({ baseURL: "http://localhost:5000/api/v1.0/" });
-const api = axios.create({ baseURL: "/api/v1.0/" });
+const api = axios.create({ baseURL: "https://bookkay.com/api/v1.0/" });
 Vue.prototype.$api = api;
 
 export default ({ router }) => {
