@@ -20,7 +20,7 @@
       :showCover="true"
       :mobileScrollSupport="true"
       :startZIndex="0"
-      :disableFlipByClick="!$q.screen.lt.sm"
+      :disableFlipByClick="true"
       ref="flipbook"
       v-if="!loading"
       id="flipbook"
