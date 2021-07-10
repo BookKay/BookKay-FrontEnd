@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import ManuscriptCard from "src/components/app/ManuscriptCard";
-import AddManuscriptButton from "src/components/app/AddManuscriptButton";
+import ManuscriptCard from "src/components/manuscript/ManuscriptCard";
+import AddManuscriptButton from "src/components/manuscript/AddManuscriptButton";
 
 export default {
   components: { ManuscriptCard, AddManuscriptButton },

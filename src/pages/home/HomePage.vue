@@ -115,7 +115,7 @@
             color="primary"
             label="Let's read now"
             class="q-ma-sm "
-            :to="{ name: 'home-sign-up' }"
+            :to="{ name: 'home-browse' }"
             size="large"
             rounded
           />

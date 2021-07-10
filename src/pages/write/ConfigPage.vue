@@ -18,7 +18,7 @@
             val => val.length <= 100 || 'Title must be smaller than 100'
           ]"
           @input="editTitle"
-          @blur="editTitle"
+          @blur="editTitle(true)"
         />
       </div>
       <div class="row-12 q-mx-lg">
@@ -32,7 +32,7 @@
           :rules="[true || 'Description cannot be empty']"
           autogrow
           @input="editDescription"
-          @blur="editDescription"
+          @blur="editDescription(true)"
         />
       </div>
 
@@ -228,8 +228,8 @@ export default {
   },
 
   methods: {
-    editTitle() {
-      if (!this.$store.getters["write/isLoading"]) {
+    editTitle(isFinal = false) {
+      if (isFinal || !this.$store.getters["write/isLoading"]) {
         this.$store
           .dispatch(
             "write/editManuscript",
@@ -246,8 +246,8 @@ export default {
           });
       }
     },
-    editDescription() {
-      if (!this.$store.getters["write/isLoading"]) {
+    editDescription(isFinal = false) {
+      if (isFinal || !this.$store.getters["write/isLoading"]) {
         this.$store
           .dispatch(
             "write/editManuscript",
@@ -325,61 +325,60 @@ export default {
 
     handleUpload(payload, callback) {
       //Uploading image to cloudinary
-      if (!this.$store.state.write.loading) {
-        let formData = new FormData();
+      //if (!this.$store.state.write.loading) {
+      let formData = new FormData();
 
-        let file = payload.files[0];
-        let folder = payload.type;
-        let type = folder.toLowerCase().replaceAll(" ", "_");
+      let file = payload.files[0];
+      let folder = payload.type;
+      let type = folder.toLowerCase().replaceAll(" ", "_");
 
-        //public_id to determine which folder to upload to
-        let public_id = `BookKay/${folder}/${type}_${this.$store.getters[
-          "write/manuscriptProperty"
-        ]("id")}`;
+      //public_id to determine which folder to upload to
+      let public_id = `BookKay/${folder}/${type}_${this.$store.getters[
+        "write/manuscriptProperty"
+      ]("id")}`;
 
-        formData.append("file", file, public_id);
+      formData.append("file", file, public_id);
 
-        //Firstly uploading the image to cloudinary through the back end
-        //Then, sending over the url to be saved in manuscript
-        this.$store
-          .dispatch("write/uploadMedia", formData /*, { root: true }*/)
-          .then(data => {
-            let url = data.data.secure_url;
+      //Firstly uploading the image to cloudinary through the back end
+      //Then, sending over the url to be saved in manuscript
+      this.$store
+        .dispatch("write/uploadMedia", formData /*, { root: true }*/)
+        .then(data => {
+          let url = data.data.secure_url;
 
-            callback(true);
+          callback(true);
 
-            let cover = {};
-            cover[type] = url;
+          let cover = {};
+          cover[type] = url;
 
-            this.$store
-              .dispatch("write/editManuscript", cover /*, { root: true }*/)
-              .then(data => {})
-              .catch(error => {
-                this.$q.notify({
-                  color: "negative",
-                  position: "top",
-                  message:
-                    error.response.data.message || "Something went wrong",
-                  icon: "error"
-                });
+          this.$store
+            .dispatch("write/editManuscript", cover /*, { root: true }*/)
+            .then(data => {})
+            .catch(error => {
+              this.$q.notify({
+                color: "negative",
+                position: "top",
+                message: error.response.data.message || "Something went wrong",
+                icon: "error"
               });
-          })
-          .catch(error => {
-            callback(false);
-            var msg = "";
-            try {
-              msg = error.response.data.message;
-            } catch {
-              msg = "Something went wrong. Please try refreshing the page";
-            }
-            this.$q.notify({
-              color: "negative",
-              position: "top",
-              message: msg,
-              icon: "error"
             });
+        })
+        .catch(error => {
+          callback(false);
+          var msg = "";
+          try {
+            msg = error.response.data.message;
+          } catch {
+            msg = "Something went wrong. Please try refreshing the page";
+          }
+          this.$q.notify({
+            color: "negative",
+            position: "top",
+            message: msg,
+            icon: "error"
           });
-      }
+        });
+      //}
     },
 
     confirmDelete() {

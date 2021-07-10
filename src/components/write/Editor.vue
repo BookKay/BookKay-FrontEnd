@@ -69,6 +69,7 @@
       color="red"
       class="window-width"
       @input="textChanged"
+      @save="handleSave"
     ></notebook-ui>
 
     <q-scroll-area
@@ -91,13 +92,14 @@
         class="window-width"
         style="min-height: 100vh; border-radius: 0;"
         @input="textChanged"
+        @save="handleSave"
       ></notebook-ui>
     </q-scroll-area>
   </q-page>
 </template>
 
 <script>
-import NotebookUi from "src/components/notebook-ui/NotebookUI";
+import NotebookUi from "src/components/editor/NotebookUI";
 
 export default {
   components: { NotebookUi },
@@ -161,10 +163,11 @@ export default {
         });
     },
     textChanged(val) {
-      this.new_text = val;
+      this.new_text = val.text;
 
       this.$emit("textChanged", val);
     },
+
     titleChanged(val) {
       this.$refs.titleInput.validate();
 

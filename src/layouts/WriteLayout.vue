@@ -139,13 +139,15 @@ export default {
   updated() {
     //The codes below are used to update the navigations tree each time the drawer is opened/closed
     if (this.$store.getters["user/isLoggedIn"]) {
+      //Variable name of the name label
+      let name =
+        "read-book/manuscript_id/" +
+        this.$store.getters["write/manuscriptProperty"]("id");
       //Adding navigation for the preview after fetching the manuscript object
-      if (!this.navigations.find(x => x.label === "Preview")) {
+      if (!this.navigations.find(x => x.name === name)) {
         this.navigations.splice(1, 0, {
           label: "Preview",
-          name:
-            "read-book/manuscript_id/" +
-            this.$store.getters["write/manuscriptProperty"]("id")
+          name: name
         });
       }
 

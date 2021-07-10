@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-pull-to-refresh @refresh="handleRefresh">
+    <q-pull-to-refresh ref="pullRefresh" @refresh="handleRefresh">
       <div class="col">
         <div class="row q-ml-md">
           <h2 class="q-mb-md">Book Store</h2>
@@ -19,6 +19,11 @@
         </div>
       </div>
     </q-pull-to-refresh>
+
+    <!--Loading container-->
+    <div v-if="loading" class="window-height relative position">
+      <q-spinner-ios class="absolute-center" color="teal" size="60px" />
+    </div>
   </q-page>
 </template>
 
@@ -34,24 +39,27 @@ export default {
     }
   },
   mounted() {
-    this.fetchBooks();
+    this.fetchBooks().then(() => {
+      this.loading = false;
+    });
   },
   data() {
     return {
-      books: []
+      books: [],
+      loading: true
     };
   },
   methods: {
     handleRefresh(done) {
-      this.fetchBooks();
-      done();
+      this.fetchBooks().then(() => {
+        done();
+      });
     },
     fetchBooks() {
-      this.$api.get("books").then(resp => {
+      return this.$api.get("books").then(resp => {
         const books = resp.data;
         this.books = books;
       });
-      console.log(this.books);
     }
   }
 };

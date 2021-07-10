@@ -46,10 +46,10 @@ export default {
     };
   },
   methods: {
-    handleInput(new_text) {
-      this.text = new_text;
+    handleInput(payload) {
+      this.text = payload.text;
 
-      if (!this.$store.getters["write/isLoading"]) {
+      if (payload.save || !this.$store.getters["write/isLoading"]) {
         if (this.type == "manuscript") {
           this.$store
             .dispatch("write/editManuscript", {

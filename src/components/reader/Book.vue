@@ -1,6 +1,6 @@
 <template>
   <div>
-    <loading-screen v-if="loading" text="Page Loading...Please Wait" />
+    <loading-screen v-if="loading" text="Book Loading...Please Wait" />
     <page
       :pageNum="1"
       header="title"
@@ -84,7 +84,6 @@ export default {
           const manuscript = resp.data;
 
           this.$store.commit("write/setManuscript", manuscript);
-          console.log("manuscript", manuscript);
 
           try {
             this.$q.sessionStorage.set("currentManuscript", manuscript);
@@ -127,8 +126,6 @@ export default {
         createPage(pageNum, book["title"], ""); // creates the first page
         pageNum++;
       }
-
-      console.log("book", book);
 
       if ("front_matters" in book) {
         var front_matters = book["front_matters"];
@@ -174,7 +171,13 @@ export default {
           page: pageNum
         });
 
-        var text = rootElement + book["text"] + "</div>";
+        //Based on config, adding title automatically
+        var heading = " ";
+        if (self.bookConfigs.auto_add_title) {
+          heading = "<h2>" + book["title"] + "</h2>";
+        }
+
+        var text = rootElement + heading + book["text"] + "</div>";
         text = self.processClosingTag(text);
         text = self.addTabs(text);
 
@@ -207,7 +210,6 @@ export default {
           var text = rootElement + heading + chapters[i]["text"] + "</div>";
           text = self.processClosingTag(text);
           text = self.addTabs(text);
-          console.log("text", text);
 
           pageNum = paginateText(
             mapDOM(text, false),
@@ -321,8 +323,6 @@ export default {
     }
 
     function paginateText(DOM, pageNum, title, tags = []) {
-      console.log("imp", tags, DOM);
-
       if (
         "attributes" in DOM &&
         "id" in DOM["attributes"] &&
@@ -348,8 +348,6 @@ export default {
           openingTag: openingTag,
           closingTag: closingTag
         });
-
-        console.log(tags);
       }
 
       if (DOM["content"]) {
@@ -539,7 +537,6 @@ export default {
     loadBook(book) {
       //the parameter book here stands for both the book and manuscript
       //it is the json obj sent back from backend
-      console.log(book);
 
       //Copying the configs
       this.bookConfigs = book.configs;
@@ -606,7 +603,6 @@ export default {
           });
         }
       }
-      console.log("output", this.book);
     },
     compareIndex(a, b) {
       if (a.index < b.index) {
@@ -650,7 +646,7 @@ export default {
 
     handleKeyPress(key) {
       //this if is to make lack of flipbook ref fail silently when route changes
-      if (this.$refs.flipbook) {
+      if (this.$refs.flipbook && !this.loading) {
         switch (key) {
           case "ArrowLeft":
             this.$refs.flipbook.flipPrev();
