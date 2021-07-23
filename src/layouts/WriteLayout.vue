@@ -144,8 +144,15 @@ export default {
         "read-book/manuscript_id/" +
         this.$store.getters["write/manuscriptProperty"]("id");
       //Adding navigation for the preview after fetching the manuscript object
-      if (!this.navigations.find(x => x.name === name)) {
+      if (!this.navigations.find(x => x.label === "Preview")) {
+        //if no navigation with label 'Preview'
         this.navigations.splice(1, 0, {
+          label: "Preview",
+          name: name
+        });
+      } else if (!this.navigations.find(x => x.name === name)) {
+        //if there is navigation with label 'Preview' but its name is incorrect
+        this.navigations.splice(1, 1, {
           label: "Preview",
           name: name
         });

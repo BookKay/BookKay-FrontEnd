@@ -29,7 +29,6 @@
       paragraph-tag="p"
       @paste.native="evt => pasteCapture(evt)"
       @input="inputChanged"
-      @blur="saveText"
       spellcheck="false"
       :definitions="{
         save: {
@@ -101,12 +100,11 @@ export default {
   },
   methods: {
     inputChanged(val) {
-      const payload = { text: val, save: false };
-      this.$emit("input", payload);
+      this.$emit("input", val);
     },
     saveText(val) {
-      const payload = { text: this.$props.content, save: true };
-      this.$emit("save", payload);
+      
+      this.$emit("save", this.$props.content);
       //to ensure work has been saved in case the initial request had been ignored due to pending request.
       console.log(this.$props.content);
 

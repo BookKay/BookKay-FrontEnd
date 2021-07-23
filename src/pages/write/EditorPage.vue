@@ -46,45 +46,45 @@ export default {
     };
   },
   methods: {
-    handleInput(payload) {
-      this.text = payload.text;
+    handleInput(text) {
+      this.text = text;
 
-      if (payload.save || !this.$store.getters["write/isLoading"]) {
-        if (this.type == "manuscript") {
-          this.$store
-            .dispatch("write/editManuscript", {
-              text: this.text
-            })
-            .then(data => {})
-            .catch(error => {
-              this.$q.notify({
-                color: "negative",
-                position: "top",
-                message: error.response.data.message || "Something went wrong",
-                icon: "error"
-              });
+      //if (payload.save || !this.$store.getters["write/isLoading"]) {
+      if (this.type == "manuscript") {
+        this.$store
+          .dispatch("write/editManuscript", {
+            text: this.text
+          })
+          .then(data => {})
+          .catch(error => {
+            this.$q.notify({
+              color: "negative",
+              position: "top",
+              message: error.response.data.message || "Something went wrong",
+              icon: "error"
             });
-        } else {
-          this.$store
-            .dispatch(
-              "write/editChapter",
-              {
-                chapter: { text: this.text },
-                type: this.type,
-                id: Object.values(this.$route.query)[0]
-              } /*, { root: true }*/
-            )
-            .then(data => {})
-            .catch(error => {
-              this.$q.notify({
-                color: "negative",
-                position: "top",
-                message: error.response.data.message || "Something went wrong",
-                icon: "error"
-              });
+          });
+      } else {
+        this.$store
+          .dispatch(
+            "write/editChapter",
+            {
+              chapter: { text: this.text },
+              type: this.type,
+              id: Object.values(this.$route.query)[0]
+            } /*, { root: true }*/
+          )
+          .then(data => {})
+          .catch(error => {
+            this.$q.notify({
+              color: "negative",
+              position: "top",
+              message: error.response.data.message || "Something went wrong",
+              icon: "error"
             });
-        }
+          });
       }
+      //}
     },
     loadContents(queryObj) {
       queryObj = queryObj ? queryObj : this.$route.query;

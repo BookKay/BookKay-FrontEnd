@@ -69,7 +69,7 @@
       color="red"
       class="window-width"
       @input="textChanged"
-      @save="handleSave"
+      @save="textSaved"
     ></notebook-ui>
 
     <q-scroll-area
@@ -92,7 +92,7 @@
         class="window-width"
         style="min-height: 100vh; border-radius: 0;"
         @input="textChanged"
-        @save="handleSave"
+        @save="textSaved"
       ></notebook-ui>
     </q-scroll-area>
   </q-page>
@@ -123,6 +123,17 @@ export default {
       this.new_text = val;
     }
   },
+
+  /*created() {
+    this.textChanged = debounce(this.textChanged, 500, true);
+
+    document.addEventListener("beforeunload", this.checkTextSync);
+  },*/
+
+  beforeDestroy() {
+    this.checkTextSync();
+  },
+
   data() {
     return {
       info: true,
@@ -131,6 +142,9 @@ export default {
       new_text: this.$props.text,
       isFullScreen: false,
       isEditing: true,
+
+      typingTimer: null,
+      doneTypingInterval: 3000,
 
       thumbStyle: {
         right: "4px",
@@ -163,8 +177,19 @@ export default {
         });
     },
     textChanged(val) {
-      this.new_text = val.text;
+      this.new_text = val;
 
+      clearTimeout(this.typingTimer);
+      if (val) {
+        this.typingTimer = setTimeout(
+          this.$emit("textChanged", val),
+          this.doneTypingInterval
+        );
+      }
+    },
+
+    textSaved(val) {
+      this.new_text = val;
       this.$emit("textChanged", val);
     },
 
@@ -177,10 +202,9 @@ export default {
         this.$emit("titleChanged", val);
       }
     },
-    preventNav(event) {
-      if (!this.isEditing) return;
-      event.preventDefault();
-      event.returnValue = "";
+    checkTextSync() {
+      console.log("sync checked");
+      this.$emit("textChanged", this.new_text);
     }
   }
 };
