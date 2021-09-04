@@ -3,7 +3,10 @@ import { Cookies, LocalStorage, SessionStorage } from "quasar";
 
 export function someAction(/* context */) {}
 
-export function addChapter({ commit, state }, payload) {
+export async function addChapter({ commit, state }, payload) {
+  let response;
+
+  //Unpacking the paylaod and determining which component the request should be sent for
   const data = payload.chapter;
   const type = payload.type;
   const isBook = payload.isBook;
@@ -12,175 +15,188 @@ export function addChapter({ commit, state }, payload) {
 
   switch (type) {
     case "Front Matter":
-      path = "front_matters";
+      path = "front-matters";
       break;
     case "Chapter":
       path = "chapters";
       break;
     case "Back Matter":
-      path = "back_matters";
+      path = "back-matters";
       break;
     default:
       path = type;
-    // code block
   }
 
-  return new Promise((resolve, reject) => {
-    api
-      .post(path, data)
-      .then(resp => {
-        if (!isBook) {
-          const manuscript = resp.data.manuscript;
+  //Adding new component and requesting back the new prototype
+  response = await api.post(path, data);
+  response = await api.get(
+    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    {
+      params: { expand: "~all" }
+    }
+  );
 
-          SessionStorage.set("currentManuscript", manuscript);
+  let prototype = response.data;
+  commit("updatePrototype", prototype);
 
-          commit("setManuscript", manuscript);
-        }
+  SessionStorage.set("currentManuscript", state.manuscript);
 
-        resolve(resp);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
+  return response;
 }
 
-export function getChapter({ commit, state }, payload) {
+export async function getChapter({ commit, state }, payload) {
+  //Unpack the payload to form the request path
   const type = payload.type;
   const id = payload.id;
 
-  let path = type.replace("-", "_") + "s/" + id;
+  let path = type.replaceAll("_", "-") + "s/" + id;
   state.loading = true;
 
-  return new Promise((resolve, reject) => {
-    api
-      .get(path)
-      .then(resp => {
-        state.loading = false;
-        const manuscript = resp.data.manuscript;
+  //Request for the component + the prototype and update accordingly
+  let response;
 
-        SessionStorage.set("currentManuscript", manuscript);
+  response = await api.get(path);
+  response = await api.get(
+    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    {
+      params: { expand: "~all" }
+    }
+  );
+  state.loading = false;
 
-        commit("setManuscript", manuscript);
+  let prototype = response.data;
+  commit("updatePrototype", prototype);
 
-        resolve(resp);
-      })
-      .catch(err => {
-        state.loading = false;
-        reject(err);
-      });
-  });
+  SessionStorage.set("currentManuscript", state.manuscript);
+
+  return response;
 }
 
-export function editChapter({ commit, state }, payload) {
-  const chapter = payload.chapter;
+export async function editChapter({ commit, state }, payload) {
+  const component = payload.chapter;
   const type = payload.type;
   const id = payload.id;
 
-  let path = type.replace("-", "_") + "s/" + id;
+  let path = type.replaceAll("_", "-") + "s/" + id;
   state.loading = true;
 
-  return new Promise((resolve, reject) => {
-    api
-      .patch(path, chapter)
-      .then(resp => {
-        console.log("resp", resp);
-        state.loading = false;
-        const manuscript = resp.data.manuscript;
+  //Send patch request for the component and retrieve back updated prototype
+  //Then, update the prototype from vuex and session storage
+  let response;
 
-        SessionStorage.set("currentManuscript", manuscript);
+  response = await api.patch(path, component);
+  response = await api.get(
+    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    {
+      params: { expand: "~all" }
+    }
+  );
+  state.loading = false;
 
-        commit("setManuscript", manuscript);
+  let prototype = response.data;
+  commit("updatePrototype", prototype);
 
-        resolve(resp);
-      })
-      .catch(err => {
-        state.loading = false;
-        reject(err);
-      });
-  });
+  SessionStorage.set("currentManuscript", state.manuscript);
+
+  return response;
 }
 
-export function deleteChapter({ commit, state }, payload) {
+export async function deleteChapter({ commit, state }, payload) {
   const type = payload.type;
   const id = payload.id;
-  let path = type.replace("-", "_") + "s/" + id;
+  let path = type + "s/" + id;
 
-  return new Promise((resolve, reject) => {
-    api
-      .delete(path)
-      .then(resp => {
-        console.log(resp);
-        const manuscript = resp.data;
-        SessionStorage.set("currentManuscript", manuscript);
+  //Delete the component and retrieve back updated prototype
+  //Then, update the prototype from vuex and session storage
+  let response;
 
-        commit("setManuscript", manuscript);
+  response = await api.delete(path);
+  response = await api.get(
+    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    {
+      params: { expand: "~all" }
+    }
+  );
 
-        resolve(resp);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
+  let prototype = response.data;
+  commit("updatePrototype", prototype);
+
+  SessionStorage.set("currentManuscript", state.manuscript);
+
+  return response;
 }
 
-export function editConfigs({ commit, state }, configs) {
-  return new Promise((resolve, reject) => {
-    api
-      .patch("book_configs/" + configs.id, configs)
-      .then(resp => {
-        const manuscript = resp.data;
+export async function editConfigs({ commit, state }, configs) {
+  //Update the configs and retrieve back the updated prototype
+  //Then, update the prototype from vuex and session storage
+  let response;
 
-        SessionStorage.set("currentManuscript", manuscript);
+  response = await api.patch(
+    "basic-book-prototypes-configs/" + configs.id,
+    configs
+  );
+  response = await api.get(
+    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    {
+      params: { expand: "~all" }
+    }
+  );
 
-        commit("setManuscript", manuscript);
+  let prototype = response.data;
+  commit("updatePrototype", prototype);
 
-        resolve(resp);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
+  SessionStorage.set("currentManuscript", state.manuscript);
+
+  return response;
 }
 
-export function addManuscript({ commit }, manuscript) {
-  return new Promise((resolve, reject) => {
-    api
-      .post("manuscripts", manuscript)
-      .then(resp => {
-        const user = resp.data.user;
+export async function addManuscript({ commit, rootGetters }, manuscript) {
+  let response;
+  let payload;
 
-        commit("user/setUser", user, { root: true });
-        LocalStorage.set("user", user);
+  //Adding new manuscript
+  response = await api.post("manuscripts", manuscript);
 
-        resolve(resp);
-      })
-      .catch(err => {
-        reject(err);
-      });
+  payload = { manuscript_id: response.data.id, configs: manuscript.configs };
+
+  //Attaching the prototype on the manuscript
+  response = await api.post("basic-book-prototypes", payload);
+
+  //Requesting updated user
+  response = await api.get("users/" + rootGetters["user/userProperty"]("id"), {
+    params: { expand: "~all" }
   });
+
+  let user = response.data;
+
+  //Saving the user
+  commit("user/setUser", user, { root: true });
+  LocalStorage.set("user", user);
+
+  return response;
 }
 
-export function editManuscript({ commit, state }, manuscript) {
+export async function editManuscript({ commit, state }, manuscript) {
   state.loading = true;
-  return new Promise((resolve, reject) => {
-    api
-      .patch("manuscripts/" + state.manuscript.id, manuscript)
-      .then(resp => {
-        const manuscript = resp.data;
 
-        SessionStorage.set("currentManuscript", manuscript);
+  //Update the configs and retrieve back the updated prototype
+  //Then, update the prototype from vuex and session storage
+  let response;
 
-        commit("setManuscript", manuscript);
-
-        state.loading = false;
-        resolve(resp);
-      })
-      .catch(err => {
-        state.loading = false;
-        reject(err);
-      });
+  response = await api.patch("manuscripts/" + state.manuscript.id, manuscript);
+  response = await api.get("manuscripts/" + state.manuscript.id, {
+    params: { expand: "~all" }
   });
+  state.loading = false;
+
+  let data = response.data;
+  console.log(data);
+  commit("updateManuscript", data);
+  console.log(state.manuscript);
+
+  SessionStorage.set("currentManuscript", state.manuscript);
+
+  return response;
 }
 
 export function uploadMedia({ commit, state }, formData) {
@@ -208,20 +224,20 @@ export function uploadMedia({ commit, state }, formData) {
   });
 }
 
-export function publishBook({ commit }, book) {
-  return new Promise((resolve, reject) => {
-    api
-      .post("books", book)
-      .then(resp => {
-        const user = resp.data.user;
+export async function publishBook({ commit, state }, manuscript) {
+  //Update the configs and retrieve back the updated prototype
+  //Then, update the prototype from vuex and session storage
+  let response;
 
-        commit("user/setUser", user, { root: true });
-        LocalStorage.set("user", user);
-
-        resolve(resp);
-      })
-      .catch(err => {
-        reject(err);
-      });
+  response = await api.post(`manuscripts/${state.manuscript.id}/publish`);
+  response = await api.get(`users/${LocalStorage.getItem("user").id}`, {
+    params: { expand: "~all" }
   });
+
+  let user = response.data;
+  commit("users/setUser", user, { root: true });
+
+  LocalStorage.set("user", user);
+
+  return response;
 }

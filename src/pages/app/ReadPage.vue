@@ -1,41 +1,19 @@
 <template>
-  <q-page class="flex">
-    <div class="col">
-      <div class="row q-ml-md">
-        <h2 class="q-mb-md">My Library</h2>
-      </div>
-
-      <q-separator inset class="q-mb-md" />
-
-      <div class="row" :class="alignment">
-        <book-card
-          class="col-md-3 col-xs-10"
-          v-for="book in purchasedBooks"
-          :book="book"
-          :is_purchased="true"
-          :key="book.id"
-          @deleted="deleteBook"
-        />
-
-        <book-card
-          class="col-md-3 col-xs-10"
-          v-for="book in authoredBooks"
-          :book="book"
-          :is_purchased="true"
-          :key="book.id"
-          @deleted="deleteBook"
-        />
-      </div>
+  <q-page class=" ">
+    <div class="heading">
+      <h1>My Library</h1>
     </div>
+    <!--<div>
+      <items-list />
+    </div>-->
   </q-page>
 </template>
 
 <script>
-import BookCard from "src/components/book/BookCard";
-
+import ItemsList from "src/components/helpers/ItemsList";
 export default {
-  components: { BookCard },
-  name: "ReadPage",
+  //components: { ItemsList },
+  name: "AppPage",
   beforeMount() {
     this.computePurchases();
   },
@@ -57,7 +35,8 @@ export default {
   },
   data() {
     return {
-      purchasedBooks: []
+      purchasedBooks: [],
+      isActive: false
     };
   },
 
@@ -123,3 +102,28 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
+
+body,
+input {
+  font-family: "Poppins", sans-serif;
+}
+
+.heading {
+  display: inline-block;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: rgba(91, 55, 183, 0.2);
+  color: rgba(91, 55, 183, 1);
+  padding: 0 20px;
+  margin: 5px 10px;
+}
+
+.heading h1 {
+  margin: 0px;
+  font-size: 40px;
+  font-weight: bold;
+}
+</style>

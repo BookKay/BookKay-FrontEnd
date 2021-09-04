@@ -67,18 +67,18 @@ export default {
     );
   },
 
-  mounted() {
+  async mounted() {
     const self = this;
     console.log(
       mapDOM(
         "<p style='text-indent: 10%;' width='400'>Hello <b>B<i>oy</i></b> </p>",
-        true
+        false
       )
     );
 
     if (Object.keys(this.$route.query)[0] == "manuscript_id") {
       //loading the manuscript from server
-      this.$api
+      /*this.$api
         .get("manuscripts/" + this.$route.query.manuscript_id)
         .then(resp => {
           const manuscript = resp.data;
@@ -95,12 +95,42 @@ export default {
           renderBook(this.book);
 
           this.loading = false;
-        });
+        });*/
+      //Fetching the manuscript
+      let response;
+      response = await this.$api.get(
+        "manuscripts/" + this.$route.query.manuscript_id + "/json"
+      );
+      const manuscript = response.data;
+      console.log(manuscript);
+
+      //Fetching the corresponding prototype of the manuscript
+      response = await this.$api.get(
+        "basic-book-prototypes/" + response.data.prototype_id,
+        {
+          params: { expand: "~all" }
+        }
+      );
+      let prototype = response.data;
+      for (const key in prototype) {
+        if (key in manuscript) {
+          manuscript[`prototype_${key}`] = prototype[key];
+        } else {
+          manuscript[key] = prototype[key];
+        }
+      }
+
+      //Loading and rendering the book
+      this.loadBook(manuscript);
+
+      renderBook(this.book);
+
+      this.loading = false;
     }
     if (Object.keys(this.$route.query)[0] == "book_id") {
       //loading the book from server
 
-      this.$api.get("books/" + this.$route.query.book_id).then(resp => {
+      /*this.$api.get("books/" + this.$route.query.book_id).then(resp => {
         let book = resp.data;
 
         this.loadBook(book);
@@ -108,7 +138,34 @@ export default {
         renderBook(this.book);
 
         this.loading = false;
-      });
+      });*/
+      //Fetching the manuscript
+      let response;
+      response = await this.$api.get("books/" + this.$route.query.book_id);
+      const book = response.data;
+
+      //Fetching the corresponding prototype of the manuscript
+      response = await this.$api.get(
+        "basic-book-prototypes/" + response.data.prototype_id,
+        {
+          params: { expand: "~all" }
+        }
+      );
+      let prototype = response.data;
+      for (const key in prototype) {
+        if (key in book) {
+          book[`prototype_${key}`] = prototype[key];
+        } else {
+          book[key] = prototype[key];
+        }
+      }
+
+      //Loading and rendering the book
+      this.loadBook(book);
+
+      renderBook(this.book);
+
+      this.loading = false;
     }
 
     function renderBook(book) {
@@ -549,11 +606,17 @@ export default {
       var backCover = book.back_cover;
 
       //Setting up front cover url
-      this.frontCover = this.processCoverUrls(frontCover, tempCover);
+      this.frontCover = this.processCoverUrls(
+        "https://res.cloudinary.com/bookkay/image/upload/v1624466524/BookKay/Temp%20Cover/Temp_Cover.png",
+        tempCover
+      );
 
       //Setting up back cover url
 
-      this.backCover = this.processCoverUrls(backCover, tempCover);
+      this.backCover = this.processCoverUrls(
+        "https://res.cloudinary.com/bookkay/image/upload/v1624466524/BookKay/Temp%20Cover/Temp_Cover.png",
+        tempCover
+      );
 
       //Configuring the book object based on the data from server
 

@@ -73,6 +73,7 @@ export default {
         temp_cover:
           "https://res.cloudinary.com/bookkay/image/upload/v1624466524/BookKay/Temp%20Cover/Temp_Cover.png",
         author_id: this.$store.getters["user/userProperty"]("id"),
+        price: 0.0,
         text: ""
       },
 

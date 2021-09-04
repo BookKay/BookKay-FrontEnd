@@ -43,11 +43,12 @@ export default {
   methods: {
     addManuscript(manuscript) {
       this.$store
-        .dispatch("user/addManuscript", manuscript)
+        .dispatch("write/addManuscript", manuscript)
         .then(data => {
           console.log(data);
         })
         .catch(error => {
+          console.log(error);
           this.$q.notify({
             color: "negative",
             position: "top",
@@ -56,11 +57,27 @@ export default {
           });
         });
     },
-    deleteManuscript(manuscript) {
-      this.$api.delete("manuscripts/" + manuscript.id).then(resp => {
-        const user = resp.data;
-        this.$store.commit("user/setUser", user);
-      });
+    async deleteManuscript(manuscript) {
+      let response;
+
+      //Deleting the manuscript and its prototype
+      response = await this.$api.delete("manuscripts/" + manuscript.id);
+      response = await this.$api.delete(
+        "basic-book-prototypes/" + manuscript.prototype_id
+      );
+
+      //Getting the updated user
+      response = await this.$api.get(
+        "users/" + this.$store.getters["user/userProperty"]("id"),
+        {
+          params: { expand: "~all" }
+        }
+      );
+
+      let user = response.data;
+
+      //Saving the user
+      this.$store.commit("user/setUser", user);
     }
   }
 };

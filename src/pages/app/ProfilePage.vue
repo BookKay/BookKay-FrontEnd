@@ -302,14 +302,18 @@ export default {
       }
     },
     logOut() {
-      this.$store.dispatch("user/logout").then(() => {
-        this.$q.notify({
-          icon: "done",
-          color: "positive",
-          message: "Successfully Logged Out"
+      this.$store
+        .dispatch("user/logout", {
+          id: this.$store.getters["user/userProperty"]("id")
+        })
+        .then(() => {
+          this.$q.notify({
+            icon: "done",
+            color: "positive",
+            message: "Successfully Logged Out"
+          });
+          this.$router.replace({ name: "home-homepage" });
         });
-        this.$router.replace({ name: "home-homepage" });
-      });
     },
     deleteAccount() {
       this.$store

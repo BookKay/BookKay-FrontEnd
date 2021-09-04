@@ -12,16 +12,24 @@
     "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=master"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@editorjs/editorjs": "^2.22.2",
+    "@editorjs/header": "^2.6.1",
+    "@editorjs/list": "^1.6.2",
+    "@editorjs/paragraph": "^2.8.0",
+    "@quasar/cli": "^1.2.1",
+    "@quasar/extras": "^1.10.12",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "page-flip": "^2.0.7",
-    "quasar": "^1.0.0",
+    "quasar": "^1.15.23",
+    "swiper": "^7.0.3",
+    "vue-editor-js": "^2.0.2",
     "vue-i18n": "^8.0.0",
-    "vue-smooth-dnd": "^0.8.1"
+    "vue-smooth-dnd": "^0.8.1",
+    "webpack": "^5.51.1"
   },
   "devDependencies": {
-    "@quasar/app": "^2.0.0",
+    "@quasar/app": "^2.2.10",
     "babel-eslint": "^10.0.1",
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",

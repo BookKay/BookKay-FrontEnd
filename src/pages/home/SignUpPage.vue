@@ -147,6 +147,7 @@ export default {
         this.formHasError = true;
       } else {
         this.loading = true;
+
         this.$store
           .dispatch("user/register", this.user /*, { root: true }*/)
           .then(data => {
@@ -159,11 +160,14 @@ export default {
             this.$router.replace({ name: "app-read" });
           })
           .catch(error => {
+            let string = error.response.data.email[0];
+            let msg = string.charAt(0).toUpperCase() + string.slice(1);
+
             this.loading = false;
             this.$q.notify({
               color: "negative",
               position: "top",
-              message: error.response.data.message || "Something went wrong",
+              message: msg || "Something went wrong",
               icon: "error",
               actions: [
                 {

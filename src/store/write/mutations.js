@@ -21,11 +21,26 @@ export function setManuscript(state, manuscript) {
   }
 }
 
-export function logout(state) {
-  state.status = "";
-  state.user = "";
-  state.accessToken = "";
-  state.refreshToken = "";
+export function updateManuscript(state, manuscript) {
+  //Updating only the manuscript values
+  if (manuscript) {
+    for (const key in manuscript) {
+      state.manuscript[key] = manuscript[key];
+    }
+  }
+}
+
+export function updatePrototype(state, prototype) {
+  //Updating only the prototype values
+  if (prototype) {
+    for (const key in prototype) {
+      if (`prototype_${key}` in state.manuscript) {
+        state.manuscript[`prototype_${key}`] = prototype[key];
+      } else {
+        state.manuscript[key] = prototype[key];
+      }
+    }
+  }
 }
 
 export const edit = (state, user) => {

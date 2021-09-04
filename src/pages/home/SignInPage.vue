@@ -111,10 +111,19 @@ export default {
             }
           })
           .catch(error => {
+            console.log(error);
+            //displaying pretty messages
+            let msg = error.response.data[0];
+            if (error.response.status == 404) {
+              msg = "Sorry no user with this email is found.";
+            }
+
+            //notifying user about the request error
             this.$q.notify({
               color: "negative",
               position: "top",
-              message: error.response.data.message || "Something went wrong",
+              message:
+                msg || error.response.statusText || "Something went wrong",
               icon: "error",
               actions: [
                 {

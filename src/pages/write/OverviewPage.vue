@@ -67,29 +67,7 @@ export default {
     })
   },
   data() {
-    return {
-      front_matters: [
-        {
-          id: "123",
-          title: "He Returns",
-          draft: "Write about how he returns"
-        }
-      ],
-      chapters: [
-        {
-          id: "123",
-          title: "He Returns",
-          draft: "Write about how he returns"
-        }
-      ],
-      back_matters: [
-        {
-          id: "123",
-          title: "He Returns",
-          draft: "Write about how he returns"
-        }
-      ]
-    };
+    return {};
   },
   methods: {}
 };

@@ -5,7 +5,9 @@ export function isLoading(state) {
 }
 
 export function getConfigs(state) {
+  //Getting active configs
   let activeConfigs = [];
+
   const configs = Object.keys(state.manuscript.configs);
   for (var i = 0; i < configs.length; i++) {
     let config = configs[i];
@@ -13,7 +15,7 @@ export function getConfigs(state) {
       activeConfigs.push(config);
     }
   }
-  console.log(activeConfigs);
+
   return activeConfigs;
 }
 

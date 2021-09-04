@@ -17,7 +17,6 @@
             val => (val !== null && val !== '') || 'Please type the title',
             val => val.length <= 100 || 'Title must be smaller than 100'
           ]"
-          @input="editTitle"
           @blur="editTitle(true)"
         />
       </div>
@@ -31,7 +30,6 @@
           filled
           :rules="[true || 'Description cannot be empty']"
           autogrow
-          @input="editDescription"
           @blur="editDescription(true)"
         />
       </div>
@@ -237,6 +235,7 @@ export default {
           )
           .then(data => {})
           .catch(error => {
+            console.log(error);
             this.$q.notify({
               color: "negative",
               position: "top",
@@ -538,7 +537,7 @@ export default {
           console.log("data", data);
           let book_id = data.data.book.id;
 
-          this.assembleBook(book_id);
+          //this.assembleBook(book_id);
           this.loading = false;
 
           this.$q.notify({

@@ -97,7 +97,9 @@ export default {
         draft: "",
         index: 0,
         text: "",
-        manuscript_id: this.$store.getters["write/manuscriptProperty"]("id")
+        prototype_id: this.$store.getters["write/manuscriptProperty"](
+          "prototype_id"
+        )
       },
 
       type: "",

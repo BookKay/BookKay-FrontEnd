@@ -1,94 +1,85 @@
 import { api } from "boot/axios";
 import { Cookies, LocalStorage, SessionStorage } from "quasar";
 
-export function someAction(/* context */) {}
+export async function login({ commit }, user) {
+  let response;
+  let payload;
 
-export function login({ commit }, user) {
-  return new Promise((resolve, reject) => {
-    commit("auth_request");
+  // Getting the user object
 
-    api
-      .post("login", user)
-      .then(resp => {
-        const accessToken = resp.data.access_token;
-        const refreshToken = resp.data.refresh_token;
-        const user = resp.data.user;
-        const payload = {
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-          user: user
-        };
+  response = await api.post("users/login", user);
 
-        Cookies.set("accessToken", accessToken, { expires: "60d" });
-        Cookies.set("refreshToken", refreshToken, { expires: "60d" });
-        LocalStorage.set("user", user);
+  let returnedUser = response.data;
+  payload = { user: returnedUser };
 
-        api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  //Requesting access + refresh token for the newly created user
+  response = await api.post("token", user);
 
-        commit("auth_success", payload);
+  let accessToken = response.data.access;
+  let refreshToken = response.data.refresh;
 
-        resolve(resp);
-      })
-      .catch(err => {
-        commit("auth_error");
-        Cookies.remove("accessToken");
-        Cookies.remove("refreshToken");
-        LocalStorage.remove("user");
-        reject(err);
-      });
-  });
+  payload.accessToken = accessToken;
+  payload.refreshToken = refreshToken;
+
+  Cookies.set("accessToken", accessToken, { expires: "60d", path: "/" });
+  Cookies.set("refreshToken", refreshToken, { expires: "60d", path: "/" });
+  LocalStorage.set("user", returnedUser);
+  api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+
+  commit("auth_success", payload);
+
+  return response;
 }
 
-export function register({ commit }, user) {
-  return new Promise((resolve, reject) => {
-    commit("auth_request");
-    api
-      .post("users", user)
-      .then(resp => {
-        const accessToken = resp.data.access_token;
-        const refreshToken = resp.data.refresh_token;
-        const user = resp.data.user;
-        const payload = {
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-          user: user
-        };
+export async function register({ commit }, user) {
+  let response;
+  let payload;
 
-        Cookies.set("accessToken", accessToken, { expires: "60d" });
-        Cookies.set("refreshToken", refreshToken, { expires: "60d" });
-        LocalStorage.set("user", user);
-        api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  //Adding new user
+  response = await api.post("users", user);
+  payload = {
+    user: response.data
+  };
+  let returnedUser = response.data;
 
-        commit("auth_success", payload);
+  //Requesting access + refresh token for the newly created user
+  response = await api.post("token", user);
 
-        resolve(resp);
-      })
-      .catch(err => {
-        commit("auth_error");
-        Cookies.remove("accessToken");
-        Cookies.remove("refreshToken");
-        LocalStorage.remove("user");
-        reject(err);
-      });
-  });
+  let accessToken = response.data.access;
+  let refreshToken = response.data.refresh;
+
+  payload.accessToken = accessToken;
+  payload.refreshToken = refreshToken;
+
+  Cookies.set("accessToken", accessToken, { expires: "60d", path: "/" });
+  Cookies.set("refreshToken", refreshToken, { expires: "60d", path: "/" });
+  LocalStorage.set("user", returnedUser);
+  api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+
+  commit("auth_success", payload);
+
+  return response;
 }
 
-export function logout({ commit }) {
-  return new Promise((resolve, reject) => {
-    commit("logout");
-    for (const key in Cookies.getAll()) {
-      Cookies.remove(key);
-    }
-    for (const key in LocalStorage.getAll()) {
-      LocalStorage.remove(key);
-    }
-    for (const key in SessionStorage.getAll()) {
-      SessionStorage.remove(key);
-    }
+export async function logout({ commit }, payload) {
+  let response;
+  let id = payload["id"];
 
-    delete api.defaults.headers.common["Authorization"];
-    resolve();
-  });
+  //Adding new user
+  response = await api.post(`users/${id}/logout`);
+  commit("logout");
+  for (const key in Cookies.getAll()) {
+    Cookies.remove(key);
+  }
+  for (const key in LocalStorage.getAll()) {
+    LocalStorage.remove(key);
+  }
+  for (const key in SessionStorage.getAll()) {
+    SessionStorage.remove(key);
+  }
+
+  delete api.defaults.headers.common["Authorization"];
+  return "";
 }
 
 export function edit({ commit, state }, user) {
@@ -127,24 +118,6 @@ export function deleteUser({ commit, state }, user) {
         }
 
         delete api.defaults.headers.common["Authorization"];
-
-        resolve(resp);
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-
-export function addManuscript({ commit }, manuscript) {
-  return new Promise((resolve, reject) => {
-    api
-      .post("manuscripts", manuscript)
-      .then(resp => {
-        const user = resp.data.user;
-
-        commit("setUser", user);
-        localStorage.set("user", user);
 
         resolve(resp);
       })

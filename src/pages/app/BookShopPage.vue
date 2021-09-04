@@ -57,7 +57,6 @@ export default {
     },
     fetchBooks() {
       return this.$api.get("books").then(resp => {
-        console.log("resp", resp);
         const books = resp.data;
         this.books = books;
       });

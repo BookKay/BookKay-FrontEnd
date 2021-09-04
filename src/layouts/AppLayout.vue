@@ -1,6 +1,7 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-white ">
+      <q-ajax-bar ref="bar" position="top" color="primary" size="5px" />
       <q-toolbar>
         <q-toolbar-title>
           <q-btn flat size="md" color="primary" :to="{ name: 'home-homepage' }">
@@ -35,7 +36,7 @@
       <router-view />
     </q-page-container>
 
-    <q-footer class="bg-grey-8 text-white row">
+    <!--<q-footer class="bg-grey-8 text-white row">
       <q-tabs
         v-model="tab"
         align="justify"
@@ -65,15 +66,23 @@
           :to="{ name: 'app-store' }"
         />
       </q-tabs>
+    </q-footer>-->
+    <q-footer>
+      <bottom-nav />
     </q-footer>
   </q-layout>
 </template>
 
 <script>
+import BottomNav from "src/components/helpers/BottomNav";
+
 export default {
+  components: { BottomNav },
   beforeMount() {
     this.$api
-      .get("users/" + this.$store.getters["user/userProperty"]("id"))
+      .get("users/" + this.$store.getters["user/userProperty"]("id"), {
+        params: { expand: "~all" }
+      })
       .then(resp => {
         const user = resp.data;
 

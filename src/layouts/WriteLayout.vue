@@ -1,5 +1,6 @@
 <template>
   <q-layout view="hHh LpR fFf">
+    <q-ajax-bar ref="bar" position="top" color="primary" size="5px" />
     <q-header elevated class="bg-white">
       <q-toolbar>
         <q-btn
@@ -57,49 +58,24 @@
       <router-view />
     </q-page-container>
 
-    <q-footer bordered class="bg-transparent text-white row">
-      <q-tabs
-        v-model="tab"
-        align="justify"
-        indicator-color="transparent"
-        active-color="primary"
-        class="bg-white text-black shadow-2 col"
-      >
-        <q-route-tab
-          class=""
-          name="read"
-          icon="book"
-          label="Read"
-          :to="{ name: 'app-read' }"
-        />
-        <q-route-tab
-          class=""
-          name="write"
-          icon="brush"
-          label="Write"
-          :to="{ name: 'app-write' }"
-        />
-        <q-route-tab
-          class=""
-          name="shop"
-          icon="local_library"
-          label="Shop"
-          :to="{ name: 'app-store' }"
-        />
-      </q-tabs>
-    </q-footer>
+    <bottom-nav />
   </q-layout>
 </template>
 
 <script>
+import BottomNav from "src/components/helpers/BottomNav";
+
 export default {
-  beforeMount() {
+  components: { BottomNav },
+  async beforeMount() {
     //Fetching current manuscript
     if (this.$route.params.manuscript_id) {
-      this.$api
-        .get("manuscripts/" + this.$route.params.manuscript_id)
+      /*this.$api
+        .get("manuscripts/" + this.$route.params.manuscript_id, {
+          params: { expand: "~all" }
+        })
         .then(resp => {
-          const manuscript = resp.data;
+          let manuscript = resp.data;
 
           this.$store.commit("write/setManuscript", manuscript);
 
@@ -110,13 +86,45 @@ export default {
           }
 
           //Adding navigation for the preview after fetching the manuscript object
-          /*this.navigations.splice(1, 0, {
+          this.navigations.splice(1, 0, {
             label: "Preview",
             name:
               "read-book/manuscript_id/" +
               this.$store.getters["write/manuscriptProperty"]("id")
-          });*/
-        });
+          });
+        });*/
+      let response;
+
+      response = await this.$api.get(
+        "manuscripts/" + this.$route.params.manuscript_id
+      );
+
+      let manuscript = response.data;
+
+      response = await this.$api.get(
+        "basic-book-prototypes/" + response.data.prototype_id,
+        {
+          params: { expand: "~all" }
+        }
+      );
+
+      //manuscript.prototype = response.data;
+      let prototype = response.data;
+      for (const key in prototype) {
+        if (key in manuscript) {
+          manuscript[`prototype_${key}`] = prototype[key];
+        } else {
+          manuscript[key] = prototype[key];
+        }
+      }
+
+      this.$store.commit("write/setManuscript", manuscript);
+
+      try {
+        this.$q.sessionStorage.set("currentManuscript", manuscript);
+      } catch (error) {
+        console.log("err", error);
+      }
     }
 
     //Syncing the selected node of tree with the current route if navigation was done without
