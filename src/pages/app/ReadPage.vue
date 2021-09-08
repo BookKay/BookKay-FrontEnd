@@ -3,16 +3,16 @@
     <div class="heading">
       <h1>My Library</h1>
     </div>
-    <!--<div>
+    <div>
       <items-list />
-    </div>-->
+    </div>
   </q-page>
 </template>
 
 <script>
 import ItemsList from "src/components/helpers/ItemsList";
 export default {
-  //components: { ItemsList },
+  components: { ItemsList },
   name: "AppPage",
   beforeMount() {
     this.computePurchases();

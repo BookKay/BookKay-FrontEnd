@@ -1,6 +1,5 @@
-export default function() {
+export default function () {
   return {
     //
-    num: 0
-  };
+  }
 }

@@ -26,9 +26,7 @@
             clicking on the upward arrow on the right. You can then call it back
             by clicking/tapping on the top center part of the screen.
           </p>
-          <p>
-            - Please do try out our zen mode &#128521;
-          </p>
+          <p>- Please do try out our zen mode &#128521;</p>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -64,7 +62,7 @@
             <h6 class="q-ma-xs text-capitalize">BookKay</h6>
           </q-btn>
         </div>
-        <div class="inline-block absolute-right ">
+        <div class="inline-block absolute-right">
           <q-btn
             round
             color="primary"
@@ -84,7 +82,7 @@
           class="col-12 col-sm-6 text-body1"
           :nodes="navigations"
           node-key="page"
-          :selected.sync="selected"
+          v-model:selected="selected"
           @update:selected="handleSelected"
         />
 
@@ -117,7 +115,7 @@ export default {
       navigations: [],
       selected: "",
       currentSelected: "",
-      overflow: "hidden"
+      overflow: "hidden",
     };
   },
 
@@ -130,7 +128,7 @@ export default {
       this.$q.fullscreen
         .toggle()
         .then(() => {})
-        .catch(err => {
+        .catch((err) => {
           alert(err);
         });
       this.headerShow = false;
@@ -166,7 +164,7 @@ export default {
       } else if (direction == "down") {
         headerShow = true;
       }
-    }
+    },
   },
 
   beforeRouteUpdate(to, from, next) {
@@ -179,7 +177,7 @@ export default {
     next();
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     //Clearing out session storage after using it
     if (this.$q.sessionStorage.has("currentManuscript")) {
       this.$q.sessionStorage.remove("currentManuscript");
@@ -187,7 +185,7 @@ export default {
     if (this.$q.sessionStorage.has("currentBook")) {
       this.$q.sessionStorage.remove("currentBook");
     }
-  }
+  },
 };
 </script>
 

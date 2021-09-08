@@ -14,8 +14,8 @@
           style="font-size: 1rem"
           filled
           :rules="[
-            val => (val !== null && val !== '') || 'Please type the title',
-            val => val.length <= 100 || 'Title must be smaller than 100'
+            (val) => (val !== null && val !== '') || 'Please type the title',
+            (val) => val.length <= 100 || 'Title must be smaller than 100',
           ]"
           @blur="editTitle(true)"
         />
@@ -79,7 +79,7 @@
           :nodes="options"
           node-key="body"
           tick-strategy="strict"
-          :ticked.sync="ticked"
+          v-model:ticked="ticked"
           @update:ticked="handleTicked"
         />
       </div>
@@ -178,35 +178,33 @@ export default {
   data() {
     return {
       title: this.$store.getters["write/manuscriptProperty"]("title"),
-      description: this.$store.getters["write/manuscriptProperty"](
-        "description"
-      ),
-      frontCover: this.$store.getters["write/manuscriptProperty"](
-        "front_cover"
-      ),
+      description:
+        this.$store.getters["write/manuscriptProperty"]("description"),
+      frontCover:
+        this.$store.getters["write/manuscriptProperty"]("front_cover"),
       backCover: this.$store.getters["write/manuscriptProperty"]("back_cover"),
 
       options: [
         {
           label: "Contain Characters",
-          body: "contain_character"
+          body: "contain_character",
         },
         {
           label: "Contain Front Matter",
-          body: "contain_front_matter"
+          body: "contain_front_matter",
         },
         {
           label: "Contain Chapters",
-          body: "contain_chapter"
+          body: "contain_chapter",
         },
         {
           label: "Contain Back Matter",
-          body: "contain_back_matter"
+          body: "contain_back_matter",
         },
         {
           label: "Automatically add titles as h2 tags",
-          body: "auto_add_title"
-        }
+          body: "auto_add_title",
+        },
       ],
 
       configs: this.$store.getters["write/manuscriptProperty"]("configs"),
@@ -221,7 +219,7 @@ export default {
       confirm_publish: false,
 
       clear_cover: false,
-      coverToBeCleared: ""
+      coverToBeCleared: "",
     };
   },
 
@@ -233,14 +231,14 @@ export default {
             "write/editManuscript",
             { title: this.title } /*, { root: true }*/
           )
-          .then(data => {})
-          .catch(error => {
+          .then((data) => {})
+          .catch((error) => {
             console.log(error);
             this.$q.notify({
               color: "negative",
               position: "top",
               message: error.response.data.message || "Something went wrong",
-              icon: "error"
+              icon: "error",
             });
           });
       }
@@ -252,13 +250,13 @@ export default {
             "write/editManuscript",
             { description: this.description } /*, { root: true }*/
           )
-          .then(data => {})
-          .catch(error => {
+          .then((data) => {})
+          .catch((error) => {
             this.$q.notify({
               color: "negative",
               position: "top",
               message: error.response.data.message || "Something went wrong",
-              icon: "error"
+              icon: "error",
             });
           });
       }
@@ -271,13 +269,13 @@ export default {
 
         this.$store
           .dispatch("write/editManuscript", payload /*, { root: true }*/)
-          .then(data => {})
-          .catch(error => {
+          .then((data) => {})
+          .catch((error) => {
             this.$q.notify({
               color: "negative",
               position: "top",
               message: error.response.data.message || "Something went wrong",
-              icon: "error"
+              icon: "error",
             });
           });
 
@@ -288,7 +286,7 @@ export default {
     handleTicked(target) {
       //For unticking
       let untickDifference = this.selectedOptions.filter(
-        x => !this.ticked.includes(x)
+        (x) => !this.ticked.includes(x)
       );
       if (untickDifference.length != 0) {
         this.difference_option = untickDifference[0];
@@ -300,7 +298,7 @@ export default {
 
       //For ticking
       let tickDifference = this.ticked.filter(
-        x => !this.selectedOptions.includes(x)
+        (x) => !this.selectedOptions.includes(x)
       );
       if (tickDifference.length != 0) {
         this.selectedOptions.push(config);
@@ -310,13 +308,13 @@ export default {
 
         this.$store
           .dispatch("write/editConfigs", this.configs /*, { root: true }*/)
-          .then(data => {})
-          .catch(error => {
+          .then((data) => {})
+          .catch((error) => {
             this.$q.notify({
               color: "negative",
               position: "top",
               message: error.response.data.message || "Something went wrong",
-              icon: "error"
+              icon: "error",
             });
           });
       }
@@ -342,7 +340,7 @@ export default {
       //Then, sending over the url to be saved in manuscript
       this.$store
         .dispatch("write/uploadMedia", formData /*, { root: true }*/)
-        .then(data => {
+        .then((data) => {
           let url = data.data.secure_url;
 
           callback(true);
@@ -352,17 +350,17 @@ export default {
 
           this.$store
             .dispatch("write/editManuscript", cover /*, { root: true }*/)
-            .then(data => {})
-            .catch(error => {
+            .then((data) => {})
+            .catch((error) => {
               this.$q.notify({
                 color: "negative",
                 position: "top",
                 message: error.response.data.message || "Something went wrong",
-                icon: "error"
+                icon: "error",
               });
             });
         })
-        .catch(error => {
+        .catch((error) => {
           callback(false);
           var msg = "";
           try {
@@ -374,7 +372,7 @@ export default {
             color: "negative",
             position: "top",
             message: msg,
-            icon: "error"
+            icon: "error",
           });
         });
       //}
@@ -393,7 +391,7 @@ export default {
 
       this.$store
         .dispatch("write/editConfigs", this.configs /*, { root: true }*/)
-        .then(data => {
+        .then((data) => {
           let type = "";
 
           //Convert config wording to manuscript object keys format for looping
@@ -421,19 +419,19 @@ export default {
 
               const payload = {
                 id: chap.id,
-                type: type.slice(0, -1) //removing 's' as it will be put in actions.js
+                type: type.slice(0, -1), //removing 's' as it will be put in actions.js
               };
 
               this.$store
                 .dispatch("write/deleteChapter", payload)
-                .then(data => {})
-                .catch(error => {
+                .then((data) => {})
+                .catch((error) => {
                   this.$q.notify({
                     color: "negative",
                     position: "top",
                     message:
                       error.response.data.message || "Something went wrong",
-                    icon: "error"
+                    icon: "error",
                   });
 
                   this.chapters.splice(index, 0, chapter);
@@ -441,12 +439,12 @@ export default {
             }
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$q.notify({
             color: "negative",
             position: "top",
             message: error.response.data.message || "Something went wrong",
-            icon: "error"
+            icon: "error",
           });
         });
     },
@@ -488,7 +486,7 @@ export default {
 
         this.$q.notify({
           type: "negative",
-          message: msg
+          message: msg,
         });
       }
 
@@ -500,40 +498,37 @@ export default {
 
       let book = {
         title: this.$store.getters["write/manuscriptProperty"]("title"),
-        description: this.$store.getters["write/manuscriptProperty"](
-          "description"
-        ),
-        front_cover: this.$store.getters["write/manuscriptProperty"](
-          "front_cover"
-        ),
-        back_cover: this.$store.getters["write/manuscriptProperty"](
-          "back_cover"
-        ),
+        description:
+          this.$store.getters["write/manuscriptProperty"]("description"),
+        front_cover:
+          this.$store.getters["write/manuscriptProperty"]("front_cover"),
+        back_cover:
+          this.$store.getters["write/manuscriptProperty"]("back_cover"),
 
         author_id: this.$store.getters["write/manuscriptProperty"]("author").id,
         price: 0,
         text: this.$store.getters["write/manuscriptProperty"]("text"),
         publish_date: new Date().toISOString,
-        contain_character: this.$store.getters["write/manuscriptProperty"](
-          "configs"
-        ).contain_character,
-        contain_front_matter: this.$store.getters["write/manuscriptProperty"](
-          "configs"
-        ).contain_front_matter,
-        contain_chapter: this.$store.getters["write/manuscriptProperty"](
-          "configs"
-        ).contain_chapter,
-        contain_back_matter: this.$store.getters["write/manuscriptProperty"](
-          "configs"
-        ).contain_back_matter,
-        auto_add_title: this.$store.getters["write/manuscriptProperty"](
-          "configs"
-        ).auto_add_title
+        contain_character:
+          this.$store.getters["write/manuscriptProperty"]("configs")
+            .contain_character,
+        contain_front_matter:
+          this.$store.getters["write/manuscriptProperty"]("configs")
+            .contain_front_matter,
+        contain_chapter:
+          this.$store.getters["write/manuscriptProperty"]("configs")
+            .contain_chapter,
+        contain_back_matter:
+          this.$store.getters["write/manuscriptProperty"]("configs")
+            .contain_back_matter,
+        auto_add_title:
+          this.$store.getters["write/manuscriptProperty"]("configs")
+            .auto_add_title,
       };
 
       this.$store
         .dispatch("write/publishBook", book /*, { root: true }*/)
-        .then(data => {
+        .then((data) => {
           console.log("data", data);
           let book_id = data.data.book.id;
 
@@ -545,14 +540,14 @@ export default {
             position: "top",
             message:
               "Yay! Your book has been published successfully on our bookstore",
-            icon: "error"
+            icon: "error",
           });
 
           this.$router.push({
-            name: "app-read"
+            name: "app-read",
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
           var msg = "";
           try {
@@ -564,7 +559,7 @@ export default {
             color: "negative",
             position: "top",
             message: msg,
-            icon: "error"
+            icon: "error",
           });
           this.loading = false;
         });
@@ -581,9 +576,8 @@ export default {
         this.$store.getters["write/manuscriptProperty"]("configs")
           .contain_character
       ) {
-        let characters = this.$store.getters["write/manuscriptProperty"](
-          "characters"
-        );
+        let characters =
+          this.$store.getters["write/manuscriptProperty"]("characters");
 
         for (var i = 0; i < characters.length; i++) {
           let character = characters[i];
@@ -599,9 +593,8 @@ export default {
         this.$store.getters["write/manuscriptProperty"]("configs")
           .contain_front_matter
       ) {
-        let front_matters = this.$store.getters["write/manuscriptProperty"](
-          "front_matters"
-        );
+        let front_matters =
+          this.$store.getters["write/manuscriptProperty"]("front_matters");
 
         for (var i = 0; i < front_matters.length; i++) {
           let front_matter = front_matters[i];
@@ -616,9 +609,8 @@ export default {
         this.$store.getters["write/manuscriptProperty"]("configs")
           .contain_chapter
       ) {
-        let chapters = this.$store.getters["write/manuscriptProperty"](
-          "chapters"
-        );
+        let chapters =
+          this.$store.getters["write/manuscriptProperty"]("chapters");
 
         for (var i = 0; i < chapters.length; i++) {
           let chapter = chapters[i];
@@ -633,9 +625,8 @@ export default {
         this.$store.getters["write/manuscriptProperty"]("configs")
           .contain_back_matter
       ) {
-        let back_matters = this.$store.getters["write/manuscriptProperty"](
-          "back_matters"
-        );
+        let back_matters =
+          this.$store.getters["write/manuscriptProperty"]("back_matters");
 
         for (var i = 0; i < back_matters.length; i++) {
           let back_matter = back_matters[i];
@@ -649,18 +640,18 @@ export default {
       const payload = {
         chapter: chap,
         type: type,
-        isBook: true
+        isBook: true,
       };
 
       this.$store
         .dispatch("write/addChapter", payload /*, { root: true }*/)
-        .then(data => {})
-        .catch(error => {
+        .then((data) => {})
+        .catch((error) => {
           this.$q.notify({
             color: "negative",
             position: "top",
             message: error.response.data.message || "Something went wrong",
-            icon: "error"
+            icon: "error",
           });
         });
     },
@@ -668,9 +659,9 @@ export default {
     onRejected(rejectedEntries) {
       this.$q.notify({
         type: "negative",
-        message: `${rejectedEntries.length} file(s) did not pass validation constraints`
+        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
       });
-    }
-  }
+    },
+  },
 };
 </script>

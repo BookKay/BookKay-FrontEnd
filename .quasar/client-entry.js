@@ -10,7 +10,12 @@
  * Boot files are your "main.js"
  **/
 
-import 'quasar/dist/quasar.ie.polyfills.js'
+
+import { createApp } from 'vue'
+
+
+
+
 
 
 
@@ -34,24 +39,11 @@ import 'quasar/dist/quasar.sass'
 import 'src/css/app.scss'
 
 
-import Vue from 'vue'
-import createApp from './app.js'
+import createQuasarApp from './app.js'
+import quasarUserOptions from './quasar-user-options.js'
 
 
 
-
-import qboot_Booti18n from 'boot/i18n'
-
-import qboot_Bootaxios from 'boot/axios'
-
-
-
-
-
-
-
-Vue.config.devtools = true
-Vue.config.productionTip = false
 
 
 
@@ -64,9 +56,7 @@ console.info('[Quasar] Running SPA.')
 const publicPath = `/`
 
 
-async function start () {
-  const { app, store, router } = await createApp()
-
+async function start ({ app, router, store, storeKey }, bootFiles) {
   
 
   
@@ -74,26 +64,20 @@ async function start () {
   const redirect = url => {
     hasRedirected = true
     const normalized = Object(url) === url
-      ? router.resolve(url).route.fullPath
+      ? router.resolve(url).fullPath
       : url
 
     window.location.href = normalized
   }
 
   const urlPath = window.location.href.replace(window.location.origin, '')
-  const bootFiles = [qboot_Booti18n,qboot_Bootaxios]
 
   for (let i = 0; hasRedirected === false && i < bootFiles.length; i++) {
-    if (typeof bootFiles[i] !== 'function') {
-      continue
-    }
-
     try {
       await bootFiles[i]({
         app,
         router,
         store,
-        Vue,
         ssrContext: null,
         redirect,
         urlPath,
@@ -116,16 +100,15 @@ async function start () {
   }
   
 
+  app.use(router)
+  app.use(store, storeKey)
+
   
 
     
 
     
-
-    
-      new Vue(app)
-    
-
+      app.mount('#q-app')
     
 
     
@@ -134,4 +117,21 @@ async function start () {
 
 }
 
-start()
+createQuasarApp(createApp, quasarUserOptions)
+
+  .then(app => {
+    return Promise.all([
+      
+      import(/* webpackMode: "eager" */ 'boot/i18n'),
+      
+      import(/* webpackMode: "eager" */ 'boot/axios')
+      
+    ]).then(bootFiles => {
+      const boot = bootFiles
+        .map(entry => entry.default)
+        .filter(entry => typeof entry === 'function')
+
+      start(app, boot)
+    })
+  })
+

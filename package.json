@@ -1,44 +1,38 @@
 {
   "name": "bookkay",
   "version": "0.0.1",
-  "description": "A multi-platform app for reading and writing books with newest revolutionary features",
+  "description": "App where writers can write and publish their books to our platform, and readers can then purchase and read these books, all while using our innovative and immersive features.",
   "productName": "BookKay",
   "author": "Kyaw-Thiha",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0",
-    "icons": "icongenie generate -i public/logo/BookKay.png  --theme-color FFFFFF --quality 12 ",
-    "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=master"
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "@editorjs/editorjs": "^2.22.2",
     "@editorjs/header": "^2.6.1",
     "@editorjs/list": "^1.6.2",
     "@editorjs/paragraph": "^2.8.0",
-    "@quasar/cli": "^1.2.1",
-    "@quasar/extras": "^1.10.12",
+    "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "page-flip": "^2.0.7",
-    "quasar": "^1.15.23",
+    "quasar": "^2.0.0",
     "swiper": "^7.0.3",
-    "vue-editor-js": "^2.0.2",
-    "vue-i18n": "^8.0.0",
+    "vue-i18n": "^9.0.0",
     "vue-smooth-dnd": "^0.8.1",
-    "webpack": "^5.51.1"
+    "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@quasar/app": "^2.2.10",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^7.21.0",
+    "@babel/eslint-parser": "^7.13.14",
+    "@quasar/app": "^3.0.0",
+    "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-vue": "^7.7.0",
-    "eslint-webpack-plugin": "^2.4.0",
-    "push-dir": "^0.4.1"
+    "eslint-plugin-vue": "^7.0.0",
+    "eslint-webpack-plugin": "^2.4.0"
   },
   "browserslist": [
-    "ie >= 11",
     "last 10 Chrome versions",
     "last 10 Firefox versions",
     "last 4 Edge versions",
@@ -50,7 +44,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">= 10.18.1",
+    "node": ">= 12.22.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   }

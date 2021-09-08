@@ -1,80 +1,47 @@
-import Vue from "vue";
+import { boot } from "quasar/wrappers";
 import axios from "axios";
-
 import { Cookies, LocalStorage, Notify } from "quasar";
-import store from "src/store/index";
 
+// Be careful when using SSR for cross-request state pollution
+// due to creating a Singleton instance here;
+// If any client changes this (global) instance, it might be a
+// good idea to move this instance creation inside of the
+// "export default () => {}" function below (which runs individually
+// for each client)
 let baseURL = "";
 if (process.env.DEV) {
   baseURL = "http://localhost:8000/api/v1.0/";
 } else {
   baseURL = "api.bookkay.com/api/v1.0/";
 }
-
-Vue.prototype.$axios = axios;
-
-//const api = axios.create({ baseURL: "http://localhost:5000/api/v1.0/" });
 const api = axios.create({ baseURL: baseURL });
-Vue.prototype.$api = api;
 
-export default ({ router }) => {
-  api.interceptors.request.use(request => {
+export default boot(({ app, router }) => {
+  // for use inside Vue files (Options API) through this.$axios and this.$api
+
+  app.config.globalProperties.$axios = axios;
+  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
+  //       so you won't necessarily have to import axios in each vue file
+
+  app.config.globalProperties.$api = api;
+  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
+  //       so you can easily perform requests against your app's API
+
+  api.interceptors.request.use((request) => {
     return request;
   });
 
   api.interceptors.response.use(
-    response => {
+    (response) => {
       return response;
     },
-    function(error) {
+    function (error) {
       const originalRequest = error.config;
 
       //Logging out the errors
       console.log("error request", originalRequest);
       console.log("error", error);
       console.log("error response", error.response);
-
-      /*
-      //Notifying the user about the error(s) based on the reply from the server
-      const responseData = error.response.data;
-
-      let msg = "";
-      if (responseData) {
-        if (Array.isArray(responseData)) {
-          for (const val of responseData) {
-            let detail = val.charAt(0).toUpperCase() + val.slice(1);
-
-            msg = msg + "<div>" + detail.replaceAll("_", " ") + "</div>";
-          }
-        }
-        if (responseData.constructor == Object) {
-          for (const key in responseData) {
-            if (Array.isArray(responseData[key])) {
-              for (const val of responseData[key]) {
-                let cause = key.charAt(0).toUpperCase() + key.slice(1);
-                let detail = val.charAt(0).toUpperCase() + val.slice(1);
-
-                msg =
-                  msg +
-                  "<div>" +
-                  cause.replaceAll("_", " ") +
-                  " - " +
-                  detail.replaceAll("_", " ") +
-                  "</div>";
-              }
-            }
-          }
-        }
-        Notify.create({
-          message: msg,
-          html: true,
-          color: "negative",
-          icon: "error",
-          process: true,
-          position: "top",
-          multiLine: true
-        });
-      }*/
 
       //When error status is unauthenticated and requested url is refresh,
       //it shows that the refresh token is expired.
@@ -95,9 +62,9 @@ export default ({ router }) => {
 
         return api
           .post("token/refresh", {
-            refresh: Cookies.get("refreshToken")
+            refresh: Cookies.get("refreshToken"),
           })
-          .then(res => {
+          .then((res) => {
             if (res.status === 200) {
               const accessToken = res.data.access;
               Cookies.set("accessToken", accessToken, { expires: "60d" });
@@ -117,6 +84,6 @@ export default ({ router }) => {
       return Promise.reject(error);
     }
   );
-};
+});
 
-export { axios, api };
+export { api };

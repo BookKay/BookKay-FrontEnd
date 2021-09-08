@@ -19,59 +19,59 @@ export default {
       startPos: null,
       translate: null,
       active: false,
-      visible: true
+      visible: true,
     };
   },
   computed: {
-    element: function() {
+    element: function () {
       return this.$refs.element;
     },
-    overlay: function() {
+    overlay: function () {
       return this.$refs.overlay;
     },
-    enabled: function() {
+    enabled: function () {
       if (this.exist == true) {
         return true;
       }
       return false;
     },
-    style: function() {
+    style: function () {
       if (this.direction == "right") {
         return "transform:translate3d(100%,0,0);right:0;";
       }
       return "transform:translate3d(-100%,0,0);left:0;";
-    }
+    },
   },
   mounted() {
-    document.addEventListener("touchstart", e => {
+    document.addEventListener("touchstart", (e) => {
       this.handleStart(e);
     });
-    document.addEventListener("touchmove", e => {
+    document.addEventListener("touchmove", (e) => {
       this.handleMove(e);
     });
-    document.addEventListener("touchend", e => {
+    document.addEventListener("touchend", (e) => {
       this.handleEnd(e);
     });
-    document.addEventListener("touchcancel", e => {
+    document.addEventListener("touchcancel", (e) => {
       this.handleEnd(e);
     });
     window.addEventListener(
       "resize",
-      e => {
+      (e) => {
         this.setVisibality(e);
       },
       true
     );
     this.overlay.addEventListener(
       "transitionend",
-      e => {
+      (e) => {
         this.handleZindex(e);
       },
       false
     );
     this.overlay.addEventListener(
       "click",
-      e => {
+      (e) => {
         this.close();
       },
       false
@@ -256,12 +256,12 @@ export default {
     unlock(element) {
       element.style.removeProperty("overflow");
       element.style.removeProperty("touch-action");
-    }
+    },
   },
-  destroyed() {
+  unmounted() {
     this.unlock(document.querySelector("html"));
     this.unlock(document.querySelector("body"));
-  }
+  },
 };
 </script>
 <style scoped>

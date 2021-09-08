@@ -1,5 +1,5 @@
-<template
-  ><q-file
+<template>
+  <q-file
     :value="files"
     @input="updateFiles"
     :label="$props.label"
@@ -60,12 +60,12 @@ export default {
   props: {
     label: {
       type: String,
-      default: "Pick Files"
+      default: "Pick Files",
     },
     multiple: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -73,7 +73,7 @@ export default {
       uploadProgress: [],
       uploading: null,
       error: false,
-      percent: 0
+      percent: 0,
     };
   },
 
@@ -84,7 +84,7 @@ export default {
 
     canUpload() {
       return this.files !== null;
-    }
+    },
   },
 
   methods: {
@@ -98,7 +98,7 @@ export default {
           } was rejected as it fails ${entry.failedPropValidation.replaceAll(
             "-",
             " "
-          )} validation`
+          )} validation`,
         });
       }
     },
@@ -107,14 +107,14 @@ export default {
       this.uploadProgress[index] = {
         ...this.uploadProgress[index],
         error: true,
-        color: "orange-2"
+        color: "orange-2",
       };
     },
 
     updateFiles(files) {
       this.files = files;
 
-      this.uploadProgress = (files || []).map(file => ({
+      this.uploadProgress = (files || []).map((file) => ({
         error: false,
         color: "green-2",
         percent: 0,
@@ -125,7 +125,7 @@ export default {
             ? "photo"
             : file.type.indexOf("audio/") === 0
             ? "audiotrack"
-            : "insert_drive_file"
+            : "insert_drive_file",
       }));
     },
 
@@ -134,10 +134,10 @@ export default {
 
       let payload = {
         files: this.files,
-        type: this.$props.label
+        type: this.$props.label,
       };
 
-      this.$emit("upload", payload, val => {
+      this.$emit("upload", payload, (val) => {
         if (val) {
           this.percent = 1;
         } else {
@@ -146,14 +146,14 @@ export default {
       });
 
       const allDone = this.uploadProgress.every(
-        progress => progress.percent === 1
+        (progress) => progress.percent === 1
       );
 
-      this.uploadProgress = this.uploadProgress.map(progress => ({
+      this.uploadProgress = this.uploadProgress.map((progress) => ({
         ...progress,
         error: false,
         color: "green-2",
-        percent: allDone === true ? 0 : progress.percent
+        percent: allDone === true ? 0 : progress.percent,
       }));
 
       this.__updateUploadProgress();
@@ -162,7 +162,7 @@ export default {
     __updateUploadProgress() {
       let done = true;
 
-      this.uploadProgress = this.uploadProgress.map(progress => {
+      this.uploadProgress = this.uploadProgress.map((progress) => {
         progress.percent = this.percent;
 
         if (progress.percent === 1 || progress.error === true) {
@@ -182,18 +182,18 @@ export default {
           ...progress,
           error,
           color: error === true ? "red-2" : "green-2",
-          percent
+          percent,
         };
       });
 
       this.uploading =
         done !== true ? setTimeout(this.__updateUploadProgress, 300) : null;
       console.log(this.files);
-    }
+    },
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     clearTimeout(this.uploading);
-  }
+  },
 };
 </script>

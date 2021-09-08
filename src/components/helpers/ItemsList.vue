@@ -11,20 +11,23 @@
     ...
   </swiper>
 </template>
+
 <script>
 // Import Swiper Vue.js components
+//import { Swiper, SwiperSlide } from "swiper/vue/swiper-vue.js";
 import { Swiper, SwiperSlide } from "swiper/vue";
 
 // Import Swiper styles
+//import "swiper/swiper.scss";
 import "swiper/css";
 
 export default {
   components: {
     Swiper,
-    SwiperSlide
+    SwiperSlide,
   },
   setup() {
-    const onSwiper = swiper => {
+    const onSwiper = (swiper) => {
       console.log(swiper);
     };
     const onSlideChange = () => {
@@ -32,8 +35,8 @@ export default {
     };
     return {
       onSwiper,
-      onSlideChange
+      onSlideChange,
     };
-  }
+  },
 };
 </script>

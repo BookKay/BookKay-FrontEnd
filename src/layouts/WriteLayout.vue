@@ -47,7 +47,7 @@
           class="col-12 col-sm-6 text-body1"
           :nodes="navigations"
           node-key="name"
-          :selected.sync="selected"
+          v-model:selected="selected"
           @update:selected="handleSelected"
           v-if="this.$store.getters['user/isLoggedIn']"
         />
@@ -104,7 +104,7 @@ export default {
       response = await this.$api.get(
         "basic-book-prototypes/" + response.data.prototype_id,
         {
-          params: { expand: "~all" }
+          params: { expand: "~all" },
         }
       );
 
@@ -152,17 +152,17 @@ export default {
         "read-book/manuscript_id/" +
         this.$store.getters["write/manuscriptProperty"]("id");
       //Adding navigation for the preview after fetching the manuscript object
-      if (!this.navigations.find(x => x.label === "Preview")) {
+      if (!this.navigations.find((x) => x.label === "Preview")) {
         //if no navigation with label 'Preview'
         this.navigations.splice(1, 0, {
           label: "Preview",
-          name: name
+          name: name,
         });
-      } else if (!this.navigations.find(x => x.name === name)) {
+      } else if (!this.navigations.find((x) => x.name === name)) {
         //if there is navigation with label 'Preview' but its name is incorrect
         this.navigations.splice(1, 1, {
           label: "Preview",
-          name: name
+          name: name,
         });
       }
 
@@ -172,18 +172,18 @@ export default {
         //if config contain_character is true and there is not that obj in navigations
         this.$store.getters["write/manuscriptProperty"]("configs")
           .contain_character &&
-        !this.navigations.find(x => x.label === "Character")
+        !this.navigations.find((x) => x.label === "Character")
       ) {
         const nav = {
           label: "Character",
-          name: "write-character"
+          name: "write-character",
         };
         this.navigations.splice(2, 0, nav);
       } else if (
         //if config contain_character is false and there is that obj in navigations
         !this.$store.getters["write/manuscriptProperty"]("configs")
           .contain_character &&
-        this.navigations.find(x => x.label === "Character")
+        this.navigations.find((x) => x.label === "Character")
       ) {
         this.navigations.splice(2, 1);
       }
@@ -196,16 +196,15 @@ export default {
       ) {
         //The book navigation whose children will have
         //front matters, chapters and back matters
-        var book = this.navigations.find(x => x.label === "Book").children;
+        var book = this.navigations.find((x) => x.label === "Book").children;
 
         //Removing all the front matters first to update and add them back
-        if (book.find(x => x.type == "Front Matter")) {
-          book = book.filter(item => item.type != "Front Matter");
+        if (book.find((x) => x.type == "Front Matter")) {
+          book = book.filter((item) => item.type != "Front Matter");
         }
 
-        var frontMatters = this.$store.getters["write/manuscriptProperty"](
-          "front_matters"
-        );
+        var frontMatters =
+          this.$store.getters["write/manuscriptProperty"]("front_matters");
 
         frontMatters.sort(this.compareIndex);
 
@@ -215,17 +214,17 @@ export default {
             label: frontMatter.title,
             name: "write-editor/front_matter/" + frontMatter.id,
             type: "Front Matter",
-            query: { front_matter: frontMatter.id }
+            query: { front_matter: frontMatter.id },
           });
         }
 
-        this.navigations.find(x => x.label === "Book").children = book;
+        this.navigations.find((x) => x.label === "Book").children = book;
       } else {
         //Deleting front matters in navigations
 
-        var book = this.navigations.find(x => x.label === "Book").children;
-        book = book.filter(item => item.type != "Front Matter");
-        this.navigations.find(x => x.label === "Book").children = book;
+        var book = this.navigations.find((x) => x.label === "Book").children;
+        book = book.filter((item) => item.type != "Front Matter");
+        this.navigations.find((x) => x.label === "Book").children = book;
       }
 
       //Manipulating chapter
@@ -236,20 +235,19 @@ export default {
       ) {
         //The book navigation whose children will have
         //front matters, chapters and back matters
-        var book = this.navigations.find(x => x.label === "Book").children;
+        var book = this.navigations.find((x) => x.label === "Book").children;
 
         //Removing all the chapter first to update and add them back
-        if (book.find(x => x.type == "Chapter")) {
-          book = book.filter(item => item.type != "Chapter");
+        if (book.find((x) => x.type == "Chapter")) {
+          book = book.filter((item) => item.type != "Chapter");
         }
 
-        var chapters = this.$store.getters["write/manuscriptProperty"](
-          "chapters"
-        );
+        var chapters =
+          this.$store.getters["write/manuscriptProperty"]("chapters");
 
         chapters.sort(this.compareIndex);
 
-        var index = book.findIndex(x => x.type == "Back Matter");
+        var index = book.findIndex((x) => x.type == "Back Matter");
 
         for (var i = 0; i < chapters.length; i++) {
           const chapter = chapters[i];
@@ -258,32 +256,32 @@ export default {
             book.push({
               label: chapter.title,
               name: "write-editor/chapter/" + chapter.id,
-              type: "Chapter"
+              type: "Chapter",
             });
           } else {
             book.splice(index, 0, {
               label: chapter.title,
               name: "write-editor/chapter/" + chapter.id,
-              type: "Chapter"
+              type: "Chapter",
             });
             index++;
           }
         }
 
         //Deleting the main body text button if it exists
-        book = book.filter(item => item.label != "Main Body Text");
+        book = book.filter((item) => item.label != "Main Body Text");
 
         //Setting back the navigations based on updated data
-        this.navigations.find(x => x.label === "Book").children = book;
+        this.navigations.find((x) => x.label === "Book").children = book;
       } else {
         //Deleting chapters in navigations
 
-        var book = this.navigations.find(x => x.label === "Book").children;
-        book = book.filter(item => item.type != "Chapter");
-        this.navigations.find(x => x.label === "Book").children = book;
+        var book = this.navigations.find((x) => x.label === "Book").children;
+        book = book.filter((item) => item.type != "Chapter");
+        this.navigations.find((x) => x.label === "Book").children = book;
 
-        if (!book.find(x => x.label === "Main Body Text")) {
-          var index = book.findIndex(x => x.type == "Back Matter");
+        if (!book.find((x) => x.label === "Main Body Text")) {
+          var index = book.findIndex((x) => x.type == "Back Matter");
           //If no other chaps/front_matters/back_matters are present
           if (index == -1) {
             book.push({
@@ -291,7 +289,7 @@ export default {
               name:
                 "write-editor/manuscript/" +
                 this.$store.getters["write/manuscriptProperty"]("id"),
-              type: "Manuscript"
+              type: "Manuscript",
             });
           } else {
             //If there are some chaps/fronts/backs
@@ -300,7 +298,7 @@ export default {
               name:
                 "write-editor/manuscript/" +
                 this.$store.getters["write/manuscriptProperty"]("id"),
-              type: "Manuscript"
+              type: "Manuscript",
             });
             index++;
           }
@@ -315,16 +313,15 @@ export default {
       ) {
         //The book navigation whose children will have
         //back matters, chapters and back matters
-        var book = this.navigations.find(x => x.label === "Book").children;
+        var book = this.navigations.find((x) => x.label === "Book").children;
 
         //Removing all the back matters first to update and add them back
-        if (book.find(x => x.type == "Back Matter")) {
-          book = book.filter(item => item.type != "Back Matter");
+        if (book.find((x) => x.type == "Back Matter")) {
+          book = book.filter((item) => item.type != "Back Matter");
         }
 
-        var backMatters = this.$store.getters["write/manuscriptProperty"](
-          "back_matters"
-        );
+        var backMatters =
+          this.$store.getters["write/manuscriptProperty"]("back_matters");
 
         backMatters.sort(this.compareIndex);
 
@@ -333,17 +330,17 @@ export default {
           book.push({
             label: backMatter.title,
             name: "write-editor/back_matter/" + backMatter.id,
-            type: "Back Matter"
+            type: "Back Matter",
           });
         }
 
-        this.navigations.find(x => x.label === "Book").children = book;
+        this.navigations.find((x) => x.label === "Book").children = book;
       } else {
         //Deleting back matters in navigations
 
-        var book = this.navigations.find(x => x.label === "Book").children;
-        book = book.filter(item => item.type != "Back Matter");
-        this.navigations.find(x => x.label === "Book").children = book;
+        var book = this.navigations.find((x) => x.label === "Book").children;
+        book = book.filter((item) => item.type != "Back Matter");
+        this.navigations.find((x) => x.label === "Book").children = book;
       }
     }
   },
@@ -355,18 +352,18 @@ export default {
       navigations: [
         {
           label: "Configs",
-          name: "write-config"
+          name: "write-config",
         },
 
         {
           label: "Book",
           name: "write-overview",
-          children: []
-        }
+          children: [],
+        },
       ],
 
       selected: "",
-      currentSelected: ""
+      currentSelected: "",
     };
   },
   watch: {
@@ -391,7 +388,7 @@ export default {
         default:
         // code block
       }
-    }
+    },
   },
 
   methods: {
@@ -406,10 +403,9 @@ export default {
           this.$router.push({
             name: this.currentSelected,
             params: {
-              manuscript_id: this.$store.getters["write/manuscriptProperty"](
-                "id"
-              )
-            }
+              manuscript_id:
+                this.$store.getters["write/manuscriptProperty"]("id"),
+            },
           });
         } else {
           const route_name = this.currentSelected.split("/")[0];
@@ -421,7 +417,7 @@ export default {
 
           this.$router.push({
             name: route_name,
-            query: query
+            query: query,
           });
         }
       }
@@ -435,7 +431,7 @@ export default {
         return 1;
       }
       return 0;
-    }
-  }
+    },
+  },
 };
 </script>

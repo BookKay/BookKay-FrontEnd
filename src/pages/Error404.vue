@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
-  >
+  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
     <div>
       <div style="font-size: 30vh">
         404
@@ -16,7 +14,7 @@
         color="white"
         text-color="blue"
         unelevated
-        :to="{ name: 'home-homepage' }"
+        to="/"
         label="Go Home"
         no-caps
       />
@@ -25,7 +23,9 @@
 </template>
 
 <script>
-export default {
-  name: "Error404"
-};
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'Error404'
+})
 </script>

@@ -10,15 +10,20 @@ const baseRoutes = [
     title: "BookKay",
     //icon: 'public\icons\favicon-16x16.png',
     component: () => import("src/pages/home/SplashScreenPage.vue"),
-    children: [{ path: "", component: () => import("pages/Index.vue") }]
+    children: [{ path: "", component: () => import("pages/Index.vue") }],
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
   {
-    path: "*",
-    component: () => import("pages/Error404.vue")
-  }
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: () => import("pages/Error404.vue"),
+  },
+  // if you omit the last `*`, the `/` character in params will be encoded when resolving or pushing
+  {
+    path: "/:pathMatch(.*)",
+    name: "bad-not-found",
+    component: () => import("pages/Error404.vue"),
+  },
 ];
 
 const routes = baseRoutes.concat(
