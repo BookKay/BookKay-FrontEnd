@@ -64,7 +64,7 @@ export default {
       } else if (this.profilePages.includes(routeName)) {
         this.currentTab = "profile";
       }
-    }
+    },
   },
 
   data() {
@@ -72,11 +72,11 @@ export default {
       currentTab: "read",
       readPages: ["app-read"],
       writePages: ["app-write"],
-      storePages: ["app-shop", "app-purchase-book", "app-browse-book"],
-      profilePages: ["app-profile", "app-change-password"]
+      storePages: ["app-store", "app-purchase-book", "app-browse-book"],
+      profilePages: ["app-profile", "app-change-password"],
     };
   },
-  methods: {}
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
@@ -85,7 +85,7 @@ export default {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 5px;
   width: 100%;
 }
 

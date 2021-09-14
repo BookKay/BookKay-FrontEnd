@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-white ">
+    <!-- <q-header elevated class="bg-white">
       <q-ajax-bar ref="bar" position="top" color="primary" size="5px" />
       <q-toolbar>
         <q-toolbar-title>
@@ -30,7 +30,7 @@
           </q-btn>
         </div>
       </q-toolbar>
-    </q-header>
+    </q-header> -->
 
     <q-page-container>
       <router-view />
@@ -81,9 +81,9 @@ export default {
   beforeMount() {
     this.$api
       .get("users/" + this.$store.getters["user/userProperty"]("id"), {
-        params: { expand: "~all" }
+        params: { expand: "~all" },
       })
-      .then(resp => {
+      .then((resp) => {
         const user = resp.data;
 
         this.$store.commit("user/setUser", user);
@@ -92,8 +92,8 @@ export default {
   },
   data() {
     return {
-      tab: "write"
+      tab: "write",
     };
-  }
+  },
 };
 </script>
