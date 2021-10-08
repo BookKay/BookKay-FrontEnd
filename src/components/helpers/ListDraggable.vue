@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { Container, Draggable } from "vue-smooth-dnd";
+import { Container, Draggable } from "vue3-smooth-dnd";
 
 export default {
   name: "ListDraggable",
@@ -19,16 +19,16 @@ export default {
   props: {
     items: {
       type: Array,
-      required: true
+      required: true,
     },
     dataName: {
       type: String,
-      default: "data"
-    }
+      default: "data",
+    },
   },
   data() {
     return {
-      itemsCopy: this.$props.items
+      itemsCopy: this.$props.items,
     };
   },
   methods: {
@@ -52,8 +52,8 @@ export default {
       }
 
       return result;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

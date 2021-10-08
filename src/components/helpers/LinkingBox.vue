@@ -70,9 +70,9 @@ export default {
 }
 
 .mainText {
-  font-weight: bold;
+  font-weight: 700;
   font-size: 28px;
-  line-height: 35px;
+  line-height: 30px;
   padding: 0;
   margin: 0;
 }
@@ -110,7 +110,7 @@ export default {
 
 @media (max-width: 480px) {
   .mainText {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .img {

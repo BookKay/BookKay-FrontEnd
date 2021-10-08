@@ -29,6 +29,10 @@ import '@quasar/extras/animate/slideInDown.css'
 
 import '@quasar/extras/animate/slideOutUp.css'
 
+import '@quasar/extras/animate/fadeIn.css'
+
+import '@quasar/extras/animate/fadeOut.css'
+
 
 // We load Quasar stylesheet file
 import 'quasar/dist/quasar.sass'
@@ -124,7 +128,9 @@ createQuasarApp(createApp, quasarUserOptions)
       
       import(/* webpackMode: "eager" */ 'boot/i18n'),
       
-      import(/* webpackMode: "eager" */ 'boot/axios')
+      import(/* webpackMode: "eager" */ 'boot/axios'),
+      
+      import(/* webpackMode: "eager" */ 'boot/firebase')
       
     ]).then(bootFiles => {
       const boot = bootFiles

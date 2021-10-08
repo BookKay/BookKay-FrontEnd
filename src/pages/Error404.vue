@@ -1,20 +1,18 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <div class="fullscreen text-center flex flex-center">
     <div>
-      <div style="font-size: 30vh">
-        404
-      </div>
+      <img src="svg/page_not_found.svg" alt="Page Not Found" class="img" />
 
-      <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
-      </div>
+      <div class="text" style="opacity: 0.4">Oops. Nothing here...</div>
 
       <q-btn
-        class="q-mt-xl"
+        class="q-mt-lg"
         color="white"
         text-color="blue"
-        unelevated
+        rounded
+        outline
         to="/"
+        :ripple="{ early: true }"
         label="Go Home"
         no-caps
       />
@@ -23,9 +21,38 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: 'Error404'
-})
+  name: "Error404",
+});
 </script>
+<style lang="scss" scoped>
+.img {
+  width: 40vw;
+  height: 30vw;
+}
+
+.text {
+  font-size: 60px;
+  line-height: 80px;
+}
+
+@media (max-width: 780px) {
+  .img {
+    width: 50vw;
+    height: 50vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .img {
+    width: 80vw;
+    height: 80vw;
+  }
+
+  .text {
+    font-size: 30px;
+  }
+}
+</style>

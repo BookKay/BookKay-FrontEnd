@@ -19,10 +19,13 @@ export function getConfigs(state) {
   return activeConfigs;
 }
 
-export const manuscriptProperty = state => key => {
-  if (key in state.manuscript) {
-    return state.manuscript[key];
-  } else {
-    return "";
+export const manuscriptProperty = (state) => (key) => {
+  //Checking if manuscript exist to allow quiet failing
+  if (state.manuscript) {
+    if (key in state.manuscript) {
+      return state.manuscript[key];
+    } else {
+      return "";
+    }
   }
 };

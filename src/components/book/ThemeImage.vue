@@ -66,4 +66,18 @@ export default {
   background-color: white;
   border: 5px solid black;
 }
+
+@media (max-width: 800px) {
+  .theme-img {
+    height: 30vw;
+    width: 30vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .theme-img {
+    height: 40vw;
+    width: 40vw;
+  }
+}
 </style>

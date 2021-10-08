@@ -70,6 +70,7 @@
       </linking-box>
       <div class="col-sm-6"></div>
     </div>
+
     <div class="row stats-container">
       <div class="col-sm-6"></div>
       <linking-box

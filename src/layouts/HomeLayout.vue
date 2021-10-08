@@ -5,7 +5,7 @@
         <q-toolbar-title>
           <q-btn flat size="md" color="primary" :to="{ name: 'home-homepage' }">
             <q-avatar class="q-ma-xs">
-              <img src="icons/favicon-128x128.png" />
+              <img src="logo/Bookkay.svg" style="width: 30px" />
             </q-avatar>
             <h6 class="q-ma-xs text-capitalize" v-if="$q.screen.gt.sm">
               BookKay
@@ -52,6 +52,6 @@
 export default {
   data() {
     return {};
-  }
+  },
 };
 </script>

@@ -66,6 +66,7 @@ export default {
   margin-left: 20px;
   margin-right: 20px;
   width: 50vw;
+  max-height: 40vh;
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 

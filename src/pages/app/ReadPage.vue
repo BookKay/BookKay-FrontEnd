@@ -278,7 +278,7 @@ h2 {
 @media (max-width: 480px) {
   .sub-heading {
     font-size: 20px;
-    margin: 0;
+    //margin: 0;
     margin-left: 20px;
   }
 

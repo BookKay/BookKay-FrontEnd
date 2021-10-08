@@ -1,9 +1,9 @@
 import { SessionStorage, LocalStorage, Cookies } from "quasar";
 
-export default function() {
+export default function () {
   return {
     loading: false,
 
-    manuscript: SessionStorage.getItem("currentManuscript")
+    manuscript: SessionStorage.getItem("currentManuscript"),
   };
 }

@@ -3,11 +3,11 @@ import { Cookies, LocalStorage, SessionStorage } from "quasar";
 
 export function someAction(/* context */) {}
 
-export async function addChapter({ commit, state }, payload) {
+export async function addComponent({ commit, state }, payload) {
   let response;
 
   //Unpacking the paylaod and determining which component the request should be sent for
-  const data = payload.chapter;
+  const data = payload.component;
   const type = payload.type;
   const isBook = payload.isBook;
 
@@ -32,7 +32,7 @@ export async function addChapter({ commit, state }, payload) {
   response = await api.get(
     "basic-book-prototypes/" + state.manuscript.prototype_id,
     {
-      params: { expand: "~all" }
+      params: { expand: "~all" },
     }
   );
 
@@ -59,7 +59,7 @@ export async function getChapter({ commit, state }, payload) {
   response = await api.get(
     "basic-book-prototypes/" + state.manuscript.prototype_id,
     {
-      params: { expand: "~all" }
+      params: { expand: "~all" },
     }
   );
   state.loading = false;
@@ -72,8 +72,8 @@ export async function getChapter({ commit, state }, payload) {
   return response;
 }
 
-export async function editChapter({ commit, state }, payload) {
-  const component = payload.chapter;
+export async function editComponent({ commit, state }, payload) {
+  const component = payload.component;
   const type = payload.type;
   const id = payload.id;
 
@@ -88,7 +88,7 @@ export async function editChapter({ commit, state }, payload) {
   response = await api.get(
     "basic-book-prototypes/" + state.manuscript.prototype_id,
     {
-      params: { expand: "~all" }
+      params: { expand: "~all" },
     }
   );
   state.loading = false;
@@ -101,7 +101,7 @@ export async function editChapter({ commit, state }, payload) {
   return response;
 }
 
-export async function deleteChapter({ commit, state }, payload) {
+export async function deleteComponent({ commit, state }, payload) {
   const type = payload.type;
   const id = payload.id;
   let path = type + "s/" + id;
@@ -114,7 +114,7 @@ export async function deleteChapter({ commit, state }, payload) {
   response = await api.get(
     "basic-book-prototypes/" + state.manuscript.prototype_id,
     {
-      params: { expand: "~all" }
+      params: { expand: "~all" },
     }
   );
 
@@ -138,7 +138,7 @@ export async function editConfigs({ commit, state }, configs) {
   response = await api.get(
     "basic-book-prototypes/" + state.manuscript.prototype_id,
     {
-      params: { expand: "~all" }
+      params: { expand: "~all" },
     }
   );
 
@@ -164,7 +164,7 @@ export async function addManuscript({ commit, rootGetters }, manuscript) {
 
   //Requesting updated user
   response = await api.get("users/" + rootGetters["user/userProperty"]("id"), {
-    params: { expand: "~all" }
+    params: { expand: "~all" },
   });
 
   let user = response.data;
@@ -177,22 +177,17 @@ export async function addManuscript({ commit, rootGetters }, manuscript) {
 }
 
 export async function editManuscript({ commit, state }, manuscript) {
-  state.loading = true;
-
   //Update the configs and retrieve back the updated prototype
   //Then, update the prototype from vuex and session storage
   let response;
 
   response = await api.patch("manuscripts/" + state.manuscript.id, manuscript);
   response = await api.get("manuscripts/" + state.manuscript.id, {
-    params: { expand: "~all" }
+    params: { expand: "~all" },
   });
-  state.loading = false;
 
   let data = response.data;
-  console.log(data);
   commit("updateManuscript", data);
-  console.log(state.manuscript);
 
   SessionStorage.set("currentManuscript", state.manuscript);
 
@@ -207,17 +202,17 @@ export function uploadMedia({ commit, state }, formData) {
     api
       .post("upload", formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
+          "Content-Type": "multipart/form-data",
+        },
       })
-      .then(resp => {
+      .then((resp) => {
         console.log("res", resp);
 
         state.loading = false;
 
         resolve(resp);
       })
-      .catch(err => {
+      .catch((err) => {
         state.loading = false;
         reject(err);
       });
@@ -231,7 +226,7 @@ export async function publishBook({ commit, state }, manuscript) {
 
   response = await api.post(`manuscripts/${state.manuscript.id}/publish`);
   response = await api.get(`users/${LocalStorage.getItem("user").id}`, {
-    params: { expand: "~all" }
+    params: { expand: "~all" },
   });
 
   let user = response.data;
@@ -240,4 +235,83 @@ export async function publishBook({ commit, state }, manuscript) {
   LocalStorage.set("user", user);
 
   return response;
+}
+
+export async function initNavigations({ commit, state, rootGetters }) {
+  //Update the configs and retrieve back the updated prototype
+  //Then, update the prototype from vuex and session storage
+  let manuscript = state.manuscript;
+  let navigations = [
+    {
+      data: "Overview",
+      caption: "",
+      to: {
+        name: "write-overview",
+        params: { manuscript_id: manuscript.id },
+      },
+    },
+    {
+      data: "Preview",
+      caption: "",
+      to: {
+        name: "read-book",
+        query: { manuscript_id: manuscript.id },
+      },
+    },
+  ];
+
+  if (manuscript.configs.contain_front_matters) {
+    //Adding in the front matters
+    let data = initComponents("front_matters", "Front Matter");
+    navigations.push(data);
+  }
+
+  if (manuscript.configs.contain_chapters) {
+    //Adding in the front matters
+    let data = initComponents("chapters", "Chapter");
+    navigations.push(data);
+  }
+
+  if (manuscript.configs.contain_back_matters) {
+    //Adding in the front matters
+    let data = initComponents("back_matters", "Back Matter");
+    navigations.push(data);
+  }
+
+  commit("setNavigations", navigations);
+
+  function initComponents(type, name) {
+    //Looping through components and adding them to navigations
+    let components = [];
+    for (let i = 0; i < manuscript[type]; i++) {
+      let component = manuscript[type][i];
+      let payload = {
+        data: `${name} - ${i}`,
+        caption: component.title,
+        to: {
+          name: "write-editor",
+          query: {},
+        },
+      };
+      payload.to.query[`${name.toLowerCase()}_id`] = component.id;
+      components.push(payload);
+    }
+
+    //Adding the 'Add Component' Button
+    components.push({
+      data: `Add ${name}`,
+      caption: "",
+    });
+
+    //Finalising data
+    let data = {
+      data: components,
+      caption: "",
+      name: `${name}s`,
+    };
+
+    return data;
+  }
+
+  return navigations;
 }

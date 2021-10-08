@@ -1,219 +1,96 @@
 <template>
-  <q-page class="flex">
-    <div class="col q-ml-md">
-      <div class="row">
-        <h2>My Profile</h2>
-      </div>
-      <q-separator />
-      <div class="row q-my-md">
-        <div class="text-h5 q-mr-lg q-mb-xs-sm q-mb-md-none col-xs-12 col-md-4">
-          Username: {{ getUsername }}
-        </div>
-        <div class="q-mb-xs-sm q-mb-md-none col-xs-12 col-md-3">
-          <q-btn
-            flat
-            label="Change Username"
-            color="primary"
-            @click="changeUsername = true"
-          />
-        </div>
-      </div>
-      <div class="row q-my-md">
-        <div class="text-h5 q-mr-lg q-mb-xs-sm q-mb-md-none col-xs-12 col-md-4">
-          Email: {{ getEmail }}
-        </div>
-        <div class="q-mb-xs-sm q-mb-md-none col-xs-12 col-md-3">
-          <q-btn
-            flat
-            label="Change Email"
-            color="primary"
-            @click="changeEmail = true"
-          />
-        </div>
-      </div>
-      <div class="row q-my-md">
-        <div class="text-h5 q-mr-lg q-mb-xs-sm q-mb-md-none col-xs-12 col-md-4">
-          Author Name: {{ getAuthorName }}
-        </div>
-        <div class="q-mb-xs-sm q-mb-md-none col-xs-12 col-md-3">
-          <q-btn
-            flat
-            label="Change Author Name"
-            color="primary"
-            @click="changeAuthorName = true"
-          />
-        </div>
-      </div>
-      <div class="q-my-xl">
-        <div class="q-my-md">
-          <q-btn
-            label="Change Password"
-            color="primary"
-            :to="{ name: 'app-change-password' }"
-            class="q-mx-lg"
-          />
-        </div>
-        <div class="q-my-md">
-          <q-btn
-            label="Log Out"
-            color="warning"
-            class="q-mx-lg"
-            @click="confirmLogOut = true"
-          />
-        </div>
-        <div class="q-my-md">
-          <q-btn
-            label="Delete Account"
-            color="negative"
-            class="q-mx-lg"
-            @click="confirmDelete = true"
-          />
-        </div>
-      </div>
+  <q-page>
+    <div class="theme-img">
+      <theme-image
+        :images="[
+          `https://avatars.dicebear.com/api/micah/${this.username}.svg?mouth=smile`,
+        ]"
+      />
     </div>
 
-    <q-dialog v-model="changeUsername" ref="usernameDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Username</div>
-        </q-card-section>
+    <div class="list-container">
+      <q-list>
+        <div v-for="(field, index) in fields" :key="index">
+          <q-item
+            clickable
+            v-ripple.early
+            style="border-radius: 30px"
+            @click="field.clickHandler"
+          >
+            <q-item-section>
+              <q-item-label>{{ field.label }}</q-item-label>
+              <q-item-label caption :lines="field.lines ? field.lines : '2'">{{
+                field.value
+              }}</q-item-label>
+            </q-item-section>
 
-        <q-card-section class="q-pt-none">
-          <q-input
-            dense
-            ref="usernameInput"
-            v-model="username"
-            :rules="[
-              val =>
-                (val !== null && val !== '') || 'Please type your username',
-              val => val.length <= 100 || 'Username must be smaller than 100'
-            ]"
-            autofocus
-            @keyup.enter="confirmUsername"
-          />
-        </q-card-section>
+            <q-item-section side>
+              <q-icon name="keyboard_arrow_right" color="black" />
+            </q-item-section>
+          </q-item>
+          <q-separator spaced inset />
+        </div>
+      </q-list>
+    </div>
 
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" @click="confirmUsername" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <div class="attribution">
+      The above profile image is automatically generated based on your username.
+      It is made possible thanks to the awesome works of
+      <a href="https://dribbble.com/micahlanier" target="_blank"
+        >Micah Lanier
+      </a>
+      (For the artworks) as well as
+      <a href="https://avatars.dicebear.com/" target="_blank"
+        >DiceBear Avatar</a
+      >
+      (For AutoGenerating these avatars).
+    </div>
 
-    <q-dialog v-model="changeEmail" ref="emailDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Email</div>
-        </q-card-section>
+    <prompt-dialog
+      v-for="(dialog, index) in promptDialogs"
+      :key="index"
+      :open="dialog.state"
+      :label="dialog.label"
+      :value="dialog.value"
+      :rules="dialog.rules"
+      @confirmed="dialog.confirmHandler"
+    />
 
-        <q-card-section class="q-pt-none">
-          <q-input
-            ref="emailInput"
-            type="email"
-            dense
-            v-model="email"
-            :rules="[
-              val => (val !== null && val !== '') || 'Please type your email',
-              val => val.length <= 100 || 'Email must be smaller than 100',
-              val => val.indexOf('@') != -1 || 'Please type a real email'
-            ]"
-            autofocus
-            @keyup.enter="confirmEmail"
-          />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" @click="confirmEmail" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="changeAuthorName" ref="authorNameDialog" persistent>
-      <q-card style="min-width: 350px">
-        <q-card-section>
-          <div class="text-h6">Author Name</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <q-input
-            ref="authorNameInput"
-            dense
-            v-model="authorName"
-            :rules="[
-              val =>
-                (val !== null && val !== '') || 'Please type your author name',
-              val => val.length <= 100 || 'Author name must be smaller than 100'
-            ]"
-            autofocus
-            @keyup.enter="confirmAuthorName"
-          />
-        </q-card-section>
-
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Confirm" @click="confirmAuthorName" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="confirmLogOut">
-      <q-card style="width: 50vw">
-        <q-card-section>
-          <div class="text-h6">Log Out</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          Are you sure you want to log out?
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Logout" color="warning" @click="logOut()" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="confirmDelete">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Delete Account</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          Are you sure you want to delete your account? All your data like your
-          purchased books and manuscripts will be deleted but books you
-          published will remain.
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Delete"
-            color="negative"
-            @click="deleteAccount()"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <confirm-dialog
+      v-for="(dialog, index) in confirmDialogs"
+      :key="index"
+      :open="dialog.state"
+      :header="dialog.label"
+      :text="dialog.text"
+      :btnLabel="dialog.btnLabel"
+      :btnColor="dialog.btnColor"
+      @confirmed="dialog.confirmHandler"
+    />
   </q-page>
 </template>
 
 <script>
+import ConfirmDialog from "src/components/helpers/ConfirmDialog.vue";
+import PromptDialog from "src/components/helpers/PromptDialog.vue";
+import ThemeImage from "src/components/book/ThemeImage.vue";
+
 export default {
   name: "PageProfile",
+  components: { PromptDialog, ConfirmDialog, ThemeImage },
   data() {
     return {
       username: this.$store.getters["user/userProperty"]("username"),
       email: this.$store.getters["user/userProperty"]("email"),
       authorName: this.$store.getters["user/userProperty"]("author_name"),
+      biography: this.$store.getters["user/userProperty"]("biography"),
+      dateJoined: this.$store.getters["user/userProperty"]("date_joined"),
 
-      changeUsername: false,
-      changeEmail: false,
-      changeAuthorName: false,
-      confirmLogOut: false,
-      confirmDelete: false
+      usernameDialog: false,
+      emailDialog: false,
+      authorNameDialog: false,
+      biographyDialog: false,
+      logOutDialog: false,
+      deleteDialog: false,
     };
   },
   computed: {
@@ -225,20 +102,163 @@ export default {
     },
     getAuthorName() {
       return this.$store.getters["user/userProperty"]("author_name");
-    }
+    },
+    getBiography() {
+      return this.$store.getters["user/userProperty"]("biography");
+    },
+    getDateJoined() {
+      return this.$store.getters["user/userProperty"]("date_joined");
+    },
+    fields() {
+      return [
+        {
+          label: "Username",
+          value: this.username,
+          clickHandler: this.changeUsername,
+        },
+        {
+          label: "Email",
+          value: this.getEmail,
+          clickHandler: this.changeEmail,
+        },
+        {
+          label: "Author Name",
+          value: this.getAuthorName,
+          clickHandler: this.changeAuthorName,
+        },
+        {
+          label: "Biography",
+          value: this.getBiography,
+          clickHandler: this.changeBiography,
+        },
+        {
+          label: "Date Joined",
+          value: this.dateJoined,
+        },
+        {
+          label: "Change Password",
+          clickHandler: this.changePassword,
+        },
+        {
+          label: "Logout",
+          clickHandler: this.confirmLogOut,
+        },
+        {
+          label: "Delete Account",
+          clickHandler: this.confirmDelete,
+        },
+      ];
+    },
+
+    promptDialogs() {
+      return [
+        {
+          label: "Username",
+          state: this.usernameDialog,
+          value: this.username,
+          rules: [
+            (val) =>
+              (val !== null && val !== "") || "Please type your username",
+            (val) => val.length <= 100 || "Username must be smaller than 100",
+          ],
+          confirmHandler: this.confirmUsername,
+        },
+        {
+          label: "Email",
+          state: this.emailDialog,
+          value: this.getEmail,
+          rules: [
+            (val) => (val !== null && val !== "") || "Please type your email",
+            (val) => val.length <= 100 || "Email must be smaller than 100",
+            (val) => val.indexOf("@") != -1 || "Please type a real email",
+          ],
+          confirmHandler: this.confirmEmail,
+        },
+        {
+          label: "Author Name",
+          state: this.authorNameDialog,
+          value: this.getAuthorName,
+          rules: [
+            (val) =>
+              (val !== null && val !== "") || "Please type your author name",
+            (val) =>
+              val.length <= 100 || "Author name must be smaller than 100",
+          ],
+          confirmHandler: this.confirmAuthorName,
+        },
+        {
+          label: "Biography",
+          state: this.biographyDialog,
+          value: this.getAuthorName,
+          rules: [
+            (val) =>
+              val.length <= 5000 ||
+              "Your biography must be smaller than 5000 letters",
+          ],
+          confirmHandler: this.confirmBiography,
+        },
+      ];
+    },
+
+    confirmDialogs() {
+      return [
+        {
+          label: "Log Out",
+          state: this.logOutDialog,
+          text: "Are you sure you want to log out?",
+          btnLabel: "Logout",
+          btnColor: "warning",
+          confirmHandler: this.logOut,
+        },
+        {
+          label: "Delete Account",
+          state: this.deleteDialog,
+          text: `Are you sure you want to delete your account? All your data like your
+          purchased books and manuscripts will be deleted but books you
+          published will remain.`,
+          btnLabel: "Delete",
+          btnColor: "negative",
+          confirmHandler: this.deleteAccount,
+        },
+      ];
+    },
   },
   methods: {
-    confirmUsername() {
-      this.$refs.usernameInput.validate();
+    //Methods for opening up the dialogs
+    changeUsername() {
+      this.usernameDialog = true;
+    },
+    changeEmail() {
+      this.emailDialog = true;
+    },
+    changeAuthorName() {
+      this.authorNameDialog = true;
+    },
+    changeBiography() {
+      this.biographyDialog = true;
+    },
+    changePassword() {
+      this.$router.push({ name: "app-change-password" });
+    },
+    confirmLogOut() {
+      this.logOutDialog = true;
+    },
+    confirmDelete() {
+      this.deleteDialog = true;
+    },
 
-      if (!this.$refs.usernameInput.hasError) {
+    //Methods for handling confirmations from the dialogs
+    confirmUsername(newUsername) {
+      this.usernameDialog = false;
+
+      if (this.username != newUsername) {
         this.$store
           .dispatch(
             "user/edit",
-            { username: this.username } /*, { root: true }*/
+            { username: this.getUsername } /*, { root: true }*/
           )
-          .then(data => {})
-          .catch(error => {
+          .then((data) => {})
+          .catch((error) => {
             console.log(error);
             this.$q.notify({
               color: "negative",
@@ -246,21 +266,19 @@ export default {
               message:
                 error.response.data.message ||
                 "Please relogin to edit your credentials",
-              icon: "error"
+              icon: "error",
             });
             this.username = this.getUsername;
           });
-
-        this.$refs.usernameDialog.hide();
       }
     },
-    confirmEmail() {
-      this.$refs.emailInput.validate();
-      if (!this.$refs.emailInput.hasError) {
+    confirmEmail(newEmail) {
+      this.emailDialog = false;
+      if (this.email != newEmail) {
         this.$store
-          .dispatch("user/edit", { email: this.email } /*, { root: true }*/)
-          .then(data => {})
-          .catch(error => {
+          .dispatch("user/edit", { email: this.getEmail } /*, { root: true }*/)
+          .then((data) => {})
+          .catch((error) => {
             console.log(error);
             this.$q.notify({
               color: "negative",
@@ -268,24 +286,22 @@ export default {
               message:
                 error.response.data.message ||
                 "Please relogin to edit your credentials",
-              icon: "error"
+              icon: "error",
             });
             this.email = this.getEmail;
           });
-
-        this.$refs.emailDialog.hide();
       }
     },
-    confirmAuthorName() {
-      this.$refs.authorNameInput.validate();
-      if (!this.$refs.authorNameInput.hasError) {
+    confirmAuthorName(newAuthorName) {
+      this.authorNameDialog = false;
+      if (this.authorName != newAuthorName) {
         this.$store
           .dispatch(
             "user/edit",
-            { author_name: this.authorName } /*, { root: true }*/
+            { author_name: this.getAuthorName } /*, { root: true }*/
           )
-          .then(data => {})
-          .catch(error => {
+          .then((data) => {})
+          .catch((error) => {
             console.log(error);
             this.$q.notify({
               color: "negative",
@@ -293,51 +309,123 @@ export default {
               message:
                 error.response.data.message ||
                 "Please relogin to edit your credentials",
-              icon: "error"
+              icon: "error",
             });
             this.authorName = this.getAuthorName;
           });
-
-        this.$refs.authorNameDialog.hide();
       }
     },
-    logOut() {
-      this.$store
-        .dispatch("user/logout", {
-          id: this.$store.getters["user/userProperty"]("id")
-        })
-        .then(() => {
-          this.$q.notify({
-            icon: "done",
-            color: "positive",
-            message: "Successfully Logged Out"
-          });
-          this.$router.replace({ name: "home-homepage" });
-        });
+    confirmBiography(newBiography) {
+      this.biographyDialog = false;
+      if (this.getBiography != newBiography) {
+      }
     },
-    deleteAccount() {
-      this.$store
-        .dispatch("user/deleteUser" /*, { root: true }*/)
-        .then(data => {
-          this.$q.notify({
-            icon: "done",
-            color: "positive",
-            message: "Successfully Deleted Account"
+
+    logOut(confirm) {
+      console.log("logout");
+      this.logOutDialog = false;
+      if (confirm) {
+        this.$store
+          .dispatch("user/logout", {
+            id: this.$store.getters["user/userProperty"]("id"),
+          })
+          .then(() => {
+            this.$q.notify({
+              icon: "done",
+              color: "positive",
+              message: "Successfully Logged Out",
+            });
+            this.$router.replace({ name: "home-homepage" });
           });
-          this.$router.replace({ name: "home-homepage" });
-        })
-        .catch(error => {
-          console.log(error);
-          this.$q.notify({
-            color: "negative",
-            position: "top",
-            message:
-              error.response.data.message ||
-              "Please relogin to edit your credentials",
-            icon: "error"
+      }
+    },
+    deleteAccount(confirm) {
+      this.deleteDialog = false;
+      if (confirm) {
+        this.$store
+          .dispatch("user/deleteUser" /*, { root: true }*/)
+          .then((data) => {
+            this.$q.notify({
+              icon: "done",
+              color: "positive",
+              message: "Successfully Deleted Account",
+            });
+            this.$router.replace({ name: "home-homepage" });
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$q.notify({
+              color: "negative",
+              position: "top",
+              message:
+                error.response.data.message ||
+                "Please relogin to edit your credentials",
+              icon: "error",
+            });
           });
-        });
-    }
-  }
+      }
+    },
+  },
 };
 </script>
+<style lang="scss" scoped>
+h1 {
+  color: #0d6e5f;
+}
+
+h2 {
+  color: #004036;
+}
+
+.heading {
+  display: inline-block;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: rgba(183, 226, 225);
+  padding: 0 20px;
+  margin: 5px 10px;
+}
+
+.heading h1 {
+  margin: 0px;
+  padding: 0px;
+  font-size: 35px;
+  font-weight: 700;
+  line-height: 2em;
+}
+
+.theme-img {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.list-container {
+  width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.attribution {
+  width: 80vw;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 12px;
+  color: grey;
+  font-weight: 300;
+}
+
+.attribution a {
+  color: black;
+}
+
+@media (max-width: 480px) {
+  .list-container {
+    width: 98vw;
+  }
+
+  .attribution {
+    width: 90vw;
+  }
+}
+</style>

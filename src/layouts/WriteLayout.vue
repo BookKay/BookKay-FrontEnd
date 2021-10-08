@@ -1,7 +1,8 @@
 <template>
-  <q-layout view="hHh LpR fFf">
+  <!-- <q-layout view="hHh LpR fFf"> -->
+  <q-layout view="lhh lpR lFf">
     <q-ajax-bar ref="bar" position="top" color="primary" size="5px" />
-    <q-header elevated class="bg-white">
+    <!-- <q-header elevated class="bg-white">
       <q-toolbar>
         <q-btn
           dense
@@ -38,10 +39,28 @@
           </q-btn>
         </div>
       </q-toolbar>
+    </q-header> -->
+    <q-header class="bg-white text-black">
+      <q-btn
+        flat
+        round
+        icon="menu"
+        class="q-ml-md q-mt-sm"
+        @click="left = !left"
+        :ripple="{ early: true }"
+      />
     </q-header>
 
-    <q-drawer v-model="left" side="left" overlay behavior="mobile" bordered>
-      <div class="q-ma-md q-mt-xl">
+    <q-drawer
+      v-model="left"
+      show-if-above
+      side="left"
+      bordered
+      :width="$q.screen.lt.md ? 225 : 300"
+      :overlay="$q.screen.lt.sm"
+      :behavior="$q.screen.lt.sm ? 'mobile' : 'desktop'"
+    >
+      <!-- <div class="q-ma-md q-mt-xl">
         <q-tree
           ref="navTree"
           class="col-12 col-sm-6 text-body1"
@@ -51,48 +70,31 @@
           @update:selected="handleSelected"
           v-if="this.$store.getters['user/isLoggedIn']"
         />
-      </div>
+      </div> -->
+      <the-write-side-bar />
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container style="overflow-x: hidden">
       <router-view />
     </q-page-container>
 
-    <bottom-nav />
+    <q-footer>
+      <bottom-nav />
+    </q-footer>
   </q-layout>
 </template>
 
 <script>
 import BottomNav from "src/components/helpers/BottomNav";
+import TheWriteSideBar from "src/components/write/TheWriteSideBar.vue";
+
+import { editorNavigations } from "src/data/EditorNavigations.js";
 
 export default {
-  components: { BottomNav },
-  async beforeMount() {
+  components: { BottomNav, TheWriteSideBar },
+  async mounted() {
     //Fetching current manuscript
     if (this.$route.params.manuscript_id) {
-      /*this.$api
-        .get("manuscripts/" + this.$route.params.manuscript_id, {
-          params: { expand: "~all" }
-        })
-        .then(resp => {
-          let manuscript = resp.data;
-
-          this.$store.commit("write/setManuscript", manuscript);
-
-          try {
-            this.$q.sessionStorage.set("currentManuscript", manuscript);
-          } catch (error) {
-            console.log("err", error);
-          }
-
-          //Adding navigation for the preview after fetching the manuscript object
-          this.navigations.splice(1, 0, {
-            label: "Preview",
-            name:
-              "read-book/manuscript_id/" +
-              this.$store.getters["write/manuscriptProperty"]("id")
-          });
-        });*/
       let response;
 
       response = await this.$api.get(
@@ -144,212 +146,214 @@ export default {
       this.currentSelected = this.$route.name;
     }
   },
-  updated() {
-    //The codes below are used to update the navigations tree each time the drawer is opened/closed
-    if (this.$store.getters["user/isLoggedIn"]) {
-      //Variable name of the name label
-      let name =
-        "read-book/manuscript_id/" +
-        this.$store.getters["write/manuscriptProperty"]("id");
-      //Adding navigation for the preview after fetching the manuscript object
-      if (!this.navigations.find((x) => x.label === "Preview")) {
-        //if no navigation with label 'Preview'
-        this.navigations.splice(1, 0, {
-          label: "Preview",
-          name: name,
-        });
-      } else if (!this.navigations.find((x) => x.name === name)) {
-        //if there is navigation with label 'Preview' but its name is incorrect
-        this.navigations.splice(1, 1, {
-          label: "Preview",
-          name: name,
-        });
-      }
 
-      //Adding and removing character in the navigations tree
+  // updated() {
+  //   //The codes below are used to update the navigations tree each time the drawer is opened/closed
+  //   if (this.$store.getters["user/isLoggedIn"]) {
+  //     //Variable name of the name label
+  //     let name =
+  //       "read-book/manuscript_id/" +
+  //       this.$store.getters["write/manuscriptProperty"]("id");
+  //     //Adding navigation for the preview after fetching the manuscript object
+  //     if (!this.navigations.find((x) => x.label === "Preview")) {
+  //       //if no navigation with label 'Preview'
+  //       this.navigations.splice(1, 0, {
+  //         label: "Preview",
+  //         name: name,
+  //       });
+  //     } else if (!this.navigations.find((x) => x.name === name)) {
+  //       //if there is navigation with label 'Preview' but its name is incorrect
+  //       this.navigations.splice(1, 1, {
+  //         label: "Preview",
+  //         name: name,
+  //       });
+  //     }
 
-      if (
-        //if config contain_character is true and there is not that obj in navigations
-        this.$store.getters["write/manuscriptProperty"]("configs")
-          .contain_character &&
-        !this.navigations.find((x) => x.label === "Character")
-      ) {
-        const nav = {
-          label: "Character",
-          name: "write-character",
-        };
-        this.navigations.splice(2, 0, nav);
-      } else if (
-        //if config contain_character is false and there is that obj in navigations
-        !this.$store.getters["write/manuscriptProperty"]("configs")
-          .contain_character &&
-        this.navigations.find((x) => x.label === "Character")
-      ) {
-        this.navigations.splice(2, 1);
-      }
+  //     //Adding and removing character in the navigations tree
 
-      //Manipulating front matters
+  //     if (
+  //       //if config contain_character is true and there is not that obj in navigations
+  //       this.$store.getters["write/manuscriptProperty"]("configs")
+  //         .contain_character &&
+  //       !this.navigations.find((x) => x.label === "Character")
+  //     ) {
+  //       const nav = {
+  //         label: "Character",
+  //         name: "write-character",
+  //       };
+  //       this.navigations.splice(2, 0, nav);
+  //     } else if (
+  //       //if config contain_character is false and there is that obj in navigations
+  //       !this.$store.getters["write/manuscriptProperty"]("configs")
+  //         .contain_character &&
+  //       this.navigations.find((x) => x.label === "Character")
+  //     ) {
+  //       this.navigations.splice(2, 1);
+  //     }
 
-      if (
-        this.$store.getters["write/manuscriptProperty"]("configs")
-          .contain_front_matter
-      ) {
-        //The book navigation whose children will have
-        //front matters, chapters and back matters
-        var book = this.navigations.find((x) => x.label === "Book").children;
+  //     //Manipulating front matters
 
-        //Removing all the front matters first to update and add them back
-        if (book.find((x) => x.type == "Front Matter")) {
-          book = book.filter((item) => item.type != "Front Matter");
-        }
+  //     if (
+  //       this.$store.getters["write/manuscriptProperty"]("configs")
+  //         .contain_front_matter
+  //     ) {
+  //       //The book navigation whose children will have
+  //       //front matters, chapters and back matters
+  //       var book = this.navigations.find((x) => x.label === "Book").children;
 
-        var frontMatters =
-          this.$store.getters["write/manuscriptProperty"]("front_matters");
+  //       //Removing all the front matters first to update and add them back
+  //       if (book.find((x) => x.type == "Front Matter")) {
+  //         book = book.filter((item) => item.type != "Front Matter");
+  //       }
 
-        frontMatters.sort(this.compareIndex);
+  //       var frontMatters =
+  //         this.$store.getters["write/manuscriptProperty"]("front_matters");
 
-        for (var i = frontMatters.length - 1; i >= 0; i--) {
-          const frontMatter = frontMatters[i];
-          book.unshift({
-            label: frontMatter.title,
-            name: "write-editor/front_matter/" + frontMatter.id,
-            type: "Front Matter",
-            query: { front_matter: frontMatter.id },
-          });
-        }
+  //       frontMatters.sort(this.compareIndex);
 
-        this.navigations.find((x) => x.label === "Book").children = book;
-      } else {
-        //Deleting front matters in navigations
+  //       for (var i = frontMatters.length - 1; i >= 0; i--) {
+  //         const frontMatter = frontMatters[i];
+  //         book.unshift({
+  //           label: frontMatter.title,
+  //           name: "write-editor/front_matter/" + frontMatter.id,
+  //           type: "Front Matter",
+  //           query: { front_matter: frontMatter.id },
+  //         });
+  //       }
 
-        var book = this.navigations.find((x) => x.label === "Book").children;
-        book = book.filter((item) => item.type != "Front Matter");
-        this.navigations.find((x) => x.label === "Book").children = book;
-      }
+  //       this.navigations.find((x) => x.label === "Book").children = book;
+  //     } else {
+  //       //Deleting front matters in navigations
 
-      //Manipulating chapter
+  //       var book = this.navigations.find((x) => x.label === "Book").children;
+  //       book = book.filter((item) => item.type != "Front Matter");
+  //       this.navigations.find((x) => x.label === "Book").children = book;
+  //     }
 
-      if (
-        this.$store.getters["write/manuscriptProperty"]("configs")
-          .contain_chapter
-      ) {
-        //The book navigation whose children will have
-        //front matters, chapters and back matters
-        var book = this.navigations.find((x) => x.label === "Book").children;
+  //     //Manipulating chapter
 
-        //Removing all the chapter first to update and add them back
-        if (book.find((x) => x.type == "Chapter")) {
-          book = book.filter((item) => item.type != "Chapter");
-        }
+  //     if (
+  //       this.$store.getters["write/manuscriptProperty"]("configs")
+  //         .contain_chapter
+  //     ) {
+  //       //The book navigation whose children will have
+  //       //front matters, chapters and back matters
+  //       var book = this.navigations.find((x) => x.label === "Book").children;
 
-        var chapters =
-          this.$store.getters["write/manuscriptProperty"]("chapters");
+  //       //Removing all the chapter first to update and add them back
+  //       if (book.find((x) => x.type == "Chapter")) {
+  //         book = book.filter((item) => item.type != "Chapter");
+  //       }
 
-        chapters.sort(this.compareIndex);
+  //       var chapters =
+  //         this.$store.getters["write/manuscriptProperty"]("chapters");
 
-        var index = book.findIndex((x) => x.type == "Back Matter");
+  //       chapters.sort(this.compareIndex);
 
-        for (var i = 0; i < chapters.length; i++) {
-          const chapter = chapters[i];
+  //       var index = book.findIndex((x) => x.type == "Back Matter");
 
-          if (index == -1) {
-            book.push({
-              label: chapter.title,
-              name: "write-editor/chapter/" + chapter.id,
-              type: "Chapter",
-            });
-          } else {
-            book.splice(index, 0, {
-              label: chapter.title,
-              name: "write-editor/chapter/" + chapter.id,
-              type: "Chapter",
-            });
-            index++;
-          }
-        }
+  //       for (var i = 0; i < chapters.length; i++) {
+  //         const chapter = chapters[i];
 
-        //Deleting the main body text button if it exists
-        book = book.filter((item) => item.label != "Main Body Text");
+  //         if (index == -1) {
+  //           book.push({
+  //             label: chapter.title,
+  //             name: "write-editor/chapter/" + chapter.id,
+  //             type: "Chapter",
+  //           });
+  //         } else {
+  //           book.splice(index, 0, {
+  //             label: chapter.title,
+  //             name: "write-editor/chapter/" + chapter.id,
+  //             type: "Chapter",
+  //           });
+  //           index++;
+  //         }
+  //       }
 
-        //Setting back the navigations based on updated data
-        this.navigations.find((x) => x.label === "Book").children = book;
-      } else {
-        //Deleting chapters in navigations
+  //       //Deleting the main body text button if it exists
+  //       book = book.filter((item) => item.label != "Main Body Text");
 
-        var book = this.navigations.find((x) => x.label === "Book").children;
-        book = book.filter((item) => item.type != "Chapter");
-        this.navigations.find((x) => x.label === "Book").children = book;
+  //       //Setting back the navigations based on updated data
+  //       this.navigations.find((x) => x.label === "Book").children = book;
+  //     } else {
+  //       //Deleting chapters in navigations
 
-        if (!book.find((x) => x.label === "Main Body Text")) {
-          var index = book.findIndex((x) => x.type == "Back Matter");
-          //If no other chaps/front_matters/back_matters are present
-          if (index == -1) {
-            book.push({
-              label: "Main Body Text",
-              name:
-                "write-editor/manuscript/" +
-                this.$store.getters["write/manuscriptProperty"]("id"),
-              type: "Manuscript",
-            });
-          } else {
-            //If there are some chaps/fronts/backs
-            book.splice(index, 0, {
-              label: "Main Body Text",
-              name:
-                "write-editor/manuscript/" +
-                this.$store.getters["write/manuscriptProperty"]("id"),
-              type: "Manuscript",
-            });
-            index++;
-          }
-        }
-      }
+  //       var book = this.navigations.find((x) => x.label === "Book").children;
+  //       book = book.filter((item) => item.type != "Chapter");
+  //       this.navigations.find((x) => x.label === "Book").children = book;
 
-      //Manipulating back matters
+  //       if (!book.find((x) => x.label === "Main Body Text")) {
+  //         var index = book.findIndex((x) => x.type == "Back Matter");
+  //         //If no other chaps/front_matters/back_matters are present
+  //         if (index == -1) {
+  //           book.push({
+  //             label: "Main Body Text",
+  //             name:
+  //               "write-editor/manuscript/" +
+  //               this.$store.getters["write/manuscriptProperty"]("id"),
+  //             type: "Manuscript",
+  //           });
+  //         } else {
+  //           //If there are some chaps/fronts/backs
+  //           book.splice(index, 0, {
+  //             label: "Main Body Text",
+  //             name:
+  //               "write-editor/manuscript/" +
+  //               this.$store.getters["write/manuscriptProperty"]("id"),
+  //             type: "Manuscript",
+  //           });
+  //           index++;
+  //         }
+  //       }
+  //     }
 
-      if (
-        this.$store.getters["write/manuscriptProperty"]("configs")
-          .contain_back_matter
-      ) {
-        //The book navigation whose children will have
-        //back matters, chapters and back matters
-        var book = this.navigations.find((x) => x.label === "Book").children;
+  //     //Manipulating back matters
 
-        //Removing all the back matters first to update and add them back
-        if (book.find((x) => x.type == "Back Matter")) {
-          book = book.filter((item) => item.type != "Back Matter");
-        }
+  //     if (
+  //       this.$store.getters["write/manuscriptProperty"]("configs")
+  //         .contain_back_matter
+  //     ) {
+  //       //The book navigation whose children will have
+  //       //back matters, chapters and back matters
+  //       var book = this.navigations.find((x) => x.label === "Book").children;
 
-        var backMatters =
-          this.$store.getters["write/manuscriptProperty"]("back_matters");
+  //       //Removing all the back matters first to update and add them back
+  //       if (book.find((x) => x.type == "Back Matter")) {
+  //         book = book.filter((item) => item.type != "Back Matter");
+  //       }
 
-        backMatters.sort(this.compareIndex);
+  //       var backMatters =
+  //         this.$store.getters["write/manuscriptProperty"]("back_matters");
 
-        for (var i = 0; i < backMatters.length; i++) {
-          const backMatter = backMatters[i];
-          book.push({
-            label: backMatter.title,
-            name: "write-editor/back_matter/" + backMatter.id,
-            type: "Back Matter",
-          });
-        }
+  //       backMatters.sort(this.compareIndex);
 
-        this.navigations.find((x) => x.label === "Book").children = book;
-      } else {
-        //Deleting back matters in navigations
+  //       for (var i = 0; i < backMatters.length; i++) {
+  //         const backMatter = backMatters[i];
+  //         book.push({
+  //           label: backMatter.title,
+  //           name: "write-editor/back_matter/" + backMatter.id,
+  //           type: "Back Matter",
+  //         });
+  //       }
 
-        var book = this.navigations.find((x) => x.label === "Book").children;
-        book = book.filter((item) => item.type != "Back Matter");
-        this.navigations.find((x) => x.label === "Book").children = book;
-      }
-    }
-  },
+  //       this.navigations.find((x) => x.label === "Book").children = book;
+  //     } else {
+  //       //Deleting back matters in navigations
+
+  //       var book = this.navigations.find((x) => x.label === "Book").children;
+  //       book = book.filter((item) => item.type != "Back Matter");
+  //       this.navigations.find((x) => x.label === "Book").children = book;
+  //     }
+  //   }
+  // },
+
   data() {
     return {
       left: false,
       tab: "write",
-
-      navigations: [
+      navigations: editorNavigations,
+      navigationsA: [
         {
           label: "Configs",
           name: "write-config",
@@ -366,30 +370,30 @@ export default {
       currentSelected: "",
     };
   },
-  watch: {
-    $route(val) {
-      switch (this.$route.name) {
-        case "write-config":
-          this.selected = "write-config";
-          break;
-        case "read-book":
-          this.selected =
-            "read-book/manuscript_id/" +
-            this.$store.getters["write/manuscriptProperty"]("id");
-          break;
-        case "write-overview":
-          this.selected = "write-overview";
-          break;
-        case "write-editor":
-          const key = Object.keys(this.$route.query)[0];
-          const value = this.$route.query[key];
-          this.selected = `write-editor/${key}/${value}`;
-          break;
-        default:
-        // code block
-      }
-    },
-  },
+  // watch: {
+  //   $route(val) {
+  //     switch (this.$route.name) {
+  //       case "write-config":
+  //         this.selected = "write-config";
+  //         break;
+  //       case "read-book":
+  //         this.selected =
+  //           "read-book/manuscript_id/" +
+  //           this.$store.getters["write/manuscriptProperty"]("id");
+  //         break;
+  //       case "write-overview":
+  //         this.selected = "write-overview";
+  //         break;
+  //       case "write-editor":
+  //         const key = Object.keys(this.$route.query)[0];
+  //         const value = this.$route.query[key];
+  //         this.selected = `write-editor/${key}/${value}`;
+  //         break;
+  //       default:
+  //       // code block
+  //     }
+  //   },
+  // },
 
   methods: {
     handleSelected() {

@@ -19,7 +19,7 @@
     <div
       class="tab yellow"
       v-bind:class="{ active: currentTab == 'shop' }"
-      @click="(currentTab = 'shop'), $router.push({ name: 'app-store' })"
+      @click="(currentTab = 'shop'), $router.push({ name: 'app-store-list' })"
     >
       <q-icon name="shopping_cart" class="icon" />
       <p>Shop</p>
@@ -72,7 +72,7 @@ export default {
       currentTab: "read",
       readPages: ["app-read"],
       writePages: ["app-write"],
-      storePages: ["app-store", "app-purchase-book", "app-browse-book"],
+      storePages: ["app-store-list", "app-purchase-book", "app-browse-book"],
       profilePages: ["app-profile", "app-change-password"],
     };
   },
@@ -154,5 +154,11 @@ export default {
 .tab.active.teal {
   background: rgba(28, 150, 162, 0.2);
   color: rgba(28, 150, 162, 1);
+}
+
+@media (max-width: 330px) {
+  .tab {
+    padding: 0 10px;
+  }
 }
 </style>

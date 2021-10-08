@@ -1,10 +1,10 @@
 <template>
-  <div class="search-container row">
+  <div class="search-container">
     <q-input
       rounded
       outlined
       color="black"
-      v-model="text"
+      v-model="currentText"
       label="Search"
       class="input-container"
       @keydown.enter.prevent="$refs.searchBtn.click()"
@@ -15,7 +15,7 @@
       :ripple="{ early: true }"
       ref="searchBtn"
       class="search-btn"
-      @click="console.log('hey')"
+      @click="this.$emit('search', currentText)"
     />
   </div>
 </template>
@@ -23,41 +23,43 @@
 <script>
 export default {
   name: "SearchBar",
+  props: {
+    text: {
+      type: String,
+      default: "",
+    },
+  },
 
   data() {
     return {
-      text: "",
+      currentText: this.$props.text,
     };
   },
-  methods: {},
+  methods: {
+    updateText(newText) {
+      this.currentText = newText;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.search-container {
-}
-
 .input-container {
   display: inline-block;
-  width: 80%;
+  width: 85%;
   margin-right: 20px;
 }
 
 .search-btn {
   float: right;
   border-radius: 50%;
+  width: 50px;
+  height: 50px;
 }
 
 @media (max-width: 480px) {
   .input-container {
-    margin-right: 10px;
-  }
-}
-
-@media (max-width: 380px) {
-  .input-container {
-    width: 70%;
-    margin-right: 5px;
+    width: 75%;
   }
 }
 </style>

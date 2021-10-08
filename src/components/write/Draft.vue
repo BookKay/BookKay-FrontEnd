@@ -22,9 +22,7 @@
             - Paragraph formattings will have an automatic first-line indent at
             the readers. So, you are not required to indent manually.
           </p>
-          <p>
-            - Please do try out our zen mode &#128521;
-          </p>
+          <p>- Please do try out our zen mode &#128521;</p>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -60,7 +58,7 @@
     <notebook-ui
       :customStyle="{
         color: `orange`,
-        'text-decoration': 'bold'
+        'text-decoration': 'bold',
       }"
       ref="notebook"
       :content="new_text"
@@ -75,14 +73,14 @@
     <q-scroll-area
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
-      style="height: 200px; max-width: 300px;"
+      style="height: 200px; max-width: 300px"
       :class="{ hidden: !isFullScreen }"
       :visible="false"
       id="notebook"
     >
       <notebook-ui
         :customStyle="{
-          color: `orange`
+          color: `orange`,
         }"
         ref="notebook"
         :content="new_text"
@@ -90,7 +88,7 @@
         type="Texture"
         color="black"
         class="window-width"
-        style="min-height: 100vh; border-radius: 0;"
+        style="min-height: 100vh; border-radius: 0"
         @input="textChanged"
         @save="textSaved"
       ></notebook-ui>
@@ -108,12 +106,12 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     text: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   watch: {
     "$q.fullscreen.isActive"(val) {
@@ -121,7 +119,7 @@ export default {
     },
     "$props.text"(val) {
       this.new_text = val;
-    }
+    },
   },
 
   /*created() {
@@ -130,7 +128,7 @@ export default {
     document.addEventListener("beforeunload", this.checkTextSync);
   },*/
 
-  beforeDestroy() {
+  beforeUnmount() {
     this.checkTextSync();
   },
 
@@ -151,7 +149,7 @@ export default {
         borderRadius: "5px",
         backgroundColor: "orange",
         width: "5px",
-        opacity: 0.75
+        opacity: 0.75,
       },
 
       barStyle: {
@@ -159,8 +157,8 @@ export default {
         borderRadius: "9px",
         backgroundColor: "orange",
         width: "9px",
-        opacity: 0.2
-      }
+        opacity: 0.2,
+      },
     };
   },
   methods: {
@@ -170,7 +168,7 @@ export default {
       this.$q.fullscreen
         .toggle(target)
         .then(() => {})
-        .catch(err => {
+        .catch((err) => {
           alert(err);
           // uh, oh, error!!
           // console.error(err)
@@ -205,8 +203,8 @@ export default {
     checkTextSync() {
       console.log("sync checked");
       this.$emit("textChanged", this.new_text);
-    }
-  }
+    },
+  },
 };
 </script>
 

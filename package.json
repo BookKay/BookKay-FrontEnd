@@ -7,21 +7,33 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "icons": "icongenie generate -i public/logo/BookKay.png  --theme-color FFFFFF --quality 12 ",
+    "deploy": "push-dir --dir=dist/spa --remote=gh-pages --branch=master"
   },
   "dependencies": {
+    "@editorjs/delimiter": "^1.2.0",
     "@editorjs/editorjs": "^2.22.2",
     "@editorjs/header": "^2.6.1",
-    "@editorjs/list": "^1.6.2",
+    "@editorjs/marker": "^1.2.2",
+    "@editorjs/nested-list": "^1.0.2",
     "@editorjs/paragraph": "^2.8.0",
+    "@editorjs/underline": "^1.0.0",
+    "@quasar/cli": "^1.2.1",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "editorjs-drag-drop": "^0.2.0",
+    "editorjs-inline-image": "^0.2.0",
+    "editorjs-text-alignment-blocktune": "^1.0.2",
+    "editorjs-undo": "^0.2.0",
+    "firebase": "^9.1.0",
     "page-flip": "^2.0.7",
     "quasar": "^2.0.0",
     "swiper": "^7.0.3",
     "vue-i18n": "^9.0.0",
     "vue-smooth-dnd": "^0.8.1",
+    "vue3-smooth-dnd": "^0.0.2",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
