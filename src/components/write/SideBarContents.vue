@@ -6,7 +6,7 @@
           <q-item
             v-if="typeof content.data == 'string'"
             clickable
-            v-ripple
+            v-ripple.early
             :active="content.active"
             @click="handleClick(content)"
             class="sidebar-item"
@@ -94,7 +94,6 @@ export default {
 
   data() {
     return {
-      currentText: "",
       deleteClick: false,
       editClick: false,
     };
@@ -106,7 +105,7 @@ export default {
         this.$emit("deleted", content);
         this.deleteClick = false;
       } else if (this.editClick) {
-        this.$emit("editted", content);
+        this.$emit("edited", content);
         this.editClick = false;
       } else {
         this.$emit("clicked", content);

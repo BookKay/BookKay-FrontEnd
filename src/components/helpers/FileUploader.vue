@@ -188,7 +188,6 @@ export default {
 
       this.uploading =
         done !== true ? setTimeout(this.__updateUploadProgress, 300) : null;
-      console.log(this.files);
     },
   },
 

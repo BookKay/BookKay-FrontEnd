@@ -171,7 +171,6 @@ export default {
         .catch((err) => {
           alert(err);
           // uh, oh, error!!
-          // console.error(err)
         });
     },
     textChanged(val) {
@@ -201,7 +200,6 @@ export default {
       }
     },
     checkTextSync() {
-      console.log("sync checked");
       this.$emit("textChanged", this.new_text);
     },
   },

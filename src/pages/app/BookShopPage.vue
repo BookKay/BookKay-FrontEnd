@@ -1,26 +1,26 @@
 <template>
   <q-page>
-    <q-pull-to-refresh
+    <!-- <q-pull-to-refresh
       ref="pullRefresh"
       id="pullRefresh"
       @refresh="handleRefresh"
+    > -->
+    <div class="heading" id="shop-heading">
+      <h1>Book Shop</h1>
+    </div>
+
+    <div class="search-bar">
+      <search-bar :text="searchText" ref="searchBar" @search="handleSearch" />
+    </div>
+
+    <transition
+      appear
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut"
     >
-      <div class="heading" id="shop-heading">
-        <h1>Book Shop</h1>
-      </div>
-
-      <div class="search-bar">
-        <search-bar :text="searchText" ref="searchBar" @search="handleSearch" />
-      </div>
-
-      <transition
-        appear
-        enter-active-class="animated fadeIn"
-        leave-active-class="animated fadeOut"
-      >
-        <router-view />
-      </transition>
-    </q-pull-to-refresh>
+      <router-view ref="child" />
+    </transition>
+    <!-- </q-pull-to-refresh> -->
 
     <!--Loading container-->
     <!--<div v-if="loading" class="window-height relative position">
@@ -40,16 +40,14 @@ export default {
       return this.$q.screen.lt.md ? "justify-center" : "justify-start";
     },
   },
-  mounted() {
-    console.log("mounted");
-    /*this.fetchBooks().then(() => {
-      this.loading = false;
-    });*/
-  },
+
   beforeRouteUpdate(to, from, next) {
     if (to.name == "app-store-list") {
       this.searchText = "";
       this.$refs.searchBar.updateText("");
+      next();
+    } else if (to.name == "app-store-search") {
+      //this.searchText = to.query.search;
       next();
     } else {
       next();
@@ -62,10 +60,9 @@ export default {
     };
   },
   methods: {
-    handleRefresh(done) {
-      this.fetchBooks().then(() => {
-        done();
-      });
+    async handleRefresh(done) {
+      await this.$refs.child.fetchBooks();
+      done();
     },
     handleSearch(text) {
       if (text != "") {
@@ -76,12 +73,6 @@ export default {
       } else {
         this.$router.push({ name: "app-store-list" });
       }
-    },
-    fetchBooks() {
-      return this.$api.get("books").then((resp) => {
-        const books = resp.data;
-        this.books = books;
-      });
     },
   },
 };
@@ -113,10 +104,18 @@ h2 {
 }
 
 .search-bar {
-  width: 80vw;
-  margin-top: 20px;
+  width: 60vw;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 12px;
+  //margin-left: 10px;
+  //float: right;
+}
+
+@media (max-width: 768px) {
+  .search-bar {
+    width: 80vw;
+  }
 }
 
 @media (max-width: 480px) {

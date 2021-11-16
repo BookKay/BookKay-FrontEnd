@@ -66,8 +66,6 @@ export default {
     currentValue: {
       // getter
       get: function () {
-        console.log(this.$props.value);
-        console.log(this.isChanged);
         if (!this.isChanged) {
           this.updateNewValue();
           return this.$props.value;

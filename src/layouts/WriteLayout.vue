@@ -1,6 +1,6 @@
 <template>
   <!-- <q-layout view="hHh LpR fFf"> -->
-  <q-layout view="lhh lpR lFf">
+  <q-layout view="lhh LpR lFf">
     <q-ajax-bar ref="bar" position="top" color="primary" size="5px" />
     <!-- <q-header elevated class="bg-white">
       <q-toolbar>
@@ -71,7 +71,7 @@
           v-if="this.$store.getters['user/isLoggedIn']"
         />
       </div> -->
-      <the-write-side-bar />
+      <the-write-side-bar :isReady="loaded" />
     </q-drawer>
 
     <q-page-container style="overflow-x: hidden">
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import BottomNav from "src/components/helpers/BottomNav";
+import BottomNav from "src/components/helpers/BottomNav.vue";
 import TheWriteSideBar from "src/components/write/TheWriteSideBar.vue";
 
 import { editorNavigations } from "src/data/EditorNavigations.js";
@@ -95,55 +95,39 @@ export default {
   async mounted() {
     //Fetching current manuscript
     if (this.$route.params.manuscript_id) {
+      await this.initManuscript(this.$route.params.manuscript_id);
+      this.loaded = true;
+    } else if (this.$route.query.manuscript_id) {
+      await this.initManuscript(this.$route.query.manuscript_id);
+      this.loaded = true;
+    } else if ("front_matter_id" in this.$route.query) {
       let response;
+      let front_matter_id = this.$route.query.front_matter_id;
 
       response = await this.$api.get(
-        "manuscripts/" + this.$route.params.manuscript_id
+        `front-matters/${front_matter_id}/manuscript_id`
       );
 
-      let manuscript = response.data;
+      await this.initManuscript(response.data);
+      this.loaded = true;
+    } else if ("chapter_id" in this.$route.query) {
+      let response;
+      let chapter_id = this.$route.query.chapter_id;
+
+      response = await this.$api.get(`chapters/${chapter_id}/manuscript_id`);
+
+      await this.initManuscript(response.data);
+      this.loaded = true;
+    } else if ("back_matter_id" in this.$route.query) {
+      let response;
+      let back_matter_id = this.$route.query.back_matter_id;
 
       response = await this.$api.get(
-        "basic-book-prototypes/" + response.data.prototype_id,
-        {
-          params: { expand: "~all" },
-        }
+        `back-matters/${back_matter_id}/manuscript_id`
       );
 
-      //manuscript.prototype = response.data;
-      let prototype = response.data;
-      for (const key in prototype) {
-        if (key in manuscript) {
-          manuscript[`prototype_${key}`] = prototype[key];
-        } else {
-          manuscript[key] = prototype[key];
-        }
-      }
-
-      this.$store.commit("write/setManuscript", manuscript);
-
-      try {
-        this.$q.sessionStorage.set("currentManuscript", manuscript);
-      } catch (error) {
-        console.log("err", error);
-      }
-    }
-
-    //Syncing the selected node of tree with the current route if navigation was done without
-    //clicking the tree
-    let routeName = this.$route.name;
-
-    if (routeName.includes("write-editor")) {
-      let key = Object.keys(this.$route.query)[0];
-
-      let val = Object.values(this.$route.query)[0];
-      let name = routeName + "/" + key + "/" + val;
-
-      this.selected = name;
-      this.currentSelected = name;
-    } else {
-      this.selected = this.$route.name;
-      this.currentSelected = this.$route.name;
+      await this.initManuscript(response.data);
+      this.loaded = true;
     }
   },
 
@@ -365,6 +349,7 @@ export default {
           children: [],
         },
       ],
+      loaded: false,
 
       selected: "",
       currentSelected: "",
@@ -396,34 +381,38 @@ export default {
   // },
 
   methods: {
-    handleSelected() {
-      if (this.selected == null) {
-        //Reselect the node if no nodes are selected
-        this.selected = this.currentSelected;
-      } else {
-        this.currentSelected = this.selected;
-        if (!this.currentSelected.includes("/")) {
-          //if the route is to config, character or overview(without ids)
-          this.$router.push({
-            name: this.currentSelected,
-            params: {
-              manuscript_id:
-                this.$store.getters["write/manuscriptProperty"]("id"),
-            },
-          });
-        } else {
-          const route_name = this.currentSelected.split("/")[0];
+    async initManuscript(manuscript_id) {
+      let response;
 
-          const key = this.currentSelected.split("/")[1];
-          const value = this.currentSelected.split("/")[2];
-          let query = {};
-          query[key] = value;
+      response = await this.$api.get("manuscripts/" + manuscript_id);
 
-          this.$router.push({
-            name: route_name,
-            query: query,
-          });
+      let manuscript = response.data;
+
+      //Updating the last edited time of manuscript
+      await this.$api.post(`manuscripts/${manuscript_id}/edited`);
+
+      response = await this.$api.get(
+        "default-book-prototypes/" + response.data.prototype_id,
+        {
+          params: { expand: "~all" },
         }
+      );
+
+      let prototype = response.data;
+      for (const key in prototype) {
+        if (key in manuscript) {
+          manuscript[`prototype_${key}`] = prototype[key];
+        } else {
+          manuscript[key] = prototype[key];
+        }
+      }
+
+      this.$store.commit("write/setManuscript", manuscript);
+
+      try {
+        this.$q.sessionStorage.set("currentManuscript", manuscript);
+      } catch (error) {
+        console.log("err", error);
       }
     },
 

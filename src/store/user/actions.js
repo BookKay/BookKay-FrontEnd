@@ -38,7 +38,7 @@ export async function register({ commit }, user) {
   //Adding new user
   response = await api.post("users", user);
   payload = {
-    user: response.data
+    user: response.data,
   };
   let returnedUser = response.data;
 
@@ -86,16 +86,16 @@ export function edit({ commit, state }, user) {
   return new Promise((resolve, reject) => {
     api
       .patch("users/" + state.user.id, user)
-      .then(resp => {
+      .then((resp) => {
         const user = resp.data;
 
         LocalStorage.set("user", user);
 
-        commit("edit", user);
+        commit("setUser", user);
 
         resolve(resp);
       })
-      .catch(err => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -105,7 +105,7 @@ export function deleteUser({ commit, state }, user) {
   return new Promise((resolve, reject) => {
     api
       .delete("users/" + state.user.id, user)
-      .then(resp => {
+      .then((resp) => {
         commit("logout");
         for (const key in Cookies.getAll()) {
           Cookies.remove(key);
@@ -121,8 +121,18 @@ export function deleteUser({ commit, state }, user) {
 
         resolve(resp);
       })
-      .catch(err => {
+      .catch((err) => {
         reject(err);
       });
   });
+}
+
+export async function fetchUser({ commit, state }) {
+  let res = await api.get("users/" + state.user.id, {
+    params: { expand: "~all" },
+  });
+  let user = res.data;
+
+  LocalStorage.set("user", user);
+  commit("setUser", user);
 }

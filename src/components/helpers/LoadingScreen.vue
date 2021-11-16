@@ -1,169 +1,166 @@
 <template>
-  <transition
-    appear
-    enter-active-class="animated slideInDown"
-    leave-active-class="animated slideOutUp"
-  >
-    <div class="loader-wrapper">
-      <div class="pencil">
-        <div class="pencil__ball-point"></div>
-        <div class="pencil__cap"></div>
-        <div class="pencil__cap-base"></div>
-        <div class="pencil__middle"></div>
-        <div class="pencil__eraser"></div>
+  <div class="loader-wrapper">
+    <transition
+      appear
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut"
+    >
+      <div class="loading-text-container" :key="text">
+        <div class="loading-text" :class="loadingTextClasses">
+          <h3>
+            {{ text }}
+          </h3>
+          <div>
+            <div class="clock-loader" :class="clockLoaderClasses"></div>
+          </div>
+        </div>
       </div>
-      <div class="line"></div>
-      <h2 class="text-primary">{{ text }}</h2>
-    </div>
-  </transition>
+    </transition>
+  </div>
 </template>
 
 <script>
+import { useQuasar } from "quasar";
+import { watch, reactive } from "vue";
+
 export default {
   name: "LoadingScreen",
   props: {
     text: {
       type: String,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
+  setup() {
+    const $q = useQuasar();
+
+    const loadingTextClasses = reactive({
+      "loading-text--dark": $q.dark.isActive,
+    });
+
+    const clockLoaderClasses = reactive({
+      "clock-loader--dark": $q.dark.isActive,
+    });
+
+    watch(
+      () => $q.dark.isActive,
+      (val) => {
+        if (val) {
+          loadingTextClasses["loading-text--dark"] = true;
+          clockLoaderClasses["clock-loader--dark"] = true;
+        } else {
+          loadingTextClasses["loading-text--dark"] = false;
+          clockLoaderClasses["clock-loader--dark"] = false;
+        }
+      }
+    );
+
+    return { loadingTextClasses };
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-$pencil-color: #09d56e;
-$pencil-dark: #232123;
-
 .loader-wrapper {
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+}
+
+.loading-text-container {
+  position: fixed;
+  bottom: 0;
+  margin-bottom: 80px;
   width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  z-index: 10;
+}
+
+.loading-text {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+
+  h3 {
+    margin-bottom: 20px;
+  }
+
+  &--dark {
+    color: #fff;
+  }
+}
+
+@media (max-width: 780px) {
+  .loading-text-container {
+    top: 50%;
+    transform: translate(0, -50%);
+    bottom: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading-text h3 {
+    font-size: 2rem;
+  }
+}
+</style>
+<style lang="scss" scoped>
+.clock-loader {
+  --clock-color: black;
+  --clock-width: 4rem;
+  --clock-radius: calc(var(--clock-width) / 2);
+  --clock-minute-length: calc(var(--clock-width) * 0.4);
+  --clock-hour-length: calc(var(--clock-width) * 0.2);
+  --clock-thickness: 0.2rem;
+
+  position: relative;
+  display: inline-flex;
+  //display: flex;
   justify-content: center;
-  background-color: #fbf0d9;
-}
+  align-items: center;
+  width: var(--clock-width);
+  height: var(--clock-width);
+  border: 3px solid var(--clock-color);
+  border-radius: 50%;
 
-.pencil {
-  @keyframes pencil-animation {
-    0% {
-      transform: rotate(135deg);
-    }
-
-    20% {
-      transform: rotate(315deg);
-    }
-
-    45% {
-      transform: translateX(300px) rotate(315deg);
-    }
-
-    55% {
-      transform: translateX(300px) rotate(495deg);
-    }
-
-    100% {
-      transform: rotate(495deg);
-    }
+  &::before,
+  &::after {
+    position: absolute;
+    content: "";
+    top: calc(var(--clock-radius) * 0.25);
+    width: var(--clock-thickness);
+    background: var(--clock-color);
+    border-radius: 10px;
+    transform-origin: center calc(100% - calc(var(--clock-thickness) / 2));
+    animation: spin infinite linear;
   }
 
-  position: relative;
-  width: 300px;
-  height: 40px;
-  transform-origin: center;
-  transform: rotate(135deg);
-  animation: pencil-animation 10s infinite;
-
-  &__ball-point {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: $pencil-color;
-    height: 10px;
-    width: 10px;
-    border-radius: 50px;
+  &::before {
+    height: var(--clock-minute-length);
+    animation-duration: 2s;
   }
 
-  &__cap {
-    position: absolute;
-    left: 0px;
-    top: 50%;
-    transform: translateY(-50%);
-    clip-path: polygon(20% 40%, 100% 0%, 100% 100%, 20% 60%);
-    background: $pencil-dark;
-    width: 12%;
-    height: 100%;
-  }
-
-  &__cap-base {
-    position: absolute;
-    left: 12%;
-    top: 0;
-    height: 100%;
-    width: 20px;
-    background: $pencil-dark;
-  }
-
-  &__middle {
-    position: absolute;
-    left: calc(12% + 20px);
-    top: 0;
-    height: 100%;
-    width: 70%;
-    background: $pencil-color;
-  }
-
-  &__eraser {
-    position: absolute;
-    left: calc(12% + 70% + 20px);
-    top: 0;
-    height: 100%;
-    width: 11%;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background: $pencil-color;
+  &::after {
+    top: calc(var(--clock-radius) * 0.25 + var(--clock-hour-length));
+    height: var(--clock-hour-length);
+    animation-duration: 15s;
   }
 }
 
-.line {
-  @keyframes line-animation {
-    20% {
-      transform: scaleX(0);
-    }
-
-    45% {
-      transform: scaleX(0.6);
-    }
-
-    55% {
-      transform: scaleX(0.6);
-    }
-
-    100% {
-      transform: scaleX(0);
-    }
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
   }
-
-  position: relative;
-  top: 80px;
-  right: 103px;
-  height: 10px;
-  width: 1000px;
-
-  border-radius: 50px;
-  background: $pencil-color;
-  transform: scaleX(0);
-  transform-origin: center;
-  animation: line-animation 10s infinite;
 }
 
-h2 {
-  position: relative;
-  top: 150px;
-  right: 75px;
+//Dark Mode
+.clock-loader {
+  --clock-color: white;
+
+  border-color: var(--clock-color);
+
+  &::before,
+  &::after {
+    background-color: var(--clock-color);
+  }
 }
 </style>

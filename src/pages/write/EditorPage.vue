@@ -125,11 +125,27 @@ export default {
       hotkeys: editorHotkeys,
 
       data: [],
+      query: "",
     };
   },
-  methods: {},
+  watch: {
+    $route: {
+      handler: function (route) {
+        this.editor.destroy();
+        this.makeEditor("editorjs");
+      },
+      deep: true,
+      //immediate: true,
+    },
+  },
+
+  beforeRouteLeave(to, from, next) {
+    //this.editor.destroy();
+    next();
+  },
   mounted() {
     //Initialize the editor
+
     this.makeEditor("editorjs");
 
     //Add hotkeys shortcuts
@@ -166,7 +182,10 @@ export default {
           // console.error(err)
         });
     },
-    makeEditor(id) {
+    async makeEditor(id) {
+      await this.initData();
+
+      //Initializing the editor
       const editor = new EditorJS({
         holder: id,
 
@@ -274,18 +293,80 @@ export default {
 
       this.editor = editor;
     },
-    saveText: debounce(function (text) {
+
+    saveText: debounce(async function (text) {
       try {
-        console.log(text);
-        console.log(JSON. stringify(text))
+        await this.saveData(text);
         this.savedStatus = "saved";
       } catch (err) {
         this.savedStatus = "error";
       }
-
-      console.log("Saved");
     }, 2000),
+
+    async saveData(text) {
+      if (this.query == "manuscript_id") {
+        let payload = {
+          prototype: { text: text },
+          manuscript_id: this.$route.query[this.query],
+        };
+
+        await this.$store.dispatch("write/editPrototype", payload);
+      } else {
+        let payload = {
+          component: { text: text },
+          id: this.$route.query[this.query],
+        };
+
+        let type = this.query.slice(0, -3);
+        payload["type"] = type;
+
+        await this.$store.dispatch("write/editComponent", payload);
+      }
+    },
+
+    async initData() {
+      let component;
+
+      if (this.$route.query.hasOwnProperty("front_matter_id")) {
+        this.query = "front_matter_id";
+        component = await this.$api.get(
+          "front-matters/" + this.$route.query.front_matter_id
+        );
+      } else if (this.$route.query.hasOwnProperty("chapter_id")) {
+        this.query = "chapter_id";
+        component = await this.$api.get(
+          "chapters/" + this.$route.query.chapter_id
+        );
+      } else if (this.$route.query.hasOwnProperty("back_matter_id")) {
+        this.query = "back_matter_id";
+        component = await this.$api.get(
+          "back-matters/" + this.$route.query.back_matter_id
+        );
+      } else if (this.$route.query.hasOwnProperty("manuscript_id")) {
+        this.query = "manuscript_id";
+        let res = await this.$api.get(
+          "manuscripts/" + this.$route.query.manuscript_id
+        );
+
+        component = await this.$api.get(
+          "default-book-prototypes/" + res.data.prototype_id
+        );
+      }
+
+      if (Object.keys(this.$route.query).length != 0) {
+        this.data = component.data.text;
+
+        if (this.data == "" || this.data == null) {
+          this.data = {
+            time: 1634195030352,
+            blocks: [],
+            version: "2.22.2",
+          };
+        }
+      }
+    },
   },
+
   unmounted() {
     document.removeEventListener("keydown", this.nextItem);
   },
@@ -449,15 +530,15 @@ export default {
 }
 
 .editor {
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 30px;
+  margin-bottom: 30px;
   margin-right: auto;
   margin-left: auto;
   padding-top: 30px;
   background: #fff;
   box-shadow: 0 24px 24px -18px rgb(69 104 129 / 33%),
     0 9px 45px 0 rgb(114 119 160 / 12%);
-  width: 90%;
+  width: 93%;
   min-height: 100vh;
   border-radius: 30px;
   transition: 2s;

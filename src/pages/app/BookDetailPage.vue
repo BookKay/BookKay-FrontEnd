@@ -16,7 +16,8 @@
               rounded
               label="Read"
               :ripple="{ early: true }"
-              class="read-btn"
+              class="btn"
+              :to="{ name: 'read-book', query: { book_id: book.id } }"
             />
           </div>
         </div>
@@ -31,7 +32,7 @@
         <quick-link
           :primaryText="`Chapter - ${index + 1}`"
           :secondaryText="chapter.title"
-          @btnClicked="a"
+          @btnClicked="onChapterClicked(chapter)"
           v-for="(chapter, index) in book.chapters"
           :key="chapter.id"
           class="chapter col-6 col-md-5"
@@ -63,7 +64,7 @@
           </q-item>
           <q-item clickable v-ripple>
             <q-item-section
-              >Date Published: {{ book.publish_date }}</q-item-section
+              >Date Published: {{ getPublishDate }}</q-item-section
             >
           </q-item>
         </q-list>
@@ -86,16 +87,58 @@
           style="border-radius: 30px"
         >
           <q-item clickable v-ripple>
-            <q-item-section>No. of Reads:1</q-item-section>
+            <q-item-section
+              >No. of Reads: {{ book.read_history }}</q-item-section
+            >
           </q-item>
           <q-item clickable v-ripple>
-            <q-item-section>No. of Purchases: 2</q-item-section>
+            <q-item-section
+              >No. of Purchases: {{ book.book_purchases }}</q-item-section
+            >
           </q-item>
           <q-item clickable v-ripple>
-            <q-item-section>No. of Reads:3</q-item-section>
+            <q-item-section
+              >No. of Anonymous Reads:
+              {{ book.anonymous_read_history }}</q-item-section
+            >
           </q-item>
         </q-list>
       </linking-box>
+    </div>
+
+    <div class="row bottom-buttons">
+      <q-btn
+        v-if="isPurchased"
+        color="negative"
+        text-color="white"
+        filled
+        rounded
+        label="Delete"
+        :ripple="{ early: true }"
+        class="btn"
+        @click="deleteBook"
+      />
+      <q-btn
+        v-else-if="!isAuthored"
+        color="positive"
+        text-color="white"
+        filled
+        rounded
+        label="Purchase"
+        :ripple="{ early: true }"
+        class="btn"
+        @click="purchaseBook"
+      />
+      <q-btn
+        color="white"
+        text-color="black"
+        filled
+        rounded
+        label="Copy Link"
+        :ripple="{ early: true }"
+        class="btn"
+        @click="copyLink"
+      />
     </div>
   </q-page>
 </template>
@@ -103,28 +146,12 @@
 <script>
 import QuickLink from "src/components/book/QuickLink.vue";
 import LinkingBox from "src/components/helpers/LinkingBox.vue";
+import { copyToClipboard } from "quasar";
 
 export default {
   name: "BookDetailPage",
   components: { QuickLink, LinkingBox },
-  /*mounted() {
-    this.$api.get("books/" + this.$route.params.book_id).then(resp => {
-      const book = resp.data;
 
-      this.book = book;
-      console.log(book);
-    });
-  },*/
-  computed: {
-    getPublishDate() {
-      let date = new Date(this.book.publish_date);
-
-      return date.toDateString();
-    },
-    getPurchasesNum() {
-      return this.book.purchases.length;
-    },
-  },
   data() {
     return {
       book: {
@@ -144,7 +171,146 @@ export default {
           { title: "The Finale", id: "5" },
         ],
       },
+      isPurchased: false,
+      isAuthored: false,
+      domainName: "bookkay.com",
     };
+  },
+
+  computed: {
+    getPublishDate() {
+      let date = new Date(this.book.publish_date);
+
+      return date.toDateString();
+    },
+
+    getShopURL() {
+      let name = this.$route.name.startsWith("app")
+        ? "app-browse-book"
+        : "home-browse-book";
+
+      const resolved = this.$router.resolve({
+        name: name,
+        params: { book_id: this.book.id },
+      });
+
+      return resolved.href;
+    },
+  },
+
+  async mounted() {
+    //Fetch book and its data
+    let response = await this.$api.get("books/" + this.$route.params.book_id, {
+      params: { expand: "~all" },
+    });
+
+    let book = response.data;
+
+    response = await this.$api.get(
+      "default-book-prototypes/" + response.data.prototype_id,
+      {
+        params: {
+          expand: "chapters",
+          fields: "chapters.id,chapters.title,chapters.index",
+        },
+      }
+    );
+
+    let prototype = response.data;
+    book.chapters = prototype.chapters;
+
+    //Fetch book's read history data
+    response = await this.$api.get(
+      `books/${this.$route.params.book_id}/read_history`
+    );
+
+    book.read_history = response.data.read_history;
+
+    response = await this.$api.get(
+      `books/${this.$route.params.book_id}/anonymous_read_history`
+    );
+
+    book.anonymous_read_history = response.data.anonymous_read_history;
+
+    response = await this.$api.get(
+      `books/${this.$route.params.book_id}/purchases_count`
+    );
+
+    book.book_purchases = response.data.book_purchases;
+
+    this.book = book;
+
+    this.checkOwned();
+  },
+
+  methods: {
+    onChapterClicked(chapter) {
+      this.$router.push({
+        name: "read-book",
+        query: { book_id: this.book.id, chapter_id: chapter.id },
+      });
+    },
+
+    checkOwned() {
+      //Checking if the user has authored or purchased the book
+      if (this.$store.getters["user/isLoggedIn"]) {
+        let purchasedBooks =
+          this.$store.getters["user/userProperty"]("books_purchased");
+        let authoredBooks =
+          this.$store.getters["user/userProperty"]("books_authored");
+
+        this.isPurchased = purchasedBooks.some((el) => el.id === this.book.id);
+
+        this.isAuthored = authoredBooks.some((el) => el.id === this.book.id);
+      }
+    },
+
+    async deleteBook() {
+      //Deleting purchase of book
+      await this.$api.delete(`books/${this.$route.params.book_id}/purchase`);
+
+      //Fetching back the user
+      let response = await this.$api.get(
+        "users/" + this.$store.getters["user/userProperty"]("id"),
+        {
+          params: { expand: "~all" },
+        }
+      );
+
+      const user = response.data;
+
+      this.$store.commit("user/setUser", user);
+      this.$q.localStorage.set("user", user);
+
+      //Redirecting to the app page
+      this.$router.push({ name: "app-read" });
+    },
+
+    purchaseBook() {
+      this.$router.push({
+        name: "app-purchase-book",
+        params: { book_id: this.book.id },
+      });
+    },
+
+    async copyLink() {
+      const url = this.domainName + this.getShopURL;
+
+      try {
+        await copyToClipboard(url);
+        this.$q.notify({
+          icon: "done",
+          color: "positive",
+          message: "URL copied to clipboard",
+        });
+      } catch {
+        this.$q.notify({
+          icon: "error",
+          color: "negative",
+          message: "There was an error when copying to clipboard",
+        });
+      }
+    },
   },
 };
 </script>
@@ -218,7 +384,7 @@ img {
   background-repeat: no-repeat;
 }
 
-.read-btn {
+.btn {
   margin-left: auto;
   margin-right: auto;
   width: 20vw;
@@ -246,6 +412,10 @@ img {
 .stats-container {
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.bottom-buttons {
+  margin-top: 50px;
 }
 
 @media (max-width: 480px) {
@@ -277,7 +447,7 @@ img {
     font-size: 12px;
   }
 
-  .read-btn {
+  .btn {
     width: 50vw;
     margin-bottom: 10px;
   }

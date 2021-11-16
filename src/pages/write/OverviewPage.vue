@@ -1,65 +1,18 @@
 <template>
   <q-page>
-    <!-- <div class="col">
-      <chapters-list
-        type="front-matter"
-        v-if="
-          $store.getters['write/manuscriptProperty']('configs')
-            .contain_front_matter
-        "
-      />
-
-      <chapters-list
-        type="chapter"
-        v-if="
-          $store.getters['write/manuscriptProperty']('configs').contain_chapter
-        "
-      />
-      <q-btn
-        v-else
-        class="q-ma-md"
-        label="Edit main body text"
-        icon="edit"
-        color="primary"
-        :to="{
-          name: 'write-editor',
-          query: {
-            manuscript: $store.getters['write/manuscriptProperty']('id')
-          }
-        }"
-      />
-
-      <chapters-list
-        type="back-matter"
-        v-if="
-          $store.getters['write/manuscriptProperty']('configs')
-            .contain_back_matter
-        "
-      />
-
-      <add-chapter-button
-        v-if="
-          $store.getters['write/manuscriptProperty']('configs')
-            .contain_front_matter ||
-            $store.getters['write/manuscriptProperty']('configs')
-              .contain_chapter ||
-            $store.getters['write/manuscriptProperty']('configs')
-              .contain_back_matter
-        "
-      />
-    </div> -->
-
     <div class="book-covers-container">
       <div class="book-covers">
         <image-uploader
-          :img="this.frontCover"
+          :img="frontCover"
+          :url="getFrontCoverURL"
           label="Front Cover"
           class="front-cover"
           @uploaded="uploadHandler"
           @clear="clearHandler"
         />
         <image-uploader
-          :img="this.backCover"
+          :img="backCover"
+          :url="getBackCoverURL"
           label="Back Cover"
           class="back-cover"
           @uploaded="uploadHandler"
@@ -161,17 +114,32 @@ export default {
   components: { PromptDialog, ConfirmDialog, ImageUploader },
   data() {
     return {
-      frontCover: "https://placeimg.com/500/300/nature",
-      backCover: "",
-      title: "The Great Book",
-      description: "A very very interesting book",
-      authorName: "Kevin",
+      // frontCover: "https://placeimg.com/500/300/nature",
+      // backCover: "",
+      // title: "The Great Book",
+      // description: "A very very interesting book",
+      // authorName: "Kevin",
       price: "Free",
 
-      containFrontMatter: true,
-      containChapter: true,
-      containBackMatter: true,
-      confirmDialog: { state: false, label: "", text: "", data: "" },
+      // containFrontMatter:
+      //   this.$store.getters["write/manuscriptProperty"]("configs")
+      //     .contain_front_matter,
+      // containChapter:
+      //   this.$store.getters["write/manuscriptProperty"]("configs")
+      //     .contain_chapter,
+      // containBackMatter:
+      //   this.$store.getters["write/manuscriptProperty"]("configs")
+      //     .contain_back_matter,
+      containFrontMatter: false,
+      containChapter: false,
+      containBackMatter: false,
+      confirmDialog: {
+        state: false,
+        label: "",
+        text: "",
+        data: "",
+        externalData: "",
+      },
 
       titleDialog: false,
       descriptionDialog: false,
@@ -186,11 +154,12 @@ export default {
       if (!val) {
         this.confirmDialog["state"] = true;
         this.confirmDialog["data"] = "containFrontMatter";
+        this.confirmDialog["externalData"] = "contain_front_matter";
         this.confirmDialog["label"] = "Diable Front Matters";
         this.confirmDialog["text"] =
           "Are you sure you want to disable front matters? This will delete all your current front matters.";
       } else {
-        this.toggleConfigs("containFrontMatter", true);
+        this.toggleConfigs({ contain_front_matter: true });
       }
     },
 
@@ -198,11 +167,12 @@ export default {
       if (!val) {
         this.confirmDialog["state"] = true;
         this.confirmDialog["data"] = "containChapter";
+        this.confirmDialog["externalData"] = "contain_chapter";
         this.confirmDialog["label"] = "Diable Chapters";
         this.confirmDialog["text"] =
           "Are you sure you want to disable chapters? This will delete all your current chapters.";
       } else {
-        this.toggleConfigs("containChapter", true);
+        this.toggleConfigs({ contain_chapter: true });
       }
     },
 
@@ -210,31 +180,70 @@ export default {
       if (!val) {
         this.confirmDialog["state"] = true;
         this.confirmDialog["data"] = "containBackMatter";
+        this.confirmDialog["externalData"] = "contain_back_matter";
         this.confirmDialog["label"] = "Diable Back Matters";
         this.confirmDialog["text"] =
           "Are you sure you want to disable back matters? This will delete all your current back matters.";
       } else {
-        this.toggleConfigs("containBackMatter", true);
+        this.toggleConfigs({ contain_back_matter: true });
       }
+    },
+    "$store.state.write.manuscript": {
+      handler: function (manuscript) {
+        if (manuscript != null) {
+          this.containFrontMatter =
+            this.$store.getters["write/manuscriptProperty"](
+              "configs"
+            ).contain_front_matter;
+
+          this.containChapter =
+            this.$store.getters["write/manuscriptProperty"](
+              "configs"
+            ).contain_chapter;
+
+          this.containBackMatter =
+            this.$store.getters["write/manuscriptProperty"](
+              "configs"
+            ).contain_back_matter;
+        }
+      },
+      //deep: true,
+      //immediate: true,
     },
   },
 
   computed: {
-    // frontCover() {
-    //   return this.$store.getters["write/manuscriptProperty"]("front_cover");
-    // },
-    // backCover() {
-    //   return this.$store.getters["write/manuscriptProperty"]("back_cover");
-    // },
-    // title() {
-    //   return this.$store.getters["write/manuscriptProperty"]("title");
-    // },
-    // description() {
-    //   return this.$store.getters["write/manuscriptProperty"]("description");
-    // },
-    // authorName() {
-    //   return this.$store.getters["users/userProperty"]("author_name");
-    // },
+    frontCover() {
+      return this.$store.getters["write/manuscriptProperty"]("front_cover");
+    },
+    backCover() {
+      return this.$store.getters["write/manuscriptProperty"]("back_cover");
+    },
+    title() {
+      return this.$store.getters["write/manuscriptProperty"]("title");
+    },
+    description() {
+      return this.$store.getters["write/manuscriptProperty"]("description");
+    },
+    authorName() {
+      return this.$store.getters["user/userProperty"]("author_name");
+    },
+
+    getFrontCoverURL() {
+      let url = `${this.$api.defaults.baseURL}manuscripts/${this.$store.getters[
+        "write/manuscriptProperty"
+      ]("id")}/front_cover`;
+
+      return url;
+    },
+
+    getBackCoverURL() {
+      let url = `${this.$api.defaults.baseURL}manuscripts/${this.$store.getters[
+        "write/manuscriptProperty"
+      ]("id")}/back_cover`;
+
+      return url;
+    },
 
     fields() {
       return [
@@ -308,7 +317,7 @@ export default {
               (val !== null && val !== "") ||
               `Please type in ${this.title} to confirm`,
             (val) =>
-              val == this.title || `Pleaseee type in ${this.title} to confirm`,
+              val == this.title || `Please type in ${this.title} to confirm`,
           ],
           confirmHandler: this.confirmDelete,
         },
@@ -329,12 +338,33 @@ export default {
       ];
     },
   },
+
   methods: {
     uploadHandler() {},
 
-    async clearHandler() {
+    async clearHandler(label) {
+      let key;
+      if (label == "Front Cover") {
+        key = "front_cover";
+      } else if (label == "Back Cover") {
+        key = "back_cover";
+      }
+
+      let payload = {};
+      payload[key] = "";
+
+      let imgPath = this.$store.getters["write/manuscriptProperty"](key);
+
       try {
-        await this.$store.dispatch("write/editManuscript", { front_cover: "" });
+        //Deleting the image
+        await this.$api.delete(
+          `manuscripts/${this.$store.getters["write/manuscriptProperty"](
+            "id"
+          )}/${key}`,
+          { params: { img: imgPath } }
+        );
+        //Emptying the image url of manuscript
+        await this.$store.dispatch("write/editManuscript", payload);
       } catch {
         this.$q.notify({
           color: "negative",
@@ -362,21 +392,59 @@ export default {
     },
 
     publish() {
-      this.publishDialog = true;
+      let errMsg = "";
+
+      let front_cover =
+        this.$store.getters["write/manuscriptProperty"]("front_cover");
+
+      let back_cover =
+        this.$store.getters["write/manuscriptProperty"]("back_cover");
+
+      //Checking for validation errors
+      if (front_cover == "") {
+        errMsg = "Please add front cover of your book";
+      } else if (back_cover == "") {
+        errMsg = "Please add back cover of your book";
+      }
+
+      //If there is error, the user is notified
+      if (errMsg != "") {
+        this.$q.notify({
+          color: "negative",
+          position: "top",
+          message: errMsg,
+          icon: "error",
+        });
+      } else {
+        this.publishDialog = true;
+      }
     },
 
-    confirmConfigs(result) {
+    async confirmConfigs(result) {
+      //close the dialog
       this.confirmDialog.state = false;
+      console.log(this.confirmDialog.externalData);
       if (result) {
-        this.toggleConfigs(config, true);
+        let configs = {};
+        configs[this.confirmDialog.externalData] = false;
+
+        let result = await this.toggleConfigs(configs);
+        if (!result) {
+          //Toggle back to true if there is error
+          this[this.confirmDialog.data] = true;
+        }
+
+        this.deleteComponents(this.confirmDialog.externalData);
       } else {
+        //Toggle back to true if user cancel it
         this[this.confirmDialog.data] = true;
       }
     },
 
-    async toggleConfigs(config, result) {
+    async toggleConfigs(configs) {
       try {
-        await this.$store.dispatch("write/editConfigs", this.configs);
+        await this.$store.dispatch("write/editConfigs", configs);
+        return true;
       } catch {
         this.$q.notify({
           color: "negative",
@@ -384,6 +452,34 @@ export default {
           message: "Edit unsuccessful",
           icon: "error",
         });
+        return false;
+      }
+    },
+
+    async deleteComponents(closedConfig) {
+      let component = "";
+      switch (closedConfig) {
+        case "contain_front_matter":
+          component = "front_matter";
+          break;
+        case "contain_chapter":
+          component = "chapter";
+          break;
+        case "contain_back_matter":
+          component = "back_matter";
+          break;
+        default:
+        // code block
+      }
+
+      let payload = { type: component };
+      let components =
+        this.$store.getters["write/manuscriptProperty"](component);
+      console.log(components);
+
+      for (const component of components) {
+        payload.id = component.id;
+        await this.$store.dispatch("write/deleteComponent", payload);
       }
     },
 
@@ -425,6 +521,29 @@ export default {
       this.deleteDialog = false;
       if (result) {
         try {
+          //Deleting manuscript
+          await this.$api.delete(
+            `manuscripts/${this.$store.getters["write/manuscriptProperty"](
+              "id"
+            )} `
+          );
+
+          //Getting the updated user
+          let response = await this.$api.get(
+            "users/" + this.$store.getters["user/userProperty"]("id"),
+            {
+              params: { expand: "~all" },
+            }
+          );
+
+          let user = response.data;
+
+          //Saving the user
+          this.$store.commit("user/setUser", user);
+
+          this.$router.replace({
+            name: "app-write",
+          });
         } catch {
           this.$q.notify({
             color: "negative",
@@ -440,6 +559,8 @@ export default {
       this.publishDialog = false;
       if (result) {
         try {
+          await this.$store.dispatch("write/publishBook");
+          this.$router.push({ name: "app-read" });
         } catch {
           this.$q.notify({
             color: "negative",

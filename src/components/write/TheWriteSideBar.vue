@@ -2,7 +2,7 @@
   <side-bar-contents
     :contents="navigations"
     @clicked="handleClick"
-    @editted="handleEdit"
+    @edited="handleEdit"
     @deleted="handleDelete"
   />
 
@@ -36,9 +36,16 @@ import { editorNavigations } from "src/data/EditorNavigations.js";
 export default {
   name: "TheWriteSideBar",
   components: { SideBarContents, PromptDialog, ConfirmDialog },
+  props: {
+    isReady: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      navigations: editorNavigations,
+      //navigations: editorNavigations,
+      navigations: [],
       frontMatterDialog: false,
       chapterDialog: false,
       backMatterDialog: false,
@@ -122,17 +129,39 @@ export default {
       deep: true,
       //immediate: true,
     },
+
+    "$props.isReady": {
+      handler: function (isReady) {
+        if (isReady) {
+          this.navigations = this.initNavigations(
+            this.$store.state.write.manuscript
+          );
+          this.syncActive(this.$route);
+        }
+      },
+    },
+
+    "$store.state.write.manuscript": {
+      handler: function (route) {
+        this.navigations = this.initNavigations(
+          this.$store.state.write.manuscript
+        );
+        this.syncActive(route);
+      },
+      deep: true,
+      //immediate: true,
+    },
   },
   mounted() {
     //Initialising the navigations
-    //this.navigations = this.initNavigations(this.$store.state.write.manuscript);
+
     let testManuscript = {
       id: "ab231ad",
       title: "Ze Book",
       configs: {
-        contain_front_matters: true,
-        contain_chapters: true,
-        contain_back_matters: false,
+        contain_front_matter: true,
+        contain_chapter: true,
+        contain_back_matter: false,
       },
       front_matters: [
         {
@@ -157,8 +186,16 @@ export default {
         },
       ],
     };
-    this.navigations = this.initNavigations(testManuscript);
-    this.syncActive(this.$route);
+    // this.navigations = this.initNavigations(testManuscript);
+    // this.syncActive(this.$route);
+
+    if (this.$props.isReady) {
+      this.navigations = this.initNavigations(
+        this.$store.state.write.manuscript
+      );
+
+      this.syncActive(this.$route);
+    }
   },
 
   methods: {
@@ -215,11 +252,21 @@ export default {
         //Sending delete request to api through vuex
         try {
           await this.$store.dispatch("write/deleteComponent", payload);
+
+          //Update the navigations tree
+          this.navigations = this.initNavigations(
+            this.$store.state.write.manuscript
+          );
+          this.syncActive(this.$route);
+
           //If deleted component is the active route redirect to overview page
           if (this.componentToDelete.active) {
             this.$router.replace({
               name: "write-overview",
-              params: { manuscript_id: "123456" },
+              params: {
+                manuscript_id:
+                  this.$store.getters["write/manuscriptProperty"]("id"),
+              },
             });
           }
         } catch {
@@ -230,15 +277,12 @@ export default {
             icon: "error",
           });
         }
-
-        //this.navigations[3].data.splice(1, 1);
       }
     },
 
     handleEdit(content) {
       this.componentToEdit = content;
-      console.log(this.componentToEdit);
-      console.log(this.promptDialogs[3]);
+
       this.editDialog = true;
     },
 
@@ -257,6 +301,12 @@ export default {
 
         try {
           await this.$store.dispatch("write/editComponent", payload);
+
+          //Updated the navigations tree
+          this.navigations = this.initNavigations(
+            this.$store.state.write.manuscript
+          );
+          this.syncActive(this.$route);
         } catch {
           this.$q.notify({
             color: "negative",
@@ -269,6 +319,8 @@ export default {
     },
 
     initNavigations(manuscript) {
+      let self = this;
+
       let navigations = [
         {
           data: "Overview",
@@ -290,13 +342,13 @@ export default {
         },
       ];
 
-      if (manuscript.configs.contain_front_matters) {
+      if (manuscript.configs.contain_front_matter) {
         //Adding in the front matters
         let data = initComponents("front_matters", "Front Matter");
         navigations.push(data);
       }
 
-      if (manuscript.configs.contain_chapters) {
+      if (manuscript.configs.contain_chapter) {
         //Adding in the front matters
         let data = initComponents("chapters", "Chapter");
         navigations.push(data);
@@ -313,7 +365,7 @@ export default {
         navigations.push(payload);
       }
 
-      if (manuscript.configs.contain_back_matters) {
+      if (manuscript.configs.contain_back_matter) {
         //Adding in the back matters
         let data = initComponents("back_matters", "Back Matter");
         navigations.push(data);
@@ -322,17 +374,20 @@ export default {
       return navigations;
 
       function initComponents(type, name) {
+        //Copying the components from manuscript and ordering them by index
+        let originalComponents = [...manuscript[type]];
+
+        originalComponents = originalComponents.sort(self.compareIndex);
+
         //Looping through components and adding them to navigations
         let components = [];
 
-        for (let i = 0; i < manuscript[type].length; i++) {
-          let component = manuscript[type][i];
+        for (let i = 0; i < originalComponents.length; i++) {
+          let component = originalComponents[i];
           let data;
-          if (i == 0) {
-            data = `${name}`;
-          } else {
-            data = `${name} - ${i}`;
-          }
+
+          data = `${name} - ${i + 1}`;
+
           let payload = {
             data: data,
             caption: component.title,
@@ -369,6 +424,17 @@ export default {
 
         return data;
       }
+    },
+
+    //Fuctions to order front matters, chapters and back matters
+    compareIndex(a, b) {
+      if (a.index < b.index) {
+        return -1;
+      }
+      if (a.index > b.index) {
+        return 1;
+      }
+      return 0;
     },
 
     //Method to get currently active navigations
@@ -412,6 +478,7 @@ export default {
               return obj.data == "Main Text";
             });
             mainText.active = true;
+
             break;
           case "front_matter_id":
             components = this.navigations.find((obj) => {
@@ -439,7 +506,7 @@ export default {
             break;
           case "back_matter_id":
             components = this.navigations.find((obj) => {
-              return obj.name == "Chapters";
+              return obj.name == "Back Matters";
             });
             component = components.data.find((obj) => {
               return obj.id == id;
@@ -449,7 +516,6 @@ export default {
             break;
         }
       }
-      console.log(this.navigations);
     },
 
     //Methods used by prompt dialogs to add component
@@ -459,36 +525,62 @@ export default {
         this.addComponent(title, "Front Matter");
       }
     },
+
     addChapter(title) {
       this.chapterDialog = false;
       if (title) {
         this.addComponent(title, "Chapter");
       }
     },
+
     addBackMatter(title) {
       this.backMatterDialog = false;
       if (title) {
         this.addComponent(title, "Back Matter");
       }
     },
-    addComponent(title, type) {
+
+    async addComponent(title, type) {
+      let text = {
+        time: 1634195030352,
+        blocks: [
+          {
+            id: "mEx28VKFcm",
+            type: "heading",
+            data: {
+              text: title,
+              level: 3,
+            },
+            tunes: { alignment: { alignment: "center" } },
+          },
+        ],
+        version: "2.22.2",
+      };
+
       //Mixin for adding new front matter, chapter or back matter
       const payload = {
-        component: { title: title },
+        component: {
+          title: title,
+          text: text,
+          index: this.$store.getters["write/manuscriptProperty"](
+            type.toLowerCase().replace(" ", "_") + "s"
+          ).length,
+          component_owner_id:
+            this.$store.getters["write/manuscriptProperty"](
+              "component_owner_id"
+            ),
+        },
         type: type,
       };
 
-      this.$store
-        .dispatch("write/addComponent", payload /*, { root: true }*/)
-        .then((data) => {})
-        .catch((error) => {
-          this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: error.response.data.message || "Something went wrong",
-            icon: "error",
-          });
-        });
+      await this.$store.dispatch("write/addComponent", payload);
+
+      if (this.$props.isReady) {
+        this.navigations = this.initNavigations(
+          this.$store.state.write.manuscript
+        );
+        this.syncActive(this.$route);
+      }
     },
   },
 };

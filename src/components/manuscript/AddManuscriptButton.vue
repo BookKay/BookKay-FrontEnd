@@ -12,7 +12,7 @@
     </q-page-sticky>
 
     <q-dialog v-model="add_manuscript" ref="manuscriptDialog" persistent>
-      <q-card style="width: 700px; max-width: 80vw;">
+      <q-card style="width: 700px; max-width: 80vw">
         <q-card-section>
           <div class="text-h6">Title</div>
         </q-card-section>
@@ -24,8 +24,9 @@
             v-model="manuscript.title"
             placeholder="Title of your book"
             :rules="[
-              val => (val !== null && val !== '') || 'Title must not be blank',
-              val => val.length <= 100 || 'Title must be smaller than 100'
+              (val) =>
+                (val !== null && val !== '') || 'Title must not be blank',
+              (val) => val.length <= 100 || 'Title must be smaller than 100',
             ]"
             autofocus
             autogrow
@@ -35,7 +36,7 @@
         <q-card-section class="row">
           <book-type-choices
             class="col-md-3"
-            v-for="bookType in this.bookTypes"
+            v-for="bookType in bookTypes"
             :bookType="bookType"
             :key="bookType.id"
             @typeConfirmed="confirmType"
@@ -74,7 +75,7 @@ export default {
           "https://res.cloudinary.com/bookkay/image/upload/v1624466524/BookKay/Temp%20Cover/Temp_Cover.png",
         author_id: this.$store.getters["user/userProperty"]("id"),
         price: 0.0,
-        text: ""
+        text: "",
       },
 
       configs: {},
@@ -90,10 +91,10 @@ export default {
             contain_chapter: false,
             contain_front_matter: false,
             contain_back_matter: false,
-            auto_add_title: true
+            auto_add_title: true,
           },
           hint: "A simple writing with no chapters and characters",
-          chosen: false
+          chosen: false,
         },
         {
           id: "2",
@@ -103,10 +104,10 @@ export default {
             contain_chapter: true,
             contain_front_matter: false,
             contain_back_matter: false,
-            auto_add_title: true
+            auto_add_title: true,
           },
           hint: "A large long novels with several chapters.",
-          chosen: false
+          chosen: false,
         },
         {
           id: "3",
@@ -116,13 +117,12 @@ export default {
             contain_chapter: true,
             contain_front_matter: true,
             contain_back_matter: true,
-            auto_add_title: true
+            auto_add_title: true,
           },
-          hint:
-            "A large long novels with several front matters, chapters and back matters. Character drafting is automatically switched on.",
-          chosen: false
-        }
-      ]
+          hint: "A large long novels with several front matters, chapters and back matters. Character drafting is automatically switched on.",
+          chosen: false,
+        },
+      ],
     };
   },
   methods: {
@@ -133,7 +133,7 @@ export default {
         this.$q.notify({
           icon: "error",
           color: "negative",
-          message: "Please select the book type"
+          message: "Please select the book type",
         });
       }
 
@@ -163,7 +163,7 @@ export default {
       }
 
       this.configs = configs;
-    }
-  }
+    },
+  },
 };
 </script>

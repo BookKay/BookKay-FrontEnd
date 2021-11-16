@@ -79,8 +79,8 @@
             dense
             v-model="new_name"
             :rules="[
-              val => (val !== null && val !== '') || 'Please type the name',
-              val => val.length <= 100 || 'Name must be smaller than 100'
+              (val) => (val !== null && val !== '') || 'Please type the name',
+              (val) => val.length <= 100 || 'Name must be smaller than 100',
             ]"
             autofocus
             autogrow
@@ -113,8 +113,8 @@
             dense
             v-model="new_personality"
             :rules="[
-              val =>
-                (val !== null && val !== '') || 'Please type the personality'
+              (val) =>
+                (val !== null && val !== '') || 'Please type the personality',
             ]"
             autofocus
             autogrow
@@ -147,8 +147,8 @@
             dense
             v-model="new_description"
             :rules="[
-              val =>
-                (val !== null && val !== '') || 'Please type the description'
+              (val) =>
+                (val !== null && val !== '') || 'Please type the description',
             ]"
             autofocus
             autogrow
@@ -181,7 +181,8 @@
             dense
             v-model="new_storyline"
             :rules="[
-              val => (val !== null && val !== '') || 'Please type the storyline'
+              (val) =>
+                (val !== null && val !== '') || 'Please type the storyline',
             ]"
             autofocus
             autogrow
@@ -203,7 +204,7 @@
 
     <!-- All Dialog -->
     <q-dialog v-model="edit_all" ref="allDialog" persistent>
-      <q-card style="width: 700px; max-width: 80vw;">
+      <q-card style="width: 700px; max-width: 80vw">
         <q-card-section>
           <div class="text-h6">Name</div>
         </q-card-section>
@@ -214,8 +215,8 @@
             dense
             v-model="new_name"
             :rules="[
-              val => (val !== null && val !== '') || 'Please type the name',
-              val => val.length <= 100 || 'Name must be smaller than 100'
+              (val) => (val !== null && val !== '') || 'Please type the name',
+              (val) => val.length <= 100 || 'Name must be smaller than 100',
             ]"
             autofocus
             autogrow
@@ -233,8 +234,8 @@
             dense
             v-model="new_personality"
             :rules="[
-              val =>
-                (val !== null && val !== '') || 'Please type the personality'
+              (val) =>
+                (val !== null && val !== '') || 'Please type the personality',
             ]"
             autogrow
             @keydown.enter.prevent="$refs.descriptionInput.focus()"
@@ -251,8 +252,8 @@
             dense
             v-model="new_description"
             :rules="[
-              val =>
-                (val !== null && val !== '') || 'Please type the description'
+              (val) =>
+                (val !== null && val !== '') || 'Please type the description',
             ]"
             autogrow
             @keydown.enter.prevent="$refs.storylineInput.focus()"
@@ -269,7 +270,8 @@
             dense
             v-model="new_storyline"
             :rules="[
-              val => (val !== null && val !== '') || 'Please type the storyline'
+              (val) =>
+                (val !== null && val !== '') || 'Please type the storyline',
             ]"
             autogrow
             @keydown.enter.prevent="confirm('all')"
@@ -324,8 +326,8 @@ export default {
   props: {
     character: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -339,13 +341,12 @@ export default {
       edit_description: false,
       edit_storyline: false,
       edit_all: false,
-      confirm_delete: false
+      confirm_delete: false,
     };
   },
   methods: {
     confirm(property) {
       let data = {};
-      console.log(property);
 
       switch (property) {
         case "name":
@@ -440,18 +441,18 @@ export default {
       const payload = {
         chapter: data,
         id: this.$props.character.id,
-        type: "character"
+        type: "character",
       };
 
       this.$store
         .dispatch("write/editChapter", payload /*, { root: true }*/)
-        .then(data => {})
-        .catch(error => {
+        .then((data) => {})
+        .catch((error) => {
           this.$q.notify({
             color: "negative",
             position: "top",
             message: error.response.data.message || "Something went wrong",
-            icon: "error"
+            icon: "error",
           });
         });
     },
@@ -460,8 +461,8 @@ export default {
       this.$emit("deleted", this.character);
 
       this.$refs.deleteDialog.hide();
-    }
-  }
+    },
+  },
 };
 </script>
 

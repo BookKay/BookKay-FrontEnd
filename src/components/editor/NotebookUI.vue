@@ -27,7 +27,7 @@
         customStyle ? customStyle : { color: color, 'font-family': fontStyle }
       "
       paragraph-tag="p"
-      @paste.native="evt => pasteCapture(evt)"
+      @paste="(evt) => pasteCapture(evt)"
       @input="inputChanged"
       spellcheck="false"
       :definitions="{
@@ -35,11 +35,11 @@
           tip: 'Save your work',
           icon: 'save',
           label: 'Save',
-          handler: saveText
+          handler: saveText,
         },
         strike: {
-          key: 9
-        }
+          key: 9,
+        },
       }"
       :toolbar="[
         ['bold', 'italic', 'strike', 'underline', 'link'],
@@ -48,18 +48,18 @@
             label: $q.lang.editor.formatting,
             icon: $q.iconSet.editor.formatting,
             list: 'no-icons',
-            options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'code']
-          }
+            options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'code'],
+          },
         ],
         [
           {
             label: $q.lang.editor.align,
             icon: $q.iconSet.editor.align,
-            options: ['left', 'center', 'right', 'justify']
-          }
+            options: ['left', 'center', 'right', 'justify'],
+          },
         ],
         ['undo', 'redo'],
-        ['save']
+        ['save'],
       ]"
       v-on:keydown.ctrl.s.prevent.stop="saveText"
     >
@@ -82,38 +82,34 @@ export default {
       default: "EmptyLined",
       validator(x) {
         return ["EmptyLined", "EmptyLinedColored", "Texture"].indexOf(x) !== -1;
-      }
+      },
     },
     color: {
       type: String,
-      default: "mediumblue"
+      default: "mediumblue",
     },
     fontStyle: {
       type: String,
-      default: `"Handlee", cursive`
+      default: `"Handlee", cursive`,
     },
     placeholder: { default: "Write note here" },
     content: { default: "" },
     customStyle: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   methods: {
     inputChanged(val) {
       this.$emit("input", val);
     },
     saveText(val) {
-      
       this.$emit("save", this.$props.content);
       //to ensure work has been saved in case the initial request had been ignored due to pending request.
-      console.log(this.$props.content);
-
-      console.log(this.$q.lang.editor);
 
       this.$q.notify({
         message: "Your work has been saved.",
         icon: "save",
-        color: "positive"
+        color: "positive",
       });
     },
     pasteCapture(evt) {
@@ -134,8 +130,8 @@ export default {
         }
         onPasteStripFormattingIEPaste = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss"></style>

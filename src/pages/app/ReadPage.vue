@@ -3,31 +3,31 @@
     <div class="heading">
       <h1>My Library</h1>
     </div>
-    <div v-if="books.length > 0">
+    <div v-if="purchasedBooks.length > 0">
       <h2 class="sub-heading">What would you like to read <b>today?</b></h2>
       <simple-book-list
-        :books="books"
+        :books="purchasedBooks"
         primaryLabel="Read"
         @primaryClicked="onPrimaryClicked"
         secondaryLabel="Details"
         @secondaryClicked="linkToDetails"
       />
     </div>
-    <div>
+    <div v-if="Object.keys(bestOfTheDay).length">
       <h2 class="sub-heading">Best of the <b>day!</b></h2>
       <div class="row">
         <stand-out-card
-          :book="books[0]"
+          :book="bestOfTheDay"
           btnLabel="Read"
-          @btnClicked="console.log('clicked')"
+          @btnClicked="onPrimaryClicked"
           class="col"
         />
         <theme-image class="col" :images="images" v-if="!$q.screen.lt.md" />
       </div>
     </div>
-    <div>
+    <div v-if="Object.keys(lastRead).length">
       <h2 class="sub-heading last-read">Continue <b>reading...</b></h2>
-      <quick-book-link :book="books[0]" @btnClicked="a" />
+      <quick-book-link :book="lastRead" @btnClicked="onPrimaryClicked" />
     </div>
     <div class="row write-link">
       <linking-box
@@ -52,7 +52,23 @@
         text="Try browsing our store"
         img="svg/bookshelves.svg"
         label="Let's shop!"
-        @btnClicked="a"
+        @btnClicked="
+          $router.push({
+            name: 'app-store-list',
+          })
+        "
+      />
+    </div>
+    <div v-if="authoredBooks.length > 0">
+      <h2 class="sub-heading">
+        Feels like reading your published <b>books?</b>
+      </h2>
+      <simple-book-list
+        :books="authoredBooks"
+        primaryLabel="Read"
+        @primaryClicked="onPrimaryClicked"
+        secondaryLabel="Details"
+        @secondaryClicked="linkToDetails"
       />
     </div>
   </q-page>
@@ -75,7 +91,9 @@ export default {
   },
   name: "AppPage",
   beforeMount() {
-    this.computePurchases();
+    //this.computePurchases();
+    this.fetchBestOfTheDay();
+    this.fetchLastRead();
   },
   computed: {
     alignment() {
@@ -83,18 +101,26 @@ export default {
     },
     authoredBooks() {
       let books = this.$store.getters["user/userProperty"]("books_authored");
-      for (var i = 0; i < books.length; i++) {
-        let book = books[i];
-        book.author = {};
-        book.author.author_name =
-          this.$store.getters["user/userProperty"]("author_name");
-      }
+
+      // for (var i = 0; i < books.length; i++) {
+      //   let book = books[i];
+      //   book.author = {};
+      //   book.author.author_name =
+      //     this.$store.getters["user/userProperty"]("author_name");
+      // }
+      return books;
+    },
+    purchasedBooks() {
+      let books = [
+        ...this.$store.getters["user/userProperty"]("books_purchased"),
+      ];
+
       return books;
     },
   },
   data() {
     return {
-      purchasedBooks: [],
+      //purchasedBooks: [],
       isActive: false,
       images: [
         "svg/girl_reading.svg",
@@ -147,74 +173,42 @@ export default {
           id: "1115",
         },
       ],
+
+      bestOfTheDay: {},
+      lastRead: {},
     };
   },
 
   methods: {
-    computePurchases() {
-      const books = this.$store.getters["user/userProperty"]("books_purchased");
-      let outputBooks = [];
+    async fetchBestOfTheDay() {
+      let response = await this.$api.get("books/best_of_the_day", {
+        params: { fields: "id,title,author_name,description,front_cover" },
+      });
 
-      for (var i = 0; i < books.length; i++) {
-        let book = books[i].book;
-        this.$api.get("users/" + book.author_id).then((resp) => {
-          const user = resp.data;
-
-          book.author = {};
-          book.author.author_name = user.author_name;
-          outputBooks.push(book);
-        });
-      }
-
-      this.purchasedBooks = outputBooks;
+      this.bestOfTheDay = response.data[0];
     },
+
+    async fetchLastRead() {
+      let response = await this.$api.get("books/last_read", {
+        params: { fields: "id,title,author_name,front_cover" },
+      });
+
+      this.lastRead = response.data;
+      console.log(response);
+    },
+
+    onPrimaryClicked(book) {
+      this.$router.push({
+        name: "read-book",
+        query: { book_id: book.id },
+      });
+    },
+
     linkToDetails(book) {
-      console.log(book);
       this.$router.push({
         name: "app-browse-book",
         params: { book_id: book.id },
       });
-    },
-    deleteBook(book) {
-      if (
-        book.author.author_name ==
-        this.$store.getters["user/userProperty"]("author_name")
-      ) {
-        this.$q.notify({
-          color: "negative",
-          position: "top",
-          message:
-            "Sorry, you cannot the delete the books that you have published.",
-          icon: "error",
-        });
-      } else {
-        const params = new URLSearchParams([
-          ["book_id", book.id],
-          ["user_id", this.$store.getters["user/userProperty"]("id")],
-        ]);
-        this.$api
-          .get("book_purchases", { params })
-          .then((resp) => {
-            const purchase = resp.data;
-
-            this.$api.delete("book_purchases/" + purchase.id).then((resp) => {
-              const user = resp.data;
-
-              this.$store.commit("user/setUser", user);
-              this.$q.localStorage.set("user", user);
-
-              this.computePurchases();
-            });
-          })
-          .catch((error) => {
-            this.$q.notify({
-              color: "negative",
-              position: "top",
-              message: error.response.data.message || "Something went wrong",
-              icon: "error",
-            });
-          });
-      }
     },
   },
 };

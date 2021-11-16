@@ -29,8 +29,9 @@ export async function addComponent({ commit, state }, payload) {
 
   //Adding new component and requesting back the new prototype
   response = await api.post(path, data);
+
   response = await api.get(
-    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    "default-book-prototypes/" + state.manuscript.prototype_id,
     {
       params: { expand: "~all" },
     }
@@ -57,7 +58,7 @@ export async function getChapter({ commit, state }, payload) {
 
   response = await api.get(path);
   response = await api.get(
-    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    "default-book-prototypes/" + state.manuscript.prototype_id,
     {
       params: { expand: "~all" },
     }
@@ -78,15 +79,15 @@ export async function editComponent({ commit, state }, payload) {
   const id = payload.id;
 
   let path = type.replaceAll("_", "-") + "s/" + id;
-  state.loading = true;
 
   //Send patch request for the component and retrieve back updated prototype
   //Then, update the prototype from vuex and session storage
   let response;
 
   response = await api.patch(path, component);
+
   response = await api.get(
-    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    "default-book-prototypes/" + state.manuscript.prototype_id,
     {
       params: { expand: "~all" },
     }
@@ -112,7 +113,7 @@ export async function deleteComponent({ commit, state }, payload) {
 
   response = await api.delete(path);
   response = await api.get(
-    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    "default-book-prototypes/" + state.manuscript.prototype_id,
     {
       params: { expand: "~all" },
     }
@@ -130,13 +131,14 @@ export async function editConfigs({ commit, state }, configs) {
   //Update the configs and retrieve back the updated prototype
   //Then, update the prototype from vuex and session storage
   let response;
+  let configs_id = state.manuscript.configs.id;
 
   response = await api.patch(
-    "basic-book-prototypes-configs/" + configs.id,
+    "default-book-prototypes-configs/" + configs_id,
     configs
   );
   response = await api.get(
-    "basic-book-prototypes/" + state.manuscript.prototype_id,
+    "default-book-prototypes/" + state.manuscript.prototype_id,
     {
       params: { expand: "~all" },
     }
@@ -156,11 +158,29 @@ export async function addManuscript({ commit, rootGetters }, manuscript) {
 
   //Adding new manuscript
   response = await api.post("manuscripts", manuscript);
+  let manuscript_response = response;
 
   payload = { manuscript_id: response.data.id, configs: manuscript.configs };
 
   //Attaching the prototype on the manuscript
-  response = await api.post("basic-book-prototypes", payload);
+  response = await api.post("default-book-prototypes", payload);
+
+  let owner_id = response.data.component_owner_id;
+
+  for (const front_matter of manuscript.front_matters) {
+    front_matter.component_owner_id = owner_id;
+    await api.post("front-matters", front_matter);
+  }
+
+  for (const chapter of manuscript.chapters) {
+    chapter.component_owner_id = owner_id;
+    await api.post("chapters", chapter);
+  }
+
+  for (const back_matter of manuscript.back_matters) {
+    back_matter.component_owner_id = owner_id;
+    await api.post("back-matters", back_matter);
+  }
 
   //Requesting updated user
   response = await api.get("users/" + rootGetters["user/userProperty"]("id"), {
@@ -173,13 +193,14 @@ export async function addManuscript({ commit, rootGetters }, manuscript) {
   commit("user/setUser", user, { root: true });
   LocalStorage.set("user", user);
 
-  return response;
+  return manuscript_response;
 }
 
 export async function editManuscript({ commit, state }, manuscript) {
   //Update the configs and retrieve back the updated prototype
   //Then, update the prototype from vuex and session storage
   let response;
+  console.log("action", manuscript);
 
   response = await api.patch("manuscripts/" + state.manuscript.id, manuscript);
   response = await api.get("manuscripts/" + state.manuscript.id, {
@@ -194,9 +215,38 @@ export async function editManuscript({ commit, state }, manuscript) {
   return response;
 }
 
+export async function editPrototype({ commit, state }, payload) {
+  //Update the configs and retrieve back the updated prototype
+  //Then, update the prototype from vuex and session storage
+  let response;
+  let prototype = payload["prototype"];
+  let manuscript_id = payload["manuscript_id"];
+
+  //Getting prototype id
+  response = await api.get("manuscripts/" + manuscript_id, {
+    params: { fields: "prototype_id" },
+  });
+  let prototype_id = response.data.prototype_id;
+
+  //Patching the prototype
+  response = await api.patch(
+    "default-book-prototypes/" + prototype_id,
+    prototype
+  );
+
+  // response = await this.$api.get("default-book-prototypes/" + prototype_id, {
+  //   params: { expand: "~all" },
+  // });
+
+  // commit("updatePrototype", response.data);
+
+  // SessionStorage.set("currentManuscript", state.manuscript);
+
+  return response;
+}
+
 export function uploadMedia({ commit, state }, formData) {
   state.loading = true;
-  console.log("formdata", formData);
 
   return new Promise((resolve, reject) => {
     api
@@ -206,8 +256,6 @@ export function uploadMedia({ commit, state }, formData) {
         },
       })
       .then((resp) => {
-        console.log("res", resp);
-
         state.loading = false;
 
         resolve(resp);
@@ -219,7 +267,7 @@ export function uploadMedia({ commit, state }, formData) {
   });
 }
 
-export async function publishBook({ commit, state }, manuscript) {
+export async function publishBook({ commit, state }) {
   //Update the configs and retrieve back the updated prototype
   //Then, update the prototype from vuex and session storage
   let response;
@@ -235,83 +283,4 @@ export async function publishBook({ commit, state }, manuscript) {
   LocalStorage.set("user", user);
 
   return response;
-}
-
-export async function initNavigations({ commit, state, rootGetters }) {
-  //Update the configs and retrieve back the updated prototype
-  //Then, update the prototype from vuex and session storage
-  let manuscript = state.manuscript;
-  let navigations = [
-    {
-      data: "Overview",
-      caption: "",
-      to: {
-        name: "write-overview",
-        params: { manuscript_id: manuscript.id },
-      },
-    },
-    {
-      data: "Preview",
-      caption: "",
-      to: {
-        name: "read-book",
-        query: { manuscript_id: manuscript.id },
-      },
-    },
-  ];
-
-  if (manuscript.configs.contain_front_matters) {
-    //Adding in the front matters
-    let data = initComponents("front_matters", "Front Matter");
-    navigations.push(data);
-  }
-
-  if (manuscript.configs.contain_chapters) {
-    //Adding in the front matters
-    let data = initComponents("chapters", "Chapter");
-    navigations.push(data);
-  }
-
-  if (manuscript.configs.contain_back_matters) {
-    //Adding in the front matters
-    let data = initComponents("back_matters", "Back Matter");
-    navigations.push(data);
-  }
-
-  commit("setNavigations", navigations);
-
-  function initComponents(type, name) {
-    //Looping through components and adding them to navigations
-    let components = [];
-    for (let i = 0; i < manuscript[type]; i++) {
-      let component = manuscript[type][i];
-      let payload = {
-        data: `${name} - ${i}`,
-        caption: component.title,
-        to: {
-          name: "write-editor",
-          query: {},
-        },
-      };
-      payload.to.query[`${name.toLowerCase()}_id`] = component.id;
-      components.push(payload);
-    }
-
-    //Adding the 'Add Component' Button
-    components.push({
-      data: `Add ${name}`,
-      caption: "",
-    });
-
-    //Finalising data
-    let data = {
-      data: components,
-      caption: "",
-      name: `${name}s`,
-    };
-
-    return data;
-  }
-
-  return navigations;
 }

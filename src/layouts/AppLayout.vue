@@ -32,7 +32,8 @@
       </q-toolbar>
     </q-header> -->
 
-    <q-page-container>
+    <q-page-container class="q-mb-xl">
+      <splash-screen />
       <router-view />
     </q-page-container>
 
@@ -75,25 +76,33 @@
 
 <script>
 import BottomNav from "src/components/helpers/BottomNav";
+import SplashScreen from "src/components/helpers/SplashScreen";
 
 export default {
-  components: { BottomNav },
-  beforeMount() {
-    this.$api
-      .get("users/" + this.$store.getters["user/userProperty"]("id"), {
-        params: { expand: "~all" },
-      })
-      .then((resp) => {
-        const user = resp.data;
-
-        this.$store.commit("user/setUser", user);
-        this.$q.localStorage.set("user", user);
-      });
+  components: { BottomNav, SplashScreen },
+  mounted() {
+    //this.fetchUser();
+    this.$store.dispatch("user/fetchUser");
   },
+
   data() {
     return {
       tab: "write",
     };
+  },
+  methods: {
+    fetchUser() {
+      this.$api
+        .get("users/" + this.$store.getters["user/userProperty"]("id"), {
+          params: { expand: "~all" },
+        })
+        .then((resp) => {
+          const user = resp.data;
+
+          this.$store.commit("user/setUser", user);
+          this.$q.localStorage.set("user", user);
+        });
+    },
   },
 };
 </script>

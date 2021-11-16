@@ -90,12 +90,8 @@ export default {
 
   methods: {},
   setup(props) {
-    const onSwiper = (swiper) => {
-      console.log(swiper);
-    };
-    const onSlideChange = () => {
-      console.log("slide change");
-    };
+    const onSwiper = (swiper) => {};
+    const onSlideChange = () => {};
 
     const $q = useQuasar();
     const slidesCount = computed(() => {
@@ -128,6 +124,7 @@ export default {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   border-radius: 10px;
   margin: 40px 0;
+
   //min-height: 30vh;
 }
 

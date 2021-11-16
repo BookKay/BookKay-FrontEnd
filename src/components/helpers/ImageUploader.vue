@@ -3,11 +3,12 @@
     <q-uploader
       :label="label"
       auto-upload
-      url="http://localhost:4444/upload"
+      :url="url"
       accept=".jpg, .png, .gif"
-      max-file-size="1000000"
+      max-file-size="3000000"
       color="black"
       :no-thumbnails="$q.screen.lt.sm"
+      :headers="getHeaders"
       @rejected="onRejected"
       @uploaded="onUploaded"
       class="uploader"
@@ -53,12 +54,17 @@ export default {
       type: String,
       default: "",
     },
+    url: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
       confirmDialog: false,
     };
   },
+
   methods: {
     onRejected(rejectedEntries) {
       for (let i = 0; i < rejectedEntries.length; i++) {
@@ -73,6 +79,18 @@ export default {
           )} validation`,
         });
       }
+    },
+
+    getHeaders() {
+      let headers = this.$api.defaults.headers.common;
+      let headersOutput = [];
+
+      for (const property in headers) {
+        let object = { name: property, value: headers[property] };
+        headersOutput.push(object);
+      }
+
+      return headersOutput;
     },
 
     onUploaded(info) {

@@ -34,9 +34,7 @@ export default {
   },
   name: "ThemeImage",
   mounted() {
-    console.log(this.$props.images);
     this.shuffledImages = this.shuffleArray(this.$props.images);
-    console.log(this.shuffledImages);
   },
   data() {
     return {
@@ -50,7 +48,7 @@ export default {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
-      console.log(array);
+
       return array;
     },
   },

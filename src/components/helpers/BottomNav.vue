@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-container">
+  <div class="tab-container" :class="tabClasses">
     <div
       class="tab purple"
       v-bind:class="{ active: currentTab == 'read' }"
@@ -39,17 +39,18 @@
 export default {
   name: "BottomNav",
 
-  mounted() {
-    const routeName = this.$route.name;
-    if (this.readPages.includes(routeName)) {
-      this.currentTab = "read";
-    } else if (this.writePages.includes(routeName)) {
-      this.currentTab = "write";
-    } else if (this.storePages.includes(routeName)) {
-      this.currentTab = "shop";
-    } else if (this.profilePages.includes(routeName)) {
-      this.currentTab = "profile";
-    }
+  data() {
+    return {
+      currentTab: "read",
+      readPages: ["app-read"],
+      writePages: ["app-write"],
+      storePages: ["app-store-list", "app-purchase-book", "app-browse-book"],
+      profilePages: ["app-profile", "app-change-password"],
+
+      tabClasses: {
+        "tab-container--dark": this.$q.dark.isActive,
+      },
+    };
   },
 
   watch: {
@@ -65,16 +66,27 @@ export default {
         this.currentTab = "profile";
       }
     },
+
+    "$q.dark.isActive": function (val) {
+      if (val) {
+        this.tabClasses["tab-container--dark"] = true;
+      } else {
+        this.tabClasses["tab-container--dark"] = false;
+      }
+    },
   },
 
-  data() {
-    return {
-      currentTab: "read",
-      readPages: ["app-read"],
-      writePages: ["app-write"],
-      storePages: ["app-store-list", "app-purchase-book", "app-browse-book"],
-      profilePages: ["app-profile", "app-change-password"],
-    };
+  mounted() {
+    const routeName = this.$route.name;
+    if (this.readPages.includes(routeName)) {
+      this.currentTab = "read";
+    } else if (this.writePages.includes(routeName)) {
+      this.currentTab = "write";
+    } else if (this.storePages.includes(routeName)) {
+      this.currentTab = "shop";
+    } else if (this.profilePages.includes(routeName)) {
+      this.currentTab = "profile";
+    }
   },
   methods: {},
 };
@@ -154,6 +166,17 @@ export default {
 .tab.active.teal {
   background: rgba(28, 150, 162, 0.2);
   color: rgba(28, 150, 162, 1);
+}
+
+//Dark Mode
+.tab-container--dark {
+  background-color: #000;
+  color: #fff !important;
+
+  .tab {
+    background-color: #000;
+    color: #fff !important;
+  }
 }
 
 @media (max-width: 330px) {

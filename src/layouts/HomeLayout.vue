@@ -1,8 +1,8 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-white">
+    <q-header elevated class="bg-white" v-if="$q.screen.lt.sm">
       <q-toolbar>
-        <q-toolbar-title>
+        <!-- <q-toolbar-title>
           <q-btn flat size="md" color="primary" :to="{ name: 'home-homepage' }">
             <q-avatar class="q-ma-xs">
               <img src="logo/Bookkay.svg" style="width: 30px" />
@@ -11,32 +11,37 @@
               BookKay
             </h6>
           </q-btn>
-        </q-toolbar-title>
+        </q-toolbar-title> -->
 
         <q-space />
 
         <div v-if="!$store.getters['user/isLoggedIn']">
           <q-btn
-            color="primary"
-            icon="local_library"
-            label="Shop"
+            color="black"
+            rounded
+            flat
+            icon="shop"
             class="q-mx-xs"
-            :to="{ name: 'home-browse' }"
+            :to="{ name: 'home-shop' }"
+            :ripple="{ early: true }"
           />
           <q-btn
             outline
-            color="primary"
+            color="black"
             label="Sign In"
             :to="{ name: 'home-sign-in' }"
+            :ripple="{ early: true }"
           />
         </div>
         <div v-else>
           <q-btn
-            color="primary"
+            color="black"
+            outline
             icon="local_library"
             label="Go To App"
             class="q-mx-xs"
             :to="{ name: 'app-read' }"
+            :ripple="{ early: true }"
           />
         </div>
       </q-toolbar>

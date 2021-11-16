@@ -18,8 +18,10 @@
           class="q-ma-md"
           lazy-rules
           :rules="[
-            val => (val !== null && val !== '') || 'Please type your username',
-            val => val.length <= 100 || 'Username must not be greater than 100'
+            (val) =>
+              (val !== null && val !== '') || 'Please type your username',
+            (val) =>
+              val.length <= 100 || 'Username must not be greater than 100',
           ]"
           @keydown.enter.prevent="$refs.email.focus()"
         />
@@ -32,9 +34,9 @@
           class="q-ma-md"
           lazy-rules
           :rules="[
-            val => (val !== null && val !== '') || 'Please type your email',
-            val => val.length <= 100 || 'Email must be smaller than 100',
-            val => val.indexOf('@') != -1 || 'Please type a real email'
+            (val) => (val !== null && val !== '') || 'Please type your email',
+            (val) => val.length <= 100 || 'Email must be smaller than 100',
+            (val) => val.indexOf('@') != -1 || 'Please type a real email',
           ]"
           @keydown.enter.prevent="$refs.password.focus()"
         />
@@ -47,9 +49,10 @@
           class="q-ma-md"
           lazy-rules
           :rules="[
-            val => (val !== null && val !== '') || 'Please type your password',
-            val => val.length <= 100 || 'Password must not exceeds 100',
-            val => val.length > 8 || 'Password must exceeds 8'
+            (val) =>
+              (val !== null && val !== '') || 'Please type your password',
+            (val) => val.length <= 100 || 'Password must not exceeds 100',
+            (val) => val.length > 8 || 'Password must exceeds 8',
           ]"
           @keydown.enter.prevent="$refs.password2.focus()"
         >
@@ -68,12 +71,13 @@
           :type="showPwd ? 'text' : 'password'"
           label="Reenter Password"
           class="q-ma-md"
-          lazy-rules
+          lazy-rules="ondemand"
           :rules="[
-            val => (val !== null && val !== '') || 'Please type your password',
-            val => val.length <= 100 || 'Must no exceed 100',
-            val => val.length > 8 || 'Password must exceeds 8',
-            val => val == this.$refs.password.value || 'Not same passwords'
+            (val) =>
+              (val !== null && val !== '') || 'Please type your password',
+            (val) => val.length <= 100 || 'Must not exceed 100',
+            (val) => val.length > 8 || 'Password must exceeds 8',
+            (val) => val == this.user.password || 'Password not same',
           ]"
         >
           <template v-slot:append>
@@ -111,23 +115,24 @@ export default {
     return {
       showPwd: false,
       password2: "",
+
       user: {
         username: "",
         email: "",
-        password: ""
+        password: "",
       },
-      loading: false
+      loading: false,
     };
   },
   computed: {
     authStatus() {
       return this.$store.getters["user/authStatus"];
-    }
+    },
   },
   beforeMount() {
     if (this.$store.getters["user/isLoggedIn"]) {
       this.$router.push({
-        name: "app-read"
+        name: "app-read",
       });
     }
   },
@@ -147,19 +152,19 @@ export default {
         this.formHasError = true;
       } else {
         this.loading = true;
-
+        this.user.author_name = this.user.username
         this.$store
           .dispatch("user/register", this.user /*, { root: true }*/)
-          .then(data => {
+          .then((data) => {
             this.loading = false;
             this.$q.notify({
               icon: "done",
               color: "positive",
-              message: "Welcome!!!"
+              message: "Welcome!!!",
             });
             this.$router.replace({ name: "app-read" });
           })
-          .catch(error => {
+          .catch((error) => {
             let string = error.response.data.email[0];
             let msg = string.charAt(0).toUpperCase() + string.slice(1);
 
@@ -175,9 +180,9 @@ export default {
                   color: "white",
                   handler: () => {
                     this.$router.push({ name: "home-sign-in" });
-                  }
-                }
-              ]
+                  },
+                },
+              ],
             });
           });
       }
@@ -189,7 +194,7 @@ export default {
 
       this.$refs.email.resetValidation();
       this.$refs.password.resetValidation();
-    }
-  }
+    },
+  },
 };
 </script>

@@ -23,6 +23,8 @@ import '@quasar/extras/roboto-font/roboto-font.css'
 
 import '@quasar/extras/material-icons/material-icons.css'
 
+import '@quasar/extras/fontawesome-v5/fontawesome-v5.css'
+
 
 
 import '@quasar/extras/animate/slideInDown.css'
@@ -128,9 +130,7 @@ createQuasarApp(createApp, quasarUserOptions)
       
       import(/* webpackMode: "eager" */ 'boot/i18n'),
       
-      import(/* webpackMode: "eager" */ 'boot/axios'),
-      
-      import(/* webpackMode: "eager" */ 'boot/firebase')
+      import(/* webpackMode: "eager" */ 'boot/axios')
       
     ]).then(bootFiles => {
       const boot = bootFiles

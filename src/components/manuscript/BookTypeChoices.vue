@@ -41,12 +41,12 @@ export default {
   props: {
     bookType: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      show_hint: false
+      show_hint: false,
     };
   },
   methods: {
@@ -56,8 +56,8 @@ export default {
       } else {
         this.$emit("typeConfirmed", this.$props.bookType.configs);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -68,5 +68,7 @@ export default {
   height: 150px;
   max-height: 20vw;
   cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

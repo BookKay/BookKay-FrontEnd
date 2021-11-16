@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-parallax class="window-width " :height="computeHeight">
+    <q-parallax class="window-width" :height="computeHeight">
       <template v-slot:media>
         <div>
           <q-img
@@ -80,8 +80,6 @@
 export default {
   name: "BookDetail",
   created() {
-    console.log(this.$props.logged_in);
-    console.log(this.$props.is_purchased);
     if (
       this.$props.is_purchased ||
       (this.$props.book.price == 0 && !this.$props.logged_in)
@@ -96,29 +94,29 @@ export default {
   computed: {
     computeHeight() {
       return this.$q.screen.lt.sm ? 480 : 2000;
-    }
+    },
   },
   props: {
     book: {
       type: Object,
-      required: true
+      required: true,
     },
     is_purchased: {
       type: Boolean,
-      required: true
+      required: true,
     },
     logged_in: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       button: {
         label: "",
-        icon: ""
-      }
+        icon: "",
+      },
     };
-  }
+  },
 };
 </script>

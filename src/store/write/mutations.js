@@ -1,20 +1,3 @@
-export function someMutation(/* state */) {}
-
-export function auth_request(state) {
-  state.status = "loading";
-}
-
-export function auth_success(state, payload) {
-  state.status = "success";
-  state.accessToken = payload["accessToken"];
-  state.refreshToken = payload["refreshToken"];
-  state.user = payload["user"];
-}
-
-export function auth_error(state) {
-  state.status = "error";
-}
-
 export function setManuscript(state, manuscript) {
   if (manuscript) {
     state.manuscript = manuscript;
@@ -28,6 +11,10 @@ export function updateManuscript(state, manuscript) {
       state.manuscript[key] = manuscript[key];
     }
   }
+
+  // let manuscriptClone = { ...state.manuscript };
+  // console.log(manuscriptClone);
+  // state.manuscript = manuscriptClone;
 }
 
 export function updatePrototype(state, prototype) {
@@ -48,5 +35,3 @@ export const edit = (state, user) => {
     state.user = user;
   }
 };
-
-

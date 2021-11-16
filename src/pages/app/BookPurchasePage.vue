@@ -4,13 +4,13 @@
       <div class="card">
         <div class="shoeBackground">
           <div class="gradients">
-            <div class="gradient second" color="blue"></div>
+            <div class="gradient" color="blue"></div>
             <div class="gradient" color="red"></div>
-            <div class="gradient" color="green"></div>
+            <div class="gradient second" color="green"></div>
             <div class="gradient" color="orange"></div>
             <div class="gradient" color="black"></div>
           </div>
-          <h1 class="nike">BookKay</h1>
+          <h1 class="bookkay">BookKay</h1>
           <!-- <img src="img/logo.png" alt="" class="logo" /> -->
           <img
             :src="book.front_cover"
@@ -18,7 +18,12 @@
             class="background-img"
           />
 
-          <q-btn icon="share" :ripple="{ early: true }" class="share" />
+          <q-btn
+            icon="share"
+            :ripple="{ early: true }"
+            class="share"
+            @click="copyLink"
+          />
 
           <!-- <img src="img/blue.png" alt="" class="shoe show" color="blue" />
           <img src="img/red.png" alt="" class="shoe" color="red" />
@@ -27,12 +32,12 @@
           <img src="img/black.png" alt="" class="shoe" color="black" /> -->
         </div>
         <div class="info">
-          <div class="shoeName">
-            <div>
+          <div class="bookName">
+            <!-- <div>
               <h1 class="big ellipsis">{{ book.author_name }}</h1>
               <span class="new">new</span>
-            </div>
-            <h3 class="small ellipsis-2-lines">{{ book.title }}</h3>
+            </div> -->
+            <h3 class="small ellipsis-3-lines">{{ book.title }}</h3>
           </div>
           <div class="description">
             <h3 class="title">Product Info</h3>
@@ -66,6 +71,7 @@
               label="Let's Buy"
               :ripple="{ early: true }"
               class="buy"
+              @click="purchase"
             />
             <div class="price">
               <i class="fas fa-dollar-sign"></i>
@@ -79,15 +85,11 @@
 </template>
 
 <script>
+import { copyToClipboard } from "quasar";
+
 export default {
   name: "BookPurchasePage",
-  beforeMount() {
-    this.$api.get("books/" + this.$route.params.book_id).then((resp) => {
-      const book = resp.data;
 
-      this.book = book;
-    });
-  },
   data() {
     return {
       book: {
@@ -100,41 +102,87 @@ export default {
         front_cover:
           "https://res.cloudinary.com/bookkay/image/upload/v1625766495/BookKay/Front%20Cover/front_cover_da876a3a-e012-11eb-a5b9-ba6b82820b1a.png",
       },
+
+      domainName: "bookkay.com",
     };
   },
+
+  computed: {
+    getShopURL() {
+      const resolved = this.$router.resolve({
+        name: "app-browse-book",
+        params: { book_id: this.book.id },
+      });
+
+      return resolved.href;
+    },
+  },
+
+  beforeMount() {
+    this.$api.get("books/" + this.$route.params.book_id).then((resp) => {
+      const book = resp.data;
+
+      this.book = book;
+    });
+  },
+
   methods: {
-    purchase() {
-      const purchase = {
-        book_id: this.book.id,
-        user_id: this.$store.getters["user/userProperty"]("id"),
-      };
+    async purchase() {
+      try {
+        //Purchasing the book
+        await this.$api.post(`books/${this.$route.params.book_id}/purchase`);
 
-      this.$api
-        .post("book_purchases", purchase)
-        .then((resp) => {
-          const user = resp.data;
-          this.$store.commit("user/setUser", user);
-          this.$q.localStorage.set("user", user);
+        //Fetching back the updated user
+        let response = await this.$api.get(
+          "users/" + this.$store.getters["user/userProperty"]("id"),
+          {
+            params: { expand: "~all" },
+          }
+        );
 
-          this.$q.notify({
-            color: "positive",
-            position: "top",
-            message: `You have successfully bought ${this.book.title}. Hope you enjoy it.`,
-            icon: "error",
-          });
+        const user = response.data;
 
-          this.$router.replace({
-            name: "app-read",
-          });
-        })
-        .catch((error) => {
-          this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: error.response.data.message || "Something went wrong",
-            icon: "error",
-          });
+        this.$store.commit("user/setUser", user);
+        this.$q.localStorage.set("user", user);
+
+        //Sending user back to app page
+        this.$router.replace({
+          name: "app-read",
         });
+
+        this.$q.notify({
+          color: "positive",
+          position: "top",
+          message: `You have successfully bought ${this.book.title}. Hope you enjoy it.`,
+          icon: "error",
+        });
+      } catch (e) {
+        this.$q.notify({
+          color: "negative",
+          position: "top",
+          message: "Error when purchasing book",
+          icon: "error",
+        });
+      }
+    },
+
+    async copyLink() {
+      const url = this.domainName + this.getShopURL;
+
+      try {
+        await copyToClipboard(url);
+        this.$q.notify({
+          icon: "done",
+          color: "positive",
+          message: "URL copied to clipboard",
+        });
+      } catch {
+        this.$q.notify({
+          icon: "error",
+          color: "negative",
+          message: "There was an error when copying to clipboard",
+        });
+      }
     },
   },
 };
@@ -272,15 +320,16 @@ body {
   line-height: 50px;
 }
 
-.nike {
+.bookkay {
   position: absolute;
-  top: 85px;
-  left: 15px;
-  font-size: 11rem;
+  top: 43%;
+  width: 100%;
+  font-size: 5rem;
   text-transform: uppercase;
   line-height: 0.9;
   color: #fff;
   opacity: 0.1;
+  text-align: center;
 }
 
 .shoe {
@@ -306,23 +355,23 @@ body {
     0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
-.shoeName {
+.bookName {
   padding: 0 0 10px 0;
 }
 
-.shoeName div {
+.bookName div {
   display: flex;
   align-items: center;
 }
 
-.shoeName div .big {
+.bookName div .big {
   margin-right: 10px;
   font-size: 2rem;
   color: #333;
   line-height: 1;
 }
 
-.shoeName div .new {
+.bookName div .new {
   background-color: var(--primary);
   text-transform: uppercase;
   color: #fff;
@@ -331,14 +380,15 @@ body {
   transition: 0.5s;
 }
 
-.shoeName .small {
+.bookName .small {
   font-weight: 500;
+  font-size: 1.5rem;
   color: #444;
   margin-top: 3px;
   text-transform: capitalize;
 }
 
-.shoeName,
+.bookName,
 .description,
 .color-container,
 .size-container {
@@ -512,9 +562,9 @@ body {
     right: 2%;
   }
 
-  .nike {
-    top: 20%;
-    left: 5%;
+  .bookkay {
+    // top: 20%;
+    // left: 5%;
   }
 }
 
@@ -535,11 +585,11 @@ body {
 }
 
 @media (max-width: 490px) {
-  .nike {
+  .bookkay {
     font-size: 7rem;
   }
 
-  .shoeName div .big {
+  .bookName div .big {
     font-size: 1.3rem;
   }
 

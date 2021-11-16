@@ -12,101 +12,102 @@ export default {
   props: {
     width: {
       type: Number,
-      required: true
+      required: true,
     },
     height: {
       type: Number,
-      required: true
+      required: true,
     },
     size: {
-      validator: function(value) {
+      validator: function (value) {
         // The value must match one of these strings
         return ["fixed", "stretch"].indexOf(value) !== -1;
-      }
+      },
     },
     minWidth: {
       type: Number,
-      required: false
+      required: false,
     },
     maxWidth: {
       type: Number,
-      required: false
+      required: false,
     },
     minHeight: {
       type: Number,
-      required: false
+      required: false,
     },
     maxHeight: {
       type: Number,
-      required: false
+      required: false,
     },
     drawShadow: {
       type: Boolean,
-      default: true
+      default: true,
     },
     flippingTime: {
       type: Number,
-      default: 1000
+      default: 1000,
     },
     usePortrait: {
       type: Boolean,
-      default: true
+      default: true,
     },
     startZIndex: {
       type: Number,
-      default: 0
+      default: 0,
     },
     startPage: {
       type: Number,
-      default: 0
+      default: 0,
     },
     autoSize: {
       type: Boolean,
-      default: true
+      default: true,
     },
     maxShadowOpacity: {
       type: Number,
       default: 1,
-      validator: function(value) {
+      validator: function (value) {
         // The value must match one of these strings
         return value >= 0 && value <= 1;
-      }
+      },
     },
     showCover: {
       type: Boolean,
-      default: false
+      default: false,
     },
     mobileScrollSupport: {
       type: Boolean,
-      default: true
+      default: true,
     },
     swipeDistance: {
       type: Number,
-      default: 30
+      default: 30,
     },
     clickEventForward: {
       type: Boolean,
-      default: true
+      default: true,
     },
     useMouseEvents: {
       type: Boolean,
-      default: true
+      default: true,
     },
     disableFlipByClick: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   mounted() {
     this.createFlipbook();
   },
   data() {
     return {
-      pageFlip: ""
+      pageFlip: "",
     };
   },
   methods: {
     createFlipbook() {
+      //Setting and target element for flipbook
       const parent = this.$refs.parentElement;
       const settings = {
         width: this.$props.width,
@@ -128,9 +129,10 @@ export default {
         swipeDistance: this.$props.swipeDistance,
         clickEventForward: this.$props.clickEventForward,
         useMouseEvents: this.$props.useMouseEvents,
-        disableFlipByClick: this.$props.disableFlipByClick
+        disableFlipByClick: this.$props.disableFlipByClick,
       };
 
+      //Initialising page flip
       const pageFlip = new PageFlip(parent, settings);
       if (!pageFlip.getFlipController()) {
         pageFlip.loadFromHTML(document.querySelectorAll(".page"));
@@ -138,7 +140,20 @@ export default {
         pageFlip.updateFromHtml(document.querySelectorAll(".page"));
       }
 
+      //Adding event listeners
+      pageFlip.on("init", (e) => {
+        this.$emit("flipbookInit", e.data);
+      });
+
+      pageFlip.on("flip", (e) => {
+        this.$emit("pageTurned", e.data);
+      });
+
       this.pageFlip = pageFlip;
+    },
+
+    updateFromHtml() {
+      this.pageFlip.updateFromHtml(document.querySelectorAll(".page"));
     },
 
     getPageCount() {
@@ -156,7 +171,6 @@ export default {
       if (!corner) {
         corner = this.getCorner();
       }
-      console.log(this.pageFlip.getOrientation());
 
       this.pageFlip.flipNext(corner);
     },
@@ -178,8 +192,8 @@ export default {
       var randomCorner = corners[Math.floor(Math.random() * corners.length)];
 
       return randomCorner;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -17,7 +17,16 @@ export function auth_error(state) {
 
 export function setUser(state, user) {
   if (user) {
-    state.user = user;
+    let newUser = user;
+
+    let books = newUser.books_authored;
+    for (var i = 0; i < books.length; i++) {
+      let book = books[i];
+      book.author = {};
+      book.author.author_name = user.author_name;
+    }
+
+    state.user = { ...state.user, ...newUser };
   }
 }
 
@@ -27,9 +36,3 @@ export function logout(state) {
   state.accessToken = "";
   state.refreshToken = "";
 }
-
-export const edit = (state, user) => {
-  if (user) {
-    state.user = user;
-  }
-};
