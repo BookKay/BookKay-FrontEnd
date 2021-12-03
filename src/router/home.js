@@ -9,20 +9,33 @@ const homeRoutes = [
         name: "home-homepage",
         component: () => import("src/pages/home/HomePage.vue"),
       },
+
       {
         path: "sign-in",
         name: "home-sign-in",
-        component: () => import("src/pages/home/SignInPage.vue"),
+        component: () => import("src/pages/home/SignInSignUpPage.vue"),
       },
       {
         path: "sign-up",
         name: "home-sign-up",
-        component: () => import("src/pages/home/SignUpPage.vue"),
+        component: () => import("src/pages/home/SignInSignUpPage.vue"),
       },
       {
-        path: "shop",
-        name: "home-shop",
+        path: "store",
+        name: "home-store",
         component: () => import("src/pages/app/BookShopPage.vue"),
+        children: [
+          {
+            path: "list",
+            name: "home-store-list",
+            component: () => import("src/pages/app/BookShopList.vue"),
+          },
+          {
+            path: "search",
+            name: "home-store-search",
+            component: () => import("src/pages/app/BookShopSearch.vue"),
+          },
+        ],
       },
       {
         path: "browse/:book_id",

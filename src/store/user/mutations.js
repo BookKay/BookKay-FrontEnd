@@ -18,6 +18,7 @@ export function auth_error(state) {
 export function setUser(state, user) {
   if (user) {
     let newUser = user;
+    
 
     let books = newUser.books_authored;
     for (var i = 0; i < books.length; i++) {

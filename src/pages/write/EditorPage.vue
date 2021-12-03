@@ -551,12 +551,12 @@ export default {
 .editorFull {
   background: #fff;
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
   margin-right: auto;
   margin-left: auto;
   margin-top: 0;
   border-radius: 0;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 @media (max-width: 768px) {

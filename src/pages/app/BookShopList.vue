@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="Object.keys(bestOfTheDay).length > 0">
     <h2 class="sub-heading">Best of the <b>day!</b></h2>
     <div class="row">
       <stand-out-card

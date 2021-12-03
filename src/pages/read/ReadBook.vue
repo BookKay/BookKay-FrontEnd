@@ -3,40 +3,16 @@
 
   <splash-screen />
 
-  <video autoplay muted loop id="backgroundVideo" :src="videoURL"></video>
+  <video
+    autoplay
+    muted
+    playsinline
+    loop
+    id="backgroundVideo"
+    :src="videoURL"
+  ></video>
 
   <div class="book-background">
-    <!-- <q-dialog v-model="info">
-      <q-card>
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Info</div>
-          <q-space />
-          <q-btn
-            icon="close"
-            flat
-            round
-            dense
-            @click="$q.localStorage.set('readerInfo', true)"
-            v-close-popup
-          />
-        </q-card-section>
-
-        <q-card-section>
-          <p>
-            - You can turn the pages of the book by scrolling, using
-            front/back/left/right keys, or dragging with your cursor(desktop) or
-            swipe the screen(mobile)
-          </p>
-          <p>
-            - The top menu bar can be closed by either entering zen mode or
-            clicking on the upward arrow on the right. You can then call it back
-            by clicking/tapping on the top center part of the screen.
-          </p>
-          <p>- Please do try out our zen mode &#128521;</p>
-        </q-card-section>
-      </q-card>
-    </q-dialog> -->
-
     <q-dialog v-model="settingsDialog">
       <reader-settings
         :purchaseAble="purchaseAble"
@@ -101,6 +77,18 @@
             :ripple="{ early: true }"
           />
           <q-btn
+            label="Register"
+            v-else-if="$q.screen.gt.sm && !$store.getters['user/isLoggedIn']"
+            outline
+            :color="btnColor"
+            icon="login"
+            class="q-ma-md"
+            @click="$router.push({ name: 'home-sign-up' })"
+            :ripple="{
+              early: true,
+            }"
+          />
+          <q-btn
             :round="$q.screen.lt.sm"
             :label="$q.screen.lt.sm ? '' : 'Settings'"
             outline
@@ -135,7 +123,9 @@
     </div>
     <drawer :direction="'left'" :exist="true" ref="drawer">
       <div class="relative side-bar" :class="sideBarClasses">
-        <side-bar-contents :contents="navigations" @clicked="navClicked" />
+        <div class="side-bar-contents">
+          <side-bar-contents :contents="navigations" @clicked="navClicked" />
+        </div>
 
         <q-btn
           :color="btnColor"
@@ -229,8 +219,8 @@ export default {
       let url = "";
 
       url = this.$q.dark.isActive
-        ? "https://storage.googleapis.com/bookkay-dev.appspot.com/Reader%20Videos/background--dark.mp4"
-        : "https://storage.googleapis.com/bookkay-dev.appspot.com/Reader%20Videos/background.mp4";
+        ? "https://storage.googleapis.com/bookkay-dev.appspot.com/reader_videos/background--dark.mp4"
+        : "https://storage.googleapis.com/bookkay-dev.appspot.com/reader_videos/background.mp4";
       return url;
     },
   },
@@ -426,7 +416,13 @@ export default {
     },
 
     navClicked(nav) {
-      this.$refs.book.$refs.flipbook.flip(nav.page);
+      let orientation = this.$refs.book.$refs.flipbook.getOrientation();
+
+      if (orientation == "landscape") {
+        this.$refs.book.$refs.flipbook.flip(nav.page);
+      } else {
+        this.$refs.book.$refs.flipbook.turnToPage(nav.page);
+      }
     },
 
     handleSelected() {
@@ -499,6 +495,11 @@ export default {
   position: absolute;
   width: 100%;
   z-index: 3;
+}
+
+.side-bar-contents {
+  height: 90vh;
+  overflow-y: scroll;
 }
 
 .side-bar--dark {

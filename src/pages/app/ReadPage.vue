@@ -25,7 +25,7 @@
         <theme-image class="col" :images="images" v-if="!$q.screen.lt.md" />
       </div>
     </div>
-    <div v-if="Object.keys(lastRead).length">
+    <div v-if="Object.keys(lastRead).length > 0">
       <h2 class="sub-heading last-read">Continue <b>reading...</b></h2>
       <quick-book-link :book="lastRead" @btnClicked="onPrimaryClicked" />
     </div>
@@ -100,7 +100,9 @@ export default {
       return this.$q.screen.lt.md ? "justify-center" : "justify-start";
     },
     authoredBooks() {
-      let books = this.$store.getters["user/userProperty"]("books_authored");
+      let books;
+
+      books = this.$store.getters["user/userProperty"]("books_authored");
 
       // for (var i = 0; i < books.length; i++) {
       //   let book = books[i];
@@ -185,7 +187,9 @@ export default {
         params: { fields: "id,title,author_name,description,front_cover" },
       });
 
-      this.bestOfTheDay = response.data[0];
+      if (response.data[0] != null) {
+        this.bestOfTheDay = response.data[0];
+      }
     },
 
     async fetchLastRead() {
@@ -193,8 +197,9 @@ export default {
         params: { fields: "id,title,author_name,front_cover" },
       });
 
-      this.lastRead = response.data;
-      console.log(response);
+      if (response.data != null) {
+        this.lastRead = response.data;
+      }
     },
 
     onPrimaryClicked(book) {

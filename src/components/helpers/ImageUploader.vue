@@ -5,7 +5,7 @@
       auto-upload
       :url="url"
       accept=".jpg, .png, .gif"
-      max-file-size="3000000"
+      max-file-size="5000000"
       color="black"
       :no-thumbnails="$q.screen.lt.sm"
       :headers="getHeaders"

@@ -22,7 +22,7 @@
             flat
             icon="shop"
             class="q-mx-xs"
-            :to="{ name: 'home-shop' }"
+            :to="{ name: 'home-store-list' }"
             :ripple="{ early: true }"
           />
           <q-btn

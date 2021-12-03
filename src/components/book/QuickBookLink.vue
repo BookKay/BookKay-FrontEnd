@@ -19,7 +19,10 @@
         <p class="author-name ellipsis">{{ book.author_name }}</p>
       </div>
       <div class="col">
-        <img :src="book.front_cover" class="front-cover q-my-xs" />
+        <img
+          :src="book.front_cover != '' ? book.front_cover : book.temp_cover"
+          class="front-cover q-my-xs"
+        />
       </div>
     </div>
     <div class="progress-bar">

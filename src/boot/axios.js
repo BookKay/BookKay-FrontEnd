@@ -12,7 +12,8 @@ let baseURL = "";
 if (process.env.DEV) {
   baseURL = "http://localhost:8000/api/v1.0/";
 } else {
-  baseURL = "api.bookkay.com/api/v1.0/";
+  //baseURL = "api.bookkay.com/api/v1.0/";
+  baseURL = " https://bookkay-backend.herokuapp.com/api/v1.0/";
 }
 const api = axios.create({ baseURL: baseURL });
 

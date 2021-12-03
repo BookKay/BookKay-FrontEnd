@@ -64,13 +64,12 @@ export default {
 
 .page {
   padding: 20px;
-
   //background-color: hsl(35, 55, 98);
   //color: hsl(35, 35, 35);
   //background-color: #fbf0d9;
   //color: #5f4b32;
   background-color: #fff;
-  border: solid 1px hsl(35, 20, 70);
+  border: solid 1px hsl(35, 20%, 70%);
   cursor: pointer;
 
   overflow: hidden;
@@ -106,7 +105,7 @@ export default {
       margin-top: 10px;
       padding-top: 10px;
       box-sizing: border-box;
-      border-top: solid 1px hsl(35, 55, 90);
+      border-top: solid 1px hsl(35, 55%, 90%);
     }
 
     .page-text ::v-deep(.tab) {
@@ -227,9 +226,9 @@ export default {
 
     .page-footer {
       height: 30px;
-      border-top: solid 1px hsl(35, 55, 90);
+      border-top: solid 1px hsl(35, 55%, 90%);
       font-size: 80%;
-      color: hsl(35, 20, 50);
+      color: hsl(35, 20%, 50%);
     }
   }
 
@@ -251,14 +250,14 @@ export default {
 
   &.hard {
     // for hard page
-    background-color: hsl(35, 50, 90);
-    border: solid 1px hsl(35, 20, 50);
+    background-color: hsl(35, 50%, 90%);
+    border: solid 1px hsl(35, 20%, 50%);
   }
 
   &.page-cover {
-    background-color: hsl(35, 45, 80);
-    color: hsl(35, 35, 35);
-    border: solid 1px hsl(35, 20, 50);
+    background-color: hsl(35, 45%, 80%);
+    color: hsl(35, 35%, 35%);
+    border: solid 1px hsl(35, 20%, 50%);
 
     h2 {
       text-align: center;

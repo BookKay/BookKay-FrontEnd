@@ -156,6 +156,10 @@ export default {
       this.pageFlip.updateFromHtml(document.querySelectorAll(".page"));
     },
 
+    getOrientation() {
+      return this.pageFlip.getOrientation();
+    },
+
     getPageCount() {
       this.pageFlip.getPageCount();
     },
@@ -181,6 +185,14 @@ export default {
       }
 
       this.pageFlip.flipPrev(corner);
+    },
+
+    turnToPage(pageNum) {
+      this.pageFlip.turnToPage(pageNum);
+    },
+
+    turnToPrevPage() {
+      this.pageFlip.turnToPrevPage();
     },
 
     destroy() {

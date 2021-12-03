@@ -200,7 +200,6 @@ export async function editManuscript({ commit, state }, manuscript) {
   //Update the configs and retrieve back the updated prototype
   //Then, update the prototype from vuex and session storage
   let response;
-  console.log("action", manuscript);
 
   response = await api.patch("manuscripts/" + state.manuscript.id, manuscript);
   response = await api.get("manuscripts/" + state.manuscript.id, {

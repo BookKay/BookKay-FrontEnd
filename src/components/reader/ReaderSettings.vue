@@ -85,6 +85,24 @@
           <q-item-label> Purchase</q-item-label>
         </q-item-section>
       </q-item>
+
+      <q-item
+        v-else-if="!$store.getters['user/isLoggedIn']"
+        class="q-my-sm"
+        clickable
+        v-ripple.early
+        @click="$router.push({ name: 'home-sign-up' })"
+      >
+        <q-item-section avatar>
+          <q-avatar color="black" text-color="white">
+            <q-icon name="login" />
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label> Register</q-item-label>
+        </q-item-section>
+      </q-item>
     </q-list>
   </q-card>
 

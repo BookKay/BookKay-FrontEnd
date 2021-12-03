@@ -1,5 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
+    <q-ajax-bar ref="bar" position="top" color="primary" size="5px" />
     <!-- <q-header elevated class="bg-white">
       <q-ajax-bar ref="bar" position="top" color="primary" size="5px" />
       <q-toolbar>

@@ -113,7 +113,7 @@ export default {
       return [
         {
           label: "Username",
-          value: this.username,
+          value: this.getUsername,
           clickHandler: this.changeUsername,
         },
         {
@@ -155,7 +155,7 @@ export default {
         {
           label: "Username",
           state: this.usernameDialog,
-          value: this.username,
+          value: this.getUsername,
           rules: [
             (val) =>
               (val !== null && val !== "") || "Please type your username",
@@ -189,7 +189,7 @@ export default {
         {
           label: "Biography",
           state: this.biographyDialog,
-          value: this.getAuthorName,
+          value: this.getBiography,
           rules: [
             (val) =>
               val.length <= 5000 ||
@@ -251,12 +251,9 @@ export default {
     confirmUsername(newUsername) {
       this.usernameDialog = false;
 
-      if (this.username != newUsername) {
+      if (newUsername && this.username != newUsername) {
         this.$store
-          .dispatch(
-            "user/edit",
-            { username: this.getUsername } /*, { root: true }*/
-          )
+          .dispatch("user/edit", { username: newUsername } /*, { root: true }*/)
           .then((data) => {})
           .catch((error) => {
             console.log(error);
@@ -274,9 +271,9 @@ export default {
     },
     confirmEmail(newEmail) {
       this.emailDialog = false;
-      if (this.email != newEmail) {
+      if (newEmail && this.email != newEmail) {
         this.$store
-          .dispatch("user/edit", { email: this.getEmail } /*, { root: true }*/)
+          .dispatch("user/edit", { email: newEmail } /*, { root: true }*/)
           .then((data) => {})
           .catch((error) => {
             console.log(error);
@@ -294,11 +291,11 @@ export default {
     },
     confirmAuthorName(newAuthorName) {
       this.authorNameDialog = false;
-      if (this.authorName != newAuthorName) {
+      if (newAuthorName && this.authorName != newAuthorName) {
         this.$store
           .dispatch(
             "user/edit",
-            { author_name: this.getAuthorName } /*, { root: true }*/
+            { author_name: newAuthorName } /*, { root: true }*/
           )
           .then((data) => {})
           .catch((error) => {
@@ -317,12 +314,29 @@ export default {
     },
     confirmBiography(newBiography) {
       this.biographyDialog = false;
-      if (this.getBiography != newBiography) {
+      if (newBiography && this.getBiography != newBiography) {
+        this.$store
+          .dispatch(
+            "user/edit",
+            { biography: newBiography } /*, { root: true }*/
+          )
+          .then((data) => {})
+          .catch((error) => {
+            console.log(error);
+            this.$q.notify({
+              color: "negative",
+              position: "top",
+              message:
+                error.response.data.message ||
+                "Please relogin to edit your credentials",
+              icon: "error",
+            });
+            this.biography = this.getBiography;
+          });
       }
     },
 
     logOut(confirm) {
-      console.log("logout");
       this.logOutDialog = false;
       if (confirm) {
         this.$store

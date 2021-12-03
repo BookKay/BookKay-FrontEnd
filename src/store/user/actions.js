@@ -82,23 +82,16 @@ export async function logout({ commit }, payload) {
   return "";
 }
 
-export function edit({ commit, state }, user) {
-  return new Promise((resolve, reject) => {
-    api
-      .patch("users/" + state.user.id, user)
-      .then((resp) => {
-        const user = resp.data;
+export async function edit({ commit, state }, user) {
+  let response;
 
-        LocalStorage.set("user", user);
-
-        commit("setUser", user);
-
-        resolve(resp);
-      })
-      .catch((err) => {
-        reject(err);
-      });
+  response = await api.patch("users/" + state.user.id, user, {
+    params: { expand: "~all" },
   });
+  user = response.data;
+
+  LocalStorage.set("user", user);
+  commit("setUser", user);
 }
 
 export function deleteUser({ commit, state }, user) {

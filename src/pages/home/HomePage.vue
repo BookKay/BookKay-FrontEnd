@@ -13,7 +13,7 @@
               flat
               label="Store"
               :ripple="{ early: true }"
-              :to="{ name: 'home-shop' }"
+              :to="{ name: 'home-store-list' }"
             ></q-btn>
             <q-btn
               flat
@@ -172,10 +172,10 @@
         <div v-for="book in topBooks.value" :key="book.id" class="card">
           <div class="imgBox">
             <img :src="book.front_cover" />
-            <h2>{{ book.title }}</h2>
+            <!-- <h2>{{ book.title }}</h2> -->
           </div>
           <div class="content">
-            <p>{{ book.author_name }}</p>
+            <!-- <p>{{ book.author_name }}</p> -->
             <q-btn
               color="white"
               text-color="black"
@@ -235,20 +235,47 @@
         <div class="sec aboutus">
           <h2>About Us</h2>
           <p>
-            Two lonely guy that don't have girlfriends created this website.
-            This website is for nerds who don't have girlfriends.
+            Two lonely guy that don't have girlfriends created this website. So,
+            enjoy XD
           </p>
-          <ul class="sci">
-            <li>
-              <a href="#"><i class="fab fa-facebook-f"></i></a>
-            </li>
 
-            <li>
-              <a href="#"><i class="fab fa-twitter"></i></a>
-            </li>
-            <li>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-            </li>
+          <ul class="sci">
+            <q-btn
+              color="blue"
+              icon="fab fa-facebook"
+              class="q-mx-xs"
+              :ripple="{ early: true }"
+              type="a"
+              href="https://www.facebook.com/BookKayBusiness"
+              target="__blank"
+            />
+            <q-btn
+              color="red"
+              icon="fab fa-youtube"
+              class="q-mx-xs"
+              :ripple="{ early: true }"
+              type="a"
+              href="https://www.youtube.com/channel/UCVkISGhtdiKij-0KqzenHdw"
+              target="__blank"
+            />
+            <q-btn
+              color="light-blue"
+              icon="fab fa-twitter"
+              class="q-mx-xs"
+              :ripple="{ early: true }"
+              type="a"
+              href="https://twitter.com/BookkayB"
+              target="__blank"
+            />
+            <q-btn
+              color="pink"
+              icon="fab fa-instagram"
+              class="q-mx-xs"
+              :ripple="{ early: true }"
+              type="a"
+              href="https://www.instagram.com/bookkaybusiness/"
+              target="__blank"
+            />
           </ul>
         </div>
         <!-- <div class="sec quickLinks">
@@ -324,11 +351,9 @@ export default {
           fields: "id,title,author_name,front_cover",
         },
       });
-      console.log(response);
+
       return response.data;
     }
-
-    console.log(topBooks);
 
     return { topBooks };
   },
@@ -951,7 +976,7 @@ section .second_page .container {
 }
 
 .fourth-header ul .features {
-  width: 130px;
+  //width: 130px;
 }
 
 .fourth-header ul li h2 {
@@ -962,6 +987,7 @@ section .second_page .container {
   padding: 5px 10px;
   text-align: center;
   margin: 10px 0px;
+  width: 130px;
 }
 
 .fourth-header ul li li {
@@ -980,8 +1006,20 @@ section .second_page .container {
   width: 440px;
 }
 
+@media (max-width: 480px) {
+  .fourth-header ul li section {
+    width: 350px;
+  }
+}
+
+@media (max-width: 380px) {
+  .fourth-header ul li section {
+    width: 280px;
+  }
+}
+
 .fourth-header ul li section li {
-  width: 440px;
+  //width: 440px;
   border-radius: 10px;
 }
 
@@ -1075,6 +1113,11 @@ footer .container .sec {
 footer .container .sec.aboutus {
   width: 40%;
 }
+
+footer .container .sec.aboutus h2 {
+  font-size: 2.8em;
+}
+
 footer .container h2 {
   position: relative;
   color: #f0faf9;

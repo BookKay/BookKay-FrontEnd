@@ -118,6 +118,7 @@ export default {
 
       user: {
         username: "",
+        author_name: "",
         email: "",
         password: "",
       },
@@ -152,7 +153,8 @@ export default {
         this.formHasError = true;
       } else {
         this.loading = true;
-        this.user.author_name = this.user.username
+        this.user.author_name = this.user.username;
+        console.log(this.user);
         this.$store
           .dispatch("user/register", this.user /*, { root: true }*/)
           .then((data) => {

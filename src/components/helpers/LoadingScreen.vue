@@ -55,7 +55,7 @@ export default {
       }
     );
 
-    return { loadingTextClasses };
+    return { loadingTextClasses, clockLoaderClasses };
   },
 };
 </script>

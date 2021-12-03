@@ -340,7 +340,20 @@ export default {
   },
 
   methods: {
-    uploadHandler() {},
+    async uploadHandler() {
+      //Fetching back newly updated manuscript and storing it.
+      let response = await this.$api.get(
+        "manuscripts/" + this.$store.state.write.manuscript.id,
+        {
+          params: { expand: "~all" },
+        }
+      );
+      this.$store.commit("write/updateManuscript", response.data);
+      this.$q.sessionStorage.set(
+        "currentManuscript",
+        this.$store.state.write.manuscript
+      );
+    },
 
     async clearHandler(label) {
       let key;
@@ -423,7 +436,7 @@ export default {
     async confirmConfigs(result) {
       //close the dialog
       this.confirmDialog.state = false;
-      console.log(this.confirmDialog.externalData);
+
       if (result) {
         let configs = {};
         configs[this.confirmDialog.externalData] = false;
@@ -475,7 +488,6 @@ export default {
       let payload = { type: component };
       let components =
         this.$store.getters["write/manuscriptProperty"](component);
-      console.log(components);
 
       for (const component of components) {
         payload.id = component.id;

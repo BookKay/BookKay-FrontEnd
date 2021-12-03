@@ -181,7 +181,7 @@ export default {
         description: "",
         genre_name: "",
         temp_cover:
-          "https://res.cloudinary.com/bookkay/image/upload/v1624466524/BookKay/Temp%20Cover/Temp_Cover.png",
+          "https://storage.googleapis.com/bookkay-dev.appspot.com/temp_covers/temp_cover.png",
         author_id: this.$store.getters["user/userProperty"]("id"),
         price: 0.0,
         text: {},
