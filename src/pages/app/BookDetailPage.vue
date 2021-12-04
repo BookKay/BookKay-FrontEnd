@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="book">
+    <div class="book" v-if="Object.keys(book).length > 0">
       <img :src="book.front_cover" alt="Front Cover" class="bg-img" />
       <div class="book-contents">
         <div class="col">
@@ -154,7 +154,7 @@ export default {
 
   data() {
     return {
-      book: {
+      bookExample: {
         title: "Best Book LOL hohoo a very lonnnnnnnnnngggg title",
         author_name: "Kevin",
         description:
@@ -171,6 +171,7 @@ export default {
           { title: "The Finale", id: "5" },
         ],
       },
+      book: {},
       isPurchased: false,
       isAuthored: false,
       domainName: "bookkay.com",

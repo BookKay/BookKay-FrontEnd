@@ -56,7 +56,7 @@
           <q-btn
             flat
             :color="btnColor"
-            @click="$router.go(-1)"
+            @click="centerBtnClicked"
             :ripple="{ early: true }"
           >
             <q-avatar class="q-ma-xs gt-sm" size="lg">
@@ -287,6 +287,14 @@ export default {
         this.$refs.drawer.close();
       } else {
         this.$refs.drawer.open();
+      }
+    },
+
+    centerBtnClicked() {
+      if (window.history.length > 2) {
+        this.$router.go(-1);
+      } else {
+        this.$router.push({ name: "base" });
       }
     },
 
