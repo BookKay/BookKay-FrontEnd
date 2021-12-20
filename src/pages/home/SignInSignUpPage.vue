@@ -43,7 +43,6 @@
               (val) => val.length <= 100 || 'Password must not exceeds 100',
               (val) => val.length > 8 || 'Password must exceeds 8',
             ]"
-            @keydown.enter.prevent="signInSubmit"
           >
             <template v-slot:prepend>
               <q-icon name="fas fa-lock" />
@@ -61,8 +60,13 @@
             type="submit"
             :ripple="{ early: true }"
             class="btn solid"
-            @click="signInSubmit"
-          />
+          >
+            <q-spinner-hourglass
+              v-if="authStatus == 'loading'"
+              color="white"
+              size="1.2em"
+            />
+          </q-btn>
           <!-- <p class="social-text">Or Sign in with social platforms</p>
           <div class="social-media">
             <a href="#" class="social-icon">
@@ -171,7 +175,6 @@
               (val) => val.length > 8 || 'Password must exceeds 8',
               (val) => val == this.signUp.user.password || 'Password not same',
             ]"
-            @keydown.enter.prevent="signUpSubmit"
           >
             <template v-slot:prepend>
               <q-icon name="fas fa-lock" />
@@ -190,8 +193,13 @@
             type="submit"
             :ripple="{ early: true }"
             class="btn solid"
-            @click="signUpSubmit"
-          />
+          >
+            <q-spinner-hourglass
+              v-if="authStatus == 'loading'"
+              color="white"
+              size="1.2em"
+            />
+          </q-btn>
 
           <!-- <p class="social-text">Or Sign up with social platforms</p>
           <div class="social-media">
@@ -273,6 +281,11 @@ export default {
       },
     };
   },
+  computed: {
+    authStatus() {
+      return this.$store.getters["user/authStatus"];
+    },
+  },
   beforeMount() {
     if (this.$store.getters["user/isLoggedIn"]) {
       this.$router.push({
@@ -308,7 +321,6 @@ export default {
       ) {
         this.formHasError = true;
       } else {
-        this.loading = true;
         this.signUp.user.author_name = this.signUp.user.username;
 
         try {
