@@ -49,10 +49,16 @@ import Flipbook from "src/components/reader/Flipbook.vue";
 import Page from "src/components/reader/Page.vue";
 import Cover from "src/components/reader/Cover.vue";
 import LoadingScreen from "src/components/helpers/LoadingScreen.vue";
+import { setTitle } from "./composables/AddBookMetaTags.ts";
 
 export default {
   name: "Book",
-  components: { Flipbook, Page, Cover, LoadingScreen },
+  components: {
+    Flipbook: () => import("src/components/reader/Flipbook.vue"),
+    Page: () => import("src/components/reader/Page.vue"),
+    Cover: () => import("src/components/reader/Cover.vue"),
+    LoadingScreen: () => import("src/components/helpers/LoadingScreen.vue"),
+  },
   created() {
     //Adding event listeners
     document.addEventListener(
@@ -73,6 +79,7 @@ export default {
   },
 
   async mounted() {
+    setTitle();
     const self = this;
 
     this.loadingText = "Book Loading...Please Wait.";
