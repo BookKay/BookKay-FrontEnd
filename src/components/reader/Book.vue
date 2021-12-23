@@ -49,15 +49,20 @@ import Flipbook from "src/components/reader/Flipbook.vue";
 import Page from "src/components/reader/Page.vue";
 import Cover from "src/components/reader/Cover.vue";
 import LoadingScreen from "src/components/helpers/LoadingScreen.vue";
-import { setTitle } from "./composables/AddBookMetaTags.ts";
+
+import { useMeta } from "quasar";
 
 export default {
   name: "Book",
   components: {
-    Flipbook: () => import("src/components/reader/Flipbook.vue"),
-    Page: () => import("src/components/reader/Page.vue"),
-    Cover: () => import("src/components/reader/Cover.vue"),
-    LoadingScreen: () => import("src/components/helpers/LoadingScreen.vue"),
+    // Flipbook: () => import("src/components/reader/Flipbook.vue"),
+    // Page: () => import("src/components/reader/Page.vue"),
+    // Cover: () => import("src/components/reader/Cover.vue"),
+    // LoadingScreen: () => import("src/components/helpers/LoadingScreen.vue"),
+    Flipbook,
+    Page,
+    Cover,
+    LoadingScreen,
   },
   created() {
     //Adding event listeners
@@ -79,7 +84,6 @@ export default {
   },
 
   async mounted() {
-    setTitle();
     const self = this;
 
     this.loadingText = "Book Loading...Please Wait.";
@@ -176,6 +180,7 @@ export default {
         }
       } else {
         this.book = response.data;
+        this.updateMetaData();
 
         this.configureCovers();
         this.loadBookCopy();
@@ -601,6 +606,33 @@ export default {
   },
 
   methods: {
+    async updateMetaData() {
+      //Fetching back the updated user
+      let response = await this.$api.get("books/" + this.$route.query.book_id, {
+        params: { fields: "author_name" },
+      });
+
+      let author_name = response.data.author_name;
+
+      useMeta(() => {
+        return {
+          // whenever "title" from above changes, your meta will automatically update
+          title: `${this.book.title} | BookKay`,
+          meta: {
+            description: {
+              name: "description",
+              content: this.book.description,
+            },
+            keywords: {
+              name: "keywords",
+              content: `${this.book.title}, ${author_name}, BookKay, ebook`,
+            },
+            author: { name: "author", content: author_name },
+          },
+        };
+      });
+    },
+
     loadPageFlip() {
       setTimeout(() => this.$refs.flipbook.updateFromHtml(), 1000);
     },
