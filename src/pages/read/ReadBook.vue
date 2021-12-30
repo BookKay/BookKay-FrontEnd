@@ -145,7 +145,7 @@
 import SplashScreen from "src/components/AppSplashScreen.vue";
 import Book from "src/components/reader/Book";
 import Drawer from "src/components/reader/Drawer";
-import SideBarContents from "src/components/write/SideBarContents.vue";
+import SideBarContents from "src/components/SideBarContents.vue";
 import ReaderSettings from "src/components/reader/ReaderSettings.vue";
 import Dictionary from "src/components/reader/Dictionary.vue";
 

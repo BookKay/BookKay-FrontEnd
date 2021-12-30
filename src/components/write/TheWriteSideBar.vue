@@ -28,7 +28,7 @@
   />
 </template>
 <script>
-import SideBarContents from "src/components/write/SideBarContents.vue";
+import SideBarContents from "src/components/SideBarContents.vue";
 import AppPromptDialog from "src/components/AppPromptDialog.vue";
 import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
 import { editorNavigations } from "src/data/EditorNavigations.js";

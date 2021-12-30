@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container">
     <div class="sidebar-contents">
-      <q-list padding class="rounded-borders hotkeys-container">
+      <q-list padding class="">
         <div v-for="(content, index) in contents" :key="index">
           <q-item
             v-if="typeof content.data == 'string'"
@@ -75,7 +75,6 @@
               </q-item>
             </div>
           </q-expansion-item>
-          <!-- <q-separator style="margin-bottom: 25px" spaced inset /> -->
         </div>
       </q-list>
     </div>
