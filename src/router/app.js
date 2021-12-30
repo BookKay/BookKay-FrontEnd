@@ -16,11 +16,6 @@ const appRoutes = [
         component: () => import("src/pages/app/WritePage.vue"),
       },
       {
-        path: "add-manuscript",
-        name: "app-add-manuscript",
-        component: () => import("src/pages/app/AddManuscriptPage.vue"),
-      },
-      {
         path: "store",
         name: "app-store",
         component: () => import("src/pages/app/BookShopPage.vue"),

@@ -7,10 +7,7 @@
           @submit.prevent.stop="signInSubmit"
         >
           <h2 class="title">Sign in</h2>
-          <!-- <div class="input-field">
-            <i class="fas fa-user"></i>
-            <input type="text" placeholder="Username" />
-          </div> -->
+
           <q-input
             v-model="signIn.user.email"
             ref="signInEmail"
@@ -85,19 +82,7 @@
         </q-form>
         <q-form class="sign-up-form" @submit.prevent.stop="signUpSubmit">
           <h2 class="title">Sign up</h2>
-          <!-- <div class="input-field">
-            <i class="fas fa-user"></i>
-            <input type="text" placeholder="Username" />
-          </div>
-          <div class="input-field">
-            <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="Email" />
-          </div>
-          <div class="input-field">
-            <i class="fas fa-lock"></i>
-            <input type="password" placeholder="Password" />
-          </div>
-          <q-btn label="Register" :ripple="{ early: true }" class="btn solid" /> -->
+
           <q-input
             v-model="signUp.user.username"
             ref="signUpUsername"
@@ -200,22 +185,6 @@
               size="1.2em"
             />
           </q-btn>
-
-          <!-- <p class="social-text">Or Sign up with social platforms</p>
-          <div class="social-media">
-            <a href="#" class="social-icon">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-google"></i>
-            </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-linkedin-in"></i>
-            </a>
-          </div> -->
         </q-form>
       </div>
     </div>

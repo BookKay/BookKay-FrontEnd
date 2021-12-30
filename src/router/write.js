@@ -13,33 +13,21 @@ const writeRoutes = [
         path: "manuscript/:manuscript_id/details",
         name: "write-detail",
         component: () => import("src/pages/app/BookDetailPage.vue"),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: "manuscript/:manuscript_id/config",
-        name: "write-config",
-        component: () => import("src/pages/write/ConfigPage.vue"),
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
       },
       {
         path: "manuscript/:manuscript_id/overview",
         name: "write-overview",
         component: () => import("src/pages/write/OverviewPage.vue"),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: "manuscript/:manuscript_id/characters",
-        name: "write-character",
-        component: () => import("src/pages/write/CharacterPage.vue"),
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
       },
       {
         path: "editor",
         name: "write-editor",
-        component: () => import("src/pages/write/EditorPage.vue")
-      }
-    ]
-  }
+        component: () => import("src/pages/write/EditorPage.vue"),
+      },
+    ],
+  },
 ];
 
 export default writeRoutes;

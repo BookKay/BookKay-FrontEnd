@@ -9,7 +9,6 @@ const homeRoutes = [
         name: "home-homepage",
         component: () => import("src/pages/home/HomePage.vue"),
       },
-
       {
         path: "sign-in",
         name: "home-sign-in",

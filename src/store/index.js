@@ -1,7 +1,6 @@
 import { store } from "quasar/wrappers";
 import { createStore } from "vuex";
 
-import example from "./module-example";
 import user from "./user";
 import write from "./write";
 
@@ -19,7 +18,6 @@ import write from "./write";
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
-      example,
       user,
       write,
     },
