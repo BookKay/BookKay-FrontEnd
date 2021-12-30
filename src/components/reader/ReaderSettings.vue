@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import HotKeysInfoDialog from "src/components/write/HotKeysInfoDialog.vue";
+import HotKeysInfoDialog from "src/components/HotKeysInfoDialog.vue";
 import { readerHotkeys } from "src/data/ReaderHotKeys.js";
 
 export default {

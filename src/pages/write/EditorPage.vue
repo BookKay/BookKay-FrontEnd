@@ -90,7 +90,7 @@
 
 <script>
 //Importing Components
-import HotKeysInfoDialog from "src/components/write/HotKeysInfoDialog.vue";
+import HotKeysInfoDialog from "src/components/HotKeysInfoDialog.vue";
 
 import EditorJS from "@editorjs/editorjs";
 import Marker from "@editorjs/marker";
