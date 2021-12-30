@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: "SearchBar",
+  name: "AppSearchBar",
   props: {
     text: {
       type: String,

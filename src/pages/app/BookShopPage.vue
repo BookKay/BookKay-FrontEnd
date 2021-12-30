@@ -1,16 +1,15 @@
 <template>
   <q-page>
-    <!-- <q-pull-to-refresh
-      ref="pullRefresh"
-      id="pullRefresh"
-      @refresh="handleRefresh"
-    > -->
     <div class="heading" id="shop-heading">
       <h1>Book Shop</h1>
     </div>
 
     <div class="search-bar">
-      <search-bar :text="searchText" ref="searchBar" @search="handleSearch" />
+      <app-search-bar
+        :text="searchText"
+        ref="searchBar"
+        @search="handleSearch"
+      />
     </div>
 
     <transition
@@ -20,20 +19,14 @@
     >
       <router-view ref="child" />
     </transition>
-    <!-- </q-pull-to-refresh> -->
-
-    <!--Loading container-->
-    <!--<div v-if="loading" class="window-height relative position">
-      <q-spinner-ios class="absolute-center" color="teal" size="60px" />
-    </div>-->
   </q-page>
 </template>
 
 <script>
-import SearchBar from "src/components/helpers/SearchBar.vue";
+import AppSearchBar from "src/components/AppSearchBar.vue";
 
 export default {
-  components: { SearchBar },
+  components: { AppSearchBar },
   name: "ShopPage",
   computed: {
     alignment() {
