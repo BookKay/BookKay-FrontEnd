@@ -37,7 +37,7 @@
 
 <script>
 export default {
-  name: "BottomNav",
+  name: "AppBottomNav",
 
   data() {
     return {
