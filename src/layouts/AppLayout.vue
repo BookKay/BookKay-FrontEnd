@@ -15,7 +15,7 @@
 
 <script>
 import TheBottomNav from "src/components/TheBottomNav.vue";
-import SplashScreen from "src/components/AppSplashScreen.vue";
+import SplashScreen from "src/components/TheSplashScreen.vue";
 
 export default {
   components: { TheBottomNav, SplashScreen },
