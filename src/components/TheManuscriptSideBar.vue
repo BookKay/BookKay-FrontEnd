@@ -34,7 +34,7 @@ import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
 import { editorNavigations } from "src/data/EditorNavigations.js";
 
 export default {
-  name: "TheWriteSideBar",
+  name: "TheManuscriptSideBar",
   components: { SideBarContents, AppPromptDialog, AppConfirmDialog },
   props: {
     isReady: {

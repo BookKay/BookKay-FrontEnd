@@ -22,7 +22,7 @@
       :overlay="$q.screen.lt.sm"
       :behavior="$q.screen.lt.sm ? 'mobile' : 'desktop'"
     >
-      <the-write-side-bar :isReady="loaded" />
+      <the-manuscript-side-bar :isReady="loaded" />
     </q-drawer>
 
     <q-page-container style="overflow-x: hidden">
@@ -37,12 +37,12 @@
 
 <script>
 import AppBottomNav from "src/components/AppBottomNav.vue";
-import TheWriteSideBar from "src/components/write/TheWriteSideBar.vue";
+import TheManuscriptSideBar from "src/components/TheManuscriptSideBar.vue";
 
 import { editorNavigations } from "src/data/EditorNavigations.js";
 
 export default {
-  components: { AppBottomNav, TheWriteSideBar },
+  components: { AppBottomNav, TheManuscriptSideBar },
   async mounted() {
     //Fetching current manuscript
     if (this.$route.params.manuscript_id) {
