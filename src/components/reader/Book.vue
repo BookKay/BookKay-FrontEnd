@@ -48,7 +48,7 @@
 import Flipbook from "src/components/reader/Flipbook.vue";
 import Page from "src/components/reader/Page.vue";
 import Cover from "src/components/reader/Cover.vue";
-import LoadingScreen from "src/components/helpers/LoadingScreen.vue";
+import LoadingScreen from "src/components/ReaderLoadingScreen.vue";
 
 import { useMeta } from "quasar";
 
