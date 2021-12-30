@@ -23,7 +23,7 @@ import { onMounted, ref } from "vue";
 import { gsap } from "gsap";
 
 export default {
-  name: "SplashScreen",
+  name: "AppSplashScreen",
   setup() {
     const $q = useQuasar();
 
@@ -61,7 +61,7 @@ export default {
 }
 
 .slider {
-  background-image: url("../../../public/homepage/meditation.svg");
+  background-image: url("../../public/homepage/meditation.svg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

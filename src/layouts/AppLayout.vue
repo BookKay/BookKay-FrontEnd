@@ -15,12 +15,11 @@
 
 <script>
 import AppBottomNav from "src/components/AppBottomNav.vue";
-import SplashScreen from "src/components/helpers/SplashScreen";
+import SplashScreen from "src/components/AppSplashScreen.vue";
 
 export default {
   components: { AppBottomNav, SplashScreen },
   mounted() {
-    //this.fetchUser();
     this.$store.dispatch("user/fetchUser");
   },
 

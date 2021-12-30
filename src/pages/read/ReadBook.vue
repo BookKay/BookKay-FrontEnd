@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import SplashScreen from "src/components/helpers/SplashScreen.vue";
+import SplashScreen from "src/components/AppSplashScreen.vue";
 import Book from "src/components/reader/Book";
 import Drawer from "src/components/reader/Drawer";
 import SideBarContents from "src/components/write/SideBarContents.vue";
