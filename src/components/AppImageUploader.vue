@@ -29,7 +29,7 @@
       </div>
     </q-img>
 
-    <confirm-dialog
+    <app-confirm-dialog
       :open="confirmDialog"
       :header="`Reupload ${label} image?`"
       btnLabel="Reupload"
@@ -40,11 +40,11 @@
 </template>
 
 <script>
-import ConfirmDialog from "src/components/AppConfirmDialog.vue";
+import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
 
 export default {
-  name: "ImageUploader",
-  components: { ConfirmDialog },
+  name: "AppImageUploader",
+  components: { AppConfirmDialog },
   props: {
     img: {
       type: String,
