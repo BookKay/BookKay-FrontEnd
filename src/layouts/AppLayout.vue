@@ -8,17 +8,17 @@
     </q-page-container>
 
     <q-footer>
-      <app-bottom-nav />
+      <the-bottom-nav />
     </q-footer>
   </q-layout>
 </template>
 
 <script>
-import AppBottomNav from "src/components/AppBottomNav.vue";
+import TheBottomNav from "src/components/TheBottomNav.vue";
 import SplashScreen from "src/components/AppSplashScreen.vue";
 
 export default {
-  components: { AppBottomNav, SplashScreen },
+  components: { TheBottomNav, SplashScreen },
   mounted() {
     this.$store.dispatch("user/fetchUser");
   },

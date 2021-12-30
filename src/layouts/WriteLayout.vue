@@ -30,19 +30,19 @@
     </q-page-container>
 
     <q-footer>
-      <app-bottom-nav />
+      <the-bottom-nav />
     </q-footer>
   </q-layout>
 </template>
 
 <script>
-import AppBottomNav from "src/components/AppBottomNav.vue";
+import TheBottomNav from "src/components/TheBottomNav.vue";
 import TheManuscriptSideBar from "src/components/TheManuscriptSideBar.vue";
 
 import { editorNavigations } from "src/data/EditorNavigations.js";
 
 export default {
-  components: { AppBottomNav, TheManuscriptSideBar },
+  components: { TheBottomNav, TheManuscriptSideBar },
   async mounted() {
     //Fetching current manuscript
     if (this.$route.params.manuscript_id) {
