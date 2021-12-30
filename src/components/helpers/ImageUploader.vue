@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import ConfirmDialog from "src/components/helpers/ConfirmDialog.vue";
+import ConfirmDialog from "src/components/AppConfirmDialog.vue";
 
 export default {
   name: "ImageUploader",

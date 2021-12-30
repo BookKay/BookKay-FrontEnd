@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import ConfirmDialog from "src/components/helpers/ConfirmDialog.vue";
+import ConfirmDialog from "src/components/AppConfirmDialog.vue";
 import PromptDialog from "src/components/helpers/PromptDialog.vue";
 import ThemeImage from "src/components/book/ThemeImage.vue";
 

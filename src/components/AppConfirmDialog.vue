@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  name: "ConfirmDialog",
+  name: "AppConfirmDialog",
   props: {
     open: {
       type: Boolean,

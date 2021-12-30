@@ -30,7 +30,7 @@
 <script>
 import SideBarContents from "src/components/write/SideBarContents.vue";
 import PromptDialog from "src/components/helpers/PromptDialog.vue";
-import ConfirmDialog from "src/components/helpers/ConfirmDialog.vue";
+import ConfirmDialog from "src/components/AppConfirmDialog.vue";
 import { editorNavigations } from "src/data/EditorNavigations.js";
 
 export default {
