@@ -46,7 +46,7 @@
       (For AutoGenerating these avatars).
     </div>
 
-    <prompt-dialog
+    <app-prompt-dialog
       v-for="(dialog, index) in promptDialogs"
       :key="index"
       :open="dialog.state"
@@ -56,7 +56,7 @@
       @confirmed="dialog.confirmHandler"
     />
 
-    <confirm-dialog
+    <app-confirm-dialog
       v-for="(dialog, index) in confirmDialogs"
       :key="index"
       :open="dialog.state"
@@ -70,13 +70,13 @@
 </template>
 
 <script>
-import ConfirmDialog from "src/components/AppConfirmDialog.vue";
-import PromptDialog from "src/components/helpers/PromptDialog.vue";
+import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
+import AppPromptDialog from "src/components/AppPromptDialog.vue";
 import ThemeImage from "src/components/book/ThemeImage.vue";
 
 export default {
   name: "PageProfile",
-  components: { PromptDialog, ConfirmDialog, ThemeImage },
+  components: { AppPromptDialog, AppConfirmDialog, ThemeImage },
   data() {
     return {
       username: this.$store.getters["user/userProperty"]("username"),

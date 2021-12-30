@@ -82,7 +82,7 @@
       </q-card>
     </q-dialog>
 
-    <prompt-dialog
+    <app-prompt-dialog
       v-for="(dialog, index) in promptDialogs"
       :key="index"
       :open="dialog.state"
@@ -93,7 +93,7 @@
       @confirmed="dialog.confirmHandler"
     />
 
-    <confirm-dialog
+    <app-confirm-dialog
       :open="confirmDialog.state"
       :header="confirmDialog.label"
       :text="confirmDialog.text"
@@ -106,12 +106,12 @@
 
 <script>
 import ImageUploader from "src/components/AppImageUploader.vue";
-import PromptDialog from "src/components/helpers/PromptDialog.vue";
-import ConfirmDialog from "src/components/AppConfirmDialog.vue";
+import AppPromptDialog from "src/components/AppPromptDialog.vue";
+import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
 
 export default {
   name: "OverviewPage",
-  components: { PromptDialog, ConfirmDialog, ImageUploader },
+  components: { AppPromptDialog, AppConfirmDialog, ImageUploader },
   data() {
     return {
       // frontCover: "https://placeimg.com/500/300/nature",

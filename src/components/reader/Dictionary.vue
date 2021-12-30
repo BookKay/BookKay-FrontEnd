@@ -1,5 +1,5 @@
 <template>
-  <prompt-dialog
+  <app-prompt-dialog
     :open="searchDialog"
     label="Dictionary"
     caption="Word To Search"
@@ -57,7 +57,7 @@
   </q-dialog>
 </template>
 <script>
-import PromptDialog from "src/components/helpers/PromptDialog.vue";
+import AppPromptDialog from "src/components/AppPromptDialog.vue";
 
 import { Navigation, Pagination, Keyboard, A11y } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
@@ -71,7 +71,7 @@ import "swiper/css/keyboard";
 
 export default {
   name: "Dictionary",
-  components: { PromptDialog, Swiper, SwiperSlide },
+  components: { AppPromptDialog, Swiper, SwiperSlide },
   data() {
     return {
       searchDialog: false,

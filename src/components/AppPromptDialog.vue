@@ -39,7 +39,7 @@
 
 <script>
 export default {
-  name: "PromptDialog",
+  name: "AppPromptDialog",
   props: {
     open: {
       type: Boolean,

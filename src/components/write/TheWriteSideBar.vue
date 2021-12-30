@@ -6,7 +6,7 @@
     @deleted="handleDelete"
   />
 
-  <prompt-dialog
+  <app-prompt-dialog
     v-for="(dialog, index) in promptDialogs"
     :key="index"
     :open="dialog.state"
@@ -16,7 +16,7 @@
     @confirmed="dialog.confirmHandler"
   />
 
-  <confirm-dialog
+  <app-confirm-dialog
     v-for="(dialog, index) in confirmDialogs"
     :key="index"
     :open="dialog.state"
@@ -29,13 +29,13 @@
 </template>
 <script>
 import SideBarContents from "src/components/write/SideBarContents.vue";
-import PromptDialog from "src/components/helpers/PromptDialog.vue";
-import ConfirmDialog from "src/components/AppConfirmDialog.vue";
+import AppPromptDialog from "src/components/AppPromptDialog.vue";
+import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
 import { editorNavigations } from "src/data/EditorNavigations.js";
 
 export default {
   name: "TheWriteSideBar",
-  components: { SideBarContents, PromptDialog, ConfirmDialog },
+  components: { SideBarContents, AppPromptDialog, AppConfirmDialog },
   props: {
     isReady: {
       type: Boolean,
