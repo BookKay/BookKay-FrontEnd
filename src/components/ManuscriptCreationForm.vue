@@ -36,7 +36,7 @@
         <h4>Types</h4>
       </div>
       <div class="row q-mt-md">
-        <book-type-choices
+        <manuscript-type-choice
           class="col-4"
           v-for="bookType in this.bookTypes"
           :bookType="bookType"
@@ -168,11 +168,11 @@
 </template>
 
 <script>
-import BookTypeChoices from "src/components/manuscript/BookTypeChoices.vue";
+import ManuscriptTypeChoice from "src/components/ManuscriptTypeChoice.vue";
 
 export default {
   name: "MakeManuscriptPage",
-  components: { BookTypeChoices },
+  components: { ManuscriptTypeChoice },
   data() {
     return {
       configs: {},

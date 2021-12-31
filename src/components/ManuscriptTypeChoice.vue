@@ -37,7 +37,7 @@
 
 <script>
 export default {
-  name: "BookTypeChoices",
+  name: "ManuscriptTypeChoice",
   props: {
     bookType: {
       type: Object,
