@@ -147,7 +147,7 @@ import Book from "src/components/reader/Book.vue";
 import Drawer from "src/components/ReaderDrawer.vue";
 import SideBarContents from "src/components/SideBarContents.vue";
 import ReaderSettings from "src/components/ReaderSettings.vue";
-import Dictionary from "src/components/reader/Dictionary.vue";
+import Dictionary from "src/components/Dictionary.vue";
 
 export default {
   components: {
