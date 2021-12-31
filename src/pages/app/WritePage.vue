@@ -17,7 +17,7 @@
 
     <div v-if="unpublishedManuscripts.length > 0">
       <h2 class="sub-heading last-write">Continue <b>writing...</b></h2>
-      <quick-book-link
+      <book-link
         :book="unpublishedManuscripts[0]"
         @btnClicked="
           this.$router.push({
@@ -63,7 +63,7 @@
 <script>
 import ManuscriptCreationForm from "src/components/ManuscriptCreationForm.vue";
 import SimpleBookList from "src/components/book/SimpleBookList.vue";
-import QuickBookLink from "src/components/book/QuickBookLink.vue";
+import BookLink from "src/components/BookLink.vue";
 import LinkingCard from "src/components/LinkingCard.vue";
 
 export default {
@@ -71,7 +71,7 @@ export default {
     ManuscriptCreationForm,
     SimpleBookList,
     LinkingCard,
-    QuickBookLink,
+    BookLink,
   },
   name: "WritePage",
   data() {

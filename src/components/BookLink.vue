@@ -40,7 +40,7 @@ export default {
       required: true,
     },
   },
-  name: "QuickBookLink",
+  name: "BookLink",
 
   data() {
     return {};

@@ -27,7 +27,7 @@
     </div>
     <div v-if="Object.keys(lastRead).length > 0">
       <h2 class="sub-heading last-read">Continue <b>reading...</b></h2>
-      <quick-book-link :book="lastRead" @btnClicked="onPrimaryClicked" />
+      <book-link :book="lastRead" @btnClicked="onPrimaryClicked" />
     </div>
     <div class="row write-link">
       <linking-card
@@ -78,7 +78,7 @@
 import SimpleBookList from "src/components/book/SimpleBookList.vue";
 import StandOutCard from "src/components/book/StandOutCard.vue";
 import ImageSlideshow from "src/components/ImageSlideshow.vue";
-import QuickBookLink from "src/components/book/QuickBookLink.vue";
+import BookLink from "src/components/BookLink.vue";
 import LinkingCard from "src/components/LinkingCard.vue";
 
 export default {
@@ -86,7 +86,7 @@ export default {
     SimpleBookList,
     StandOutCard,
     ImageSlideshow,
-    QuickBookLink,
+    BookLink,
     LinkingCard,
   },
   name: "AppPage",
