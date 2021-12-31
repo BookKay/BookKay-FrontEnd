@@ -5,7 +5,7 @@
     </div>
     <div v-if="purchasedBooks.length > 0">
       <h2 class="sub-heading">What would you like to read <b>today?</b></h2>
-      <simple-book-list
+      <book-list-swipeable
         :books="purchasedBooks"
         primaryLabel="Read"
         @primaryClicked="onPrimaryClicked"
@@ -63,7 +63,7 @@
       <h2 class="sub-heading">
         Feels like reading your published <b>books?</b>
       </h2>
-      <simple-book-list
+      <book-list-swipeable
         :books="authoredBooks"
         primaryLabel="Read"
         @primaryClicked="onPrimaryClicked"
@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import SimpleBookList from "src/components/book/SimpleBookList.vue";
+import BookListSwipeable from "src/components/BookListSwipeable.vue";
 import BookStandoutCard from "src/components/BookStandoutCard.vue";
 import ImageSlideshow from "src/components/ImageSlideshow.vue";
 import BookLink from "src/components/BookLink.vue";
@@ -83,7 +83,7 @@ import LinkingCard from "src/components/LinkingCard.vue";
 
 export default {
   components: {
-    SimpleBookList,
+    BookListSwipeable,
     BookStandoutCard,
     ImageSlideshow,
     BookLink,

@@ -32,7 +32,7 @@
       <h2 class="sub-heading">
         Which manuscripts would you like to work <b>today?</b>
       </h2>
-      <simple-book-list
+      <book-list-swipeable
         :books="unpublishedManuscripts"
         primaryLabel="Write"
         @primaryClicked="onPrimaryClicked"
@@ -45,7 +45,7 @@
       <h2 class="sub-heading">
         Want to edit back your publised <b>manuscripts?</b>
       </h2>
-      <simple-book-list
+      <book-list-swipeable
         :books="publishedManuscripts"
         primaryLabel="Edit"
         @primaryClicked="onPrimaryClicked"
@@ -62,14 +62,14 @@
 
 <script>
 import ManuscriptCreationForm from "src/components/ManuscriptCreationForm.vue";
-import SimpleBookList from "src/components/book/SimpleBookList.vue";
+import BookListSwipeable from "src/components/BookListSwipeable.vue";
 import BookLink from "src/components/BookLink.vue";
 import LinkingCard from "src/components/LinkingCard.vue";
 
 export default {
   components: {
     ManuscriptCreationForm,
-    SimpleBookList,
+    BookListSwipeable,
     LinkingCard,
     BookLink,
   },

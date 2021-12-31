@@ -15,7 +15,7 @@
   <div v-for="genre in genres" :key="genre.name">
     <div v-if="books[genre.name].length > 0" class="books-list">
       <h2 class="sub-heading">{{ genre.informal_description }}</h2>
-      <simple-book-list
+      <book-list-swipeable
         :books="books[genre.name]"
         primaryLabel="Read"
         @primaryClicked="onPrimaryClicked"
@@ -38,13 +38,13 @@
   </div>
 </template>
 <script>
-import SimpleBookList from "src/components/book/SimpleBookList.vue";
+import BookListSwipeable from "src/components/BookListSwipeable.vue";
 import LinkingCard from "src/components/LinkingCard.vue";
 import BookStandoutCard from "src/components/BookStandoutCard.vue";
 
 export default {
   name: "BookShopList",
-  components: { SimpleBookList, LinkingCard, BookStandoutCard },
+  components: { BookListSwipeable, LinkingCard, BookStandoutCard },
   data() {
     return {
       bestOfTheDay: {},
