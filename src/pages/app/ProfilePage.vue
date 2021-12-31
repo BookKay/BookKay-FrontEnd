@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="theme-img">
-      <theme-image
+      <image-slideshow
         :images="[
           `https://avatars.dicebear.com/api/micah/${this.username}.svg?mouth=smile`,
         ]"
@@ -72,11 +72,11 @@
 <script>
 import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
 import AppPromptDialog from "src/components/AppPromptDialog.vue";
-import ThemeImage from "src/components/book/ThemeImage.vue";
+import ImageSlideshow from "src/components/ImageSlideshow.vue";
 
 export default {
   name: "PageProfile",
-  components: { AppPromptDialog, AppConfirmDialog, ThemeImage },
+  components: { AppPromptDialog, AppConfirmDialog, ImageSlideshow },
   data() {
     return {
       username: this.$store.getters["user/userProperty"]("username"),

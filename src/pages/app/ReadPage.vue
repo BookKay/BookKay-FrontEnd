@@ -22,7 +22,7 @@
           @btnClicked="onPrimaryClicked"
           class="col"
         />
-        <theme-image class="col" :images="images" v-if="!$q.screen.lt.md" />
+        <image-slideshow class="col" :images="images" v-if="!$q.screen.lt.md" />
       </div>
     </div>
     <div v-if="Object.keys(lastRead).length > 0">
@@ -77,7 +77,7 @@
 <script>
 import SimpleBookList from "src/components/book/SimpleBookList.vue";
 import StandOutCard from "src/components/book/StandOutCard.vue";
-import ThemeImage from "src/components/book/ThemeImage.vue";
+import ImageSlideshow from "src/components/ImageSlideshow.vue";
 import QuickBookLink from "src/components/book/QuickBookLink.vue";
 import LinkingBox from "src/components/helpers/LinkingBox.vue";
 
@@ -85,7 +85,7 @@ export default {
   components: {
     SimpleBookList,
     StandOutCard,
-    ThemeImage,
+    ImageSlideshow,
     QuickBookLink,
     LinkingBox,
   },

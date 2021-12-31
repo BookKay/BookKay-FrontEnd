@@ -32,7 +32,7 @@ export default {
       required: true,
     },
   },
-  name: "ThemeImage",
+  name: "ImageSlideshow",
   mounted() {
     this.shuffledImages = this.shuffleArray(this.$props.images);
   },
