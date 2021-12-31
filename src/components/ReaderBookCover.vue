@@ -17,7 +17,7 @@ import { useQuasar } from "quasar";
 import { watch, reactive } from "vue";
 
 export default {
-  name: "Cover",
+  name: "Reader Book Cover",
   props: {
     url: {
       type: String,

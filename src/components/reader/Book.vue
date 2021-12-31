@@ -39,7 +39,7 @@
         :text="page.text"
         :fontSize="fontSize"
       />
-      <cover :url="backCover" />
+      <book-cover :url="backCover" />
     </flipbook>
   </div>
 </template>
@@ -47,7 +47,7 @@
 <script>
 import Flipbook from "src/components/reader/Flipbook.vue";
 import Page from "src/components/reader/Page.vue";
-import Cover from "src/components/reader/Cover.vue";
+import BookCover from "src/components/ReaderBookCover.vue";
 import LoadingScreen from "src/components/ReaderLoadingScreen.vue";
 
 import { useMeta } from "quasar";
@@ -61,7 +61,7 @@ export default {
     // LoadingScreen: () => import("src/components/helpers/LoadingScreen.vue"),
     Flipbook,
     Page,
-    Cover,
+    BookCover,
     LoadingScreen,
   },
   created() {
