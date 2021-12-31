@@ -55,20 +55,20 @@
     </div>
 
     <q-dialog v-model="addManuscriptDialog" class="dialog">
-      <add-manuscript @done="addManuscriptDialog = false" />
+      <manuscript-creation-form @done="addManuscriptDialog = false" />
     </q-dialog>
   </q-page>
 </template>
 
 <script>
-import AddManuscript from "src/components/write/AddManuscript.vue";
+import ManuscriptCreationForm from "src/components/ManuscriptCreationForm.vue";
 import SimpleBookList from "src/components/book/SimpleBookList.vue";
 import QuickBookLink from "src/components/book/QuickBookLink.vue";
 import LinkingBox from "src/components/helpers/LinkingBox.vue";
 
 export default {
   components: {
-    AddManuscript,
+    ManuscriptCreationForm,
     SimpleBookList,
     LinkingBox,
     QuickBookLink,
