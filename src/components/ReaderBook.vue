@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import Flipbook from "src/components/reader/Flipbook.vue";
+import Flipbook from "src/components/Flipbook.vue";
 import BookPage from "src/components/ReaderBookPage.vue";
 import BookCover from "src/components/ReaderBookCover.vue";
 import LoadingScreen from "src/components/ReaderLoadingScreen.vue";
