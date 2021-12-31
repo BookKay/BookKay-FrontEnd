@@ -144,7 +144,7 @@
 </template>
 
 <script>
-import QuickLink from "src/components/book/QuickLink.vue";
+import QuickLink from "src/components/QuickLink.vue";
 import LinkingCard from "src/components/LinkingCard.vue";
 import { copyToClipboard } from "quasar";
 
