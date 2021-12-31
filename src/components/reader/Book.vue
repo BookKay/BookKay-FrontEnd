@@ -1,7 +1,7 @@
 <template>
   <div>
     <loading-screen v-if="loading" :text="loadingText" />
-    <page
+    <book-page
       :pageNum="1"
       header="title"
       text=""
@@ -30,8 +30,8 @@
       @flipbookInit="onFlipbookInit"
       @pageTurned="onPageTurn"
     >
-      <cover :url="frontCover" />
-      <page
+      <book-cover :url="frontCover" />
+      <book-page
         v-for="page in pages"
         :key="page.pageNum"
         :pageNum="page.pageNum"
@@ -46,7 +46,7 @@
 
 <script>
 import Flipbook from "src/components/reader/Flipbook.vue";
-import Page from "src/components/reader/Page.vue";
+import BookPage from "src/components/ReaderBookPage.vue";
 import BookCover from "src/components/ReaderBookCover.vue";
 import LoadingScreen from "src/components/ReaderLoadingScreen.vue";
 
@@ -60,7 +60,7 @@ export default {
     // Cover: () => import("src/components/reader/Cover.vue"),
     // LoadingScreen: () => import("src/components/helpers/LoadingScreen.vue"),
     Flipbook,
-    Page,
+    BookPage,
     BookCover,
     LoadingScreen,
   },
