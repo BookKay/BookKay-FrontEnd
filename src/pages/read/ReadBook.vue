@@ -143,10 +143,10 @@
 
 <script>
 import SplashScreen from "src/components/TheSplashScreen.vue";
-import Book from "src/components/reader/Book";
-import Drawer from "src/components/reader/Drawer";
+import Book from "src/components/reader/Book.vue";
+import Drawer from "src/components/ReaderDrawer.vue";
 import SideBarContents from "src/components/SideBarContents.vue";
-import ReaderSettings from "src/components/reader/ReaderSettings.vue";
+import ReaderSettings from "src/components/ReaderSettings.vue";
 import Dictionary from "src/components/reader/Dictionary.vue";
 
 export default {
