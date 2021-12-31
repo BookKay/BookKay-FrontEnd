@@ -30,7 +30,7 @@
       <quick-book-link :book="lastRead" @btnClicked="onPrimaryClicked" />
     </div>
     <div class="row write-link">
-      <linking-box
+      <linking-card
         class="col-12 col-sm-6"
         mainText="Feels like writing your own book?"
         text="Try writing in our editor."
@@ -46,7 +46,7 @@
     </div>
     <div class="row shop-link">
       <div class="col-sm-6"></div>
-      <linking-box
+      <linking-card
         class="col-12 col-sm-6"
         mainText="Feels like going out for book shopping?"
         text="Try browsing our store"
@@ -79,7 +79,7 @@ import SimpleBookList from "src/components/book/SimpleBookList.vue";
 import StandOutCard from "src/components/book/StandOutCard.vue";
 import ImageSlideshow from "src/components/ImageSlideshow.vue";
 import QuickBookLink from "src/components/book/QuickBookLink.vue";
-import LinkingBox from "src/components/helpers/LinkingBox.vue";
+import LinkingCard from "src/components/LinkingCard.vue";
 
 export default {
   components: {
@@ -87,7 +87,7 @@ export default {
     StandOutCard,
     ImageSlideshow,
     QuickBookLink,
-    LinkingBox,
+    LinkingCard,
   },
   name: "AppPage",
   beforeMount() {

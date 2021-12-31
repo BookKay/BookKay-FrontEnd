@@ -41,7 +41,7 @@
     </div>
 
     <div class="row info-container">
-      <linking-box
+      <linking-card
         class="col-12 col-sm-6"
         mainText="General Information"
         img="svg/information_tab.svg"
@@ -68,13 +68,13 @@
             >
           </q-item>
         </q-list>
-      </linking-box>
+      </linking-card>
       <div class="col-sm-6"></div>
     </div>
 
     <div class="row stats-container">
       <div class="col-sm-6"></div>
-      <linking-box
+      <linking-card
         class="col-12 col-sm-6"
         mainText="Numerical Data"
         img="svg/growing.svg"
@@ -103,7 +103,7 @@
             >
           </q-item>
         </q-list>
-      </linking-box>
+      </linking-card>
     </div>
 
     <div class="row bottom-buttons">
@@ -145,12 +145,12 @@
 
 <script>
 import QuickLink from "src/components/book/QuickLink.vue";
-import LinkingBox from "src/components/helpers/LinkingBox.vue";
+import LinkingCard from "src/components/LinkingCard.vue";
 import { copyToClipboard } from "quasar";
 
 export default {
   name: "BookDetailPage",
-  components: { QuickLink, LinkingBox },
+  components: { QuickLink, LinkingCard },
 
   data() {
     return {

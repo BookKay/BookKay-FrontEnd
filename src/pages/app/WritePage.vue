@@ -5,7 +5,7 @@
     </div>
 
     <div>
-      <linking-box
+      <linking-card
         class="write-link"
         mainText="Just got an idea for the next best seller?"
         text="Let's go write that down! What are you waiting for?"
@@ -64,13 +64,13 @@
 import ManuscriptCreationForm from "src/components/ManuscriptCreationForm.vue";
 import SimpleBookList from "src/components/book/SimpleBookList.vue";
 import QuickBookLink from "src/components/book/QuickBookLink.vue";
-import LinkingBox from "src/components/helpers/LinkingBox.vue";
+import LinkingCard from "src/components/LinkingCard.vue";
 
 export default {
   components: {
     ManuscriptCreationForm,
     SimpleBookList,
-    LinkingBox,
+    LinkingCard,
     QuickBookLink,
   },
   name: "WritePage",

@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  name: "LinkingBox",
+  name: "LinkingCard",
   props: {
     mainText: {
       type: String,
