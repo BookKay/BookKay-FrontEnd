@@ -16,7 +16,7 @@
     <div v-if="Object.keys(bestOfTheDay).length">
       <h2 class="sub-heading">Best of the <b>day!</b></h2>
       <div class="row">
-        <stand-out-card
+        <book-standout-card
           :book="bestOfTheDay"
           btnLabel="Read"
           @btnClicked="onPrimaryClicked"
@@ -76,7 +76,7 @@
 
 <script>
 import SimpleBookList from "src/components/book/SimpleBookList.vue";
-import StandOutCard from "src/components/book/StandOutCard.vue";
+import BookStandoutCard from "src/components/BookStandoutCard.vue";
 import ImageSlideshow from "src/components/ImageSlideshow.vue";
 import BookLink from "src/components/BookLink.vue";
 import LinkingCard from "src/components/LinkingCard.vue";
@@ -84,7 +84,7 @@ import LinkingCard from "src/components/LinkingCard.vue";
 export default {
   components: {
     SimpleBookList,
-    StandOutCard,
+    BookStandoutCard,
     ImageSlideshow,
     BookLink,
     LinkingCard,

@@ -13,8 +13,7 @@
           </q-tooltip>
         </div>
         <p class="author-name">{{ book.author_name }}</p>
-        <!--</div>
-      <div class="absolute-bottom">-->
+
         <div>
           <p class="description ellipsis-3-lines">{{ book.description }}</p>
           <q-tooltip
@@ -44,7 +43,7 @@
 <script>
 export default {
   components: {},
-  name: "StandOutCard",
+  name: "BookStandoutCard",
   props: {
     book: {
       type: Object,
