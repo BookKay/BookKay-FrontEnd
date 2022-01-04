@@ -54,6 +54,7 @@ export default {
   methods: {},
 };
 </script>
+
 <style lang="scss" scoped>
 .container {
   background-color: rgba(240, 250, 249);
