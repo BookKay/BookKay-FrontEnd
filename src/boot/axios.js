@@ -10,7 +10,8 @@ import { Cookies, LocalStorage, Notify } from "quasar";
 // for each client)
 let baseURL = "";
 if (process.env.DEV) {
-  baseURL = "http://localhost:8000/api/v1.0/";
+  //baseURL = "http://localhost:8000/api/v1.0/";
+  baseURL = " https://bookkay-backend-dev.herokuapp.com/api/v1.0/";
 } else {
   //baseURL = "api.bookkay.com/api/v1.0/";
   baseURL = " https://bookkay-backend.herokuapp.com/api/v1.0/";
