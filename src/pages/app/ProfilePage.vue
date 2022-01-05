@@ -1,10 +1,8 @@
 <template>
   <q-page>
     <div class="theme-img">
-      <image-slideshow
-        :images="[
-          `https://avatars.dicebear.com/api/micah/${this.username}.svg?mouth=smile`,
-        ]"
+      <image-circle
+        :image="`https://avatars.dicebear.com/api/micah/${this.getUsername}.svg?mouth=smile`"
       />
     </div>
 
@@ -72,11 +70,11 @@
 <script>
 import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
 import AppPromptDialog from "src/components/AppPromptDialog.vue";
-import ImageSlideshow from "src/components/ImageSlideshow.vue";
+import ImageCircle from "src/components/ImageCircle.vue";
 
 export default {
   name: "PageProfile",
-  components: { AppPromptDialog, AppConfirmDialog, ImageSlideshow },
+  components: { AppPromptDialog, AppConfirmDialog, ImageCircle },
   data() {
     return {
       username: this.$store.getters["user/userProperty"]("username"),
