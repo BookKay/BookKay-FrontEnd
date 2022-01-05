@@ -120,6 +120,11 @@ export default {
           clickHandler: this.changeEmail,
         },
         {
+          label: "Edit Profile Image",
+          value: "",
+          clickHandler: this.changeProfileImage,
+        },
+        {
           label: "Author Name",
           value: this.getAuthorName,
           clickHandler: this.changeAuthorName,
@@ -228,6 +233,9 @@ export default {
     },
     changeEmail() {
       this.emailDialog = true;
+    },
+    changeProfileImage() {
+      this.$router.push({ name: "app-profile-image-edit" });
     },
     changeAuthorName() {
       this.authorNameDialog = true;

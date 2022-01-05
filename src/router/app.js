@@ -48,6 +48,11 @@ const appRoutes = [
         component: () => import("src/pages/app/ProfilePage.vue"),
       },
       {
+        path: "profile-image-edit",
+        name: "app-profile-image-edit",
+        component: () => import("src/pages/app/ProfileImageEditPage.vue"),
+      },
+      {
         path: "change-password",
         name: "app-change-password",
         component: () => import("src/pages/app/ChangePasswordPage.vue"),
