@@ -208,4 +208,10 @@ export default {
     line-height: 2.75rem;
   }
 }
+
+.transition-container_not-found {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
 </style>
