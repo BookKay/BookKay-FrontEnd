@@ -1,37 +1,48 @@
 <template>
   <div class="tab-container" :class="tabClasses">
-    <div
+    <q-btn
+      flat
+      :ripple="{ early: 'true' }"
       class="tab purple"
       v-bind:class="{ active: currentTab == 'read' }"
       @click="(currentTab = 'read'), $router.push({ name: 'app-read' })"
     >
       <q-icon name="book" class="icon" />
       <p>Read</p>
-    </div>
-    <div
+    </q-btn>
+
+    <q-btn
+      flat
+      :ripple="{ early: 'true' }"
       class="tab pink"
       v-bind:class="{ active: currentTab == 'write' }"
       @click="(currentTab = 'write'), $router.push({ name: 'app-write' })"
     >
       <q-icon name="brush" class="icon" />
       <p>Write</p>
-    </div>
-    <div
+    </q-btn>
+
+    <q-btn
+      flat
+      :ripple="{ early: 'true' }"
       class="tab yellow"
       v-bind:class="{ active: currentTab == 'shop' }"
       @click="(currentTab = 'shop'), $router.push({ name: 'app-store-list' })"
     >
       <q-icon name="shopping_cart" class="icon" />
       <p>Shop</p>
-    </div>
-    <div
+    </q-btn>
+
+    <q-btn
+      flat
+      :ripple="{ early: 'true' }"
       class="tab teal"
       v-bind:class="{ active: currentTab == 'profile' }"
       @click="(currentTab = 'profile'), $router.push({ name: 'app-profile' })"
     >
       <q-icon name="settings" class="icon" />
       <p>Profile</p>
-    </div>
+    </q-btn>
   </div>
 </template>
 
