@@ -40,16 +40,16 @@ export default {
     const $q = useQuasar();
 
     const pageClasses = reactive({
-      "page--dark": $q.dark.isActive,
+      "page-dark--default": $q.dark.isActive,
     });
 
     watch(
       () => $q.dark.isActive,
       (val) => {
         if (val) {
-          pageClasses["page--dark"] = true;
+          pageClasses["page-dark--default"] = true;
         } else {
-          pageClasses["page--dark"] = false;
+          pageClasses["page-dark--default"] = false;
         }
       }
     );
@@ -61,6 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+@import url("themes/dark--default.scss");
 
 .page {
   padding: 20px;
@@ -283,23 +284,6 @@ export default {
   }
 }
 
-//Dark Mode
-.page--dark {
-  background-color: #231f20;
-  color: #d3d3d3;
-
-  .page-text ::v-deep(mark) {
-    background: rgba(106, 82, 243, 0.29) !important;
-    color: white;
-  }
-
-  .page-text ::v-deep(.img-credits) {
-    a {
-      color: white !important;
-    }
-  }
-}
-
 @media (max-width: 780px) {
   .page-text ::v-deep(img) {
     width: 340px;
@@ -313,4 +297,6 @@ export default {
     height: 300px;
   }
 }
+
+@import url("themes/dark--default.scss");
 </style>
