@@ -114,11 +114,6 @@ export default {
   components: { AppPromptDialog, AppConfirmDialog, ImageUploader },
   data() {
     return {
-      // frontCover: "https://placeimg.com/500/300/nature",
-      // backCover: "",
-      // title: "The Great Book",
-      // description: "A very very interesting book",
-      // authorName: "Kevin",
       price: "Free",
 
       // containFrontMatter:
@@ -207,12 +202,13 @@ export default {
             ).contain_back_matter;
         }
       },
-      //deep: true,
-      //immediate: true,
+      deep: true,
+      immediate: true,
     },
   },
 
   computed: {
+    //Book properties
     frontCover() {
       return this.$store.getters["write/manuscriptProperty"]("front_cover");
     },
@@ -229,6 +225,7 @@ export default {
       return this.$store.getters["user/userProperty"]("author_name");
     },
 
+    //Book Covers
     getFrontCoverURL() {
       let url = `${this.$api.defaults.baseURL}manuscripts/${this.$store.getters[
         "write/manuscriptProperty"
