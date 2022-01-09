@@ -16,6 +16,8 @@
 import { useQuasar } from "quasar";
 import { watch, reactive } from "vue";
 
+import * as themes from "./themes/themes.json";
+
 export default {
   name: "Page",
   props: {
