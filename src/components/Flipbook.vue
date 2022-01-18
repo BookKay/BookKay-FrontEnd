@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import { PageFlip } from "page-flip";
+import { PageFlip } from 'page-flip';
 
 export default {
-  name: "Flipbook",
+  name: 'Flipbook',
   props: {
     width: {
       type: Number,
@@ -21,7 +21,7 @@ export default {
     size: {
       validator: function (value) {
         // The value must match one of these strings
-        return ["fixed", "stretch"].indexOf(value) !== -1;
+        return ['fixed', 'stretch'].indexOf(value) !== -1;
       },
     },
     minWidth: {
@@ -102,7 +102,7 @@ export default {
   },
   data() {
     return {
-      pageFlip: "",
+      pageFlip: '',
     };
   },
   methods: {
@@ -135,25 +135,25 @@ export default {
       //Initialising page flip
       const pageFlip = new PageFlip(parent, settings);
       if (!pageFlip.getFlipController()) {
-        pageFlip.loadFromHTML(document.querySelectorAll(".page"));
+        pageFlip.loadFromHTML(document.querySelectorAll('.page'));
       } else {
-        pageFlip.updateFromHtml(document.querySelectorAll(".page"));
+        pageFlip.updateFromHtml(document.querySelectorAll('.page'));
       }
 
       //Adding event listeners
-      pageFlip.on("init", (e) => {
-        this.$emit("flipbookInit", e.data);
+      pageFlip.on('init', (e) => {
+        this.$emit('flipbookInit', e.data);
       });
 
-      pageFlip.on("flip", (e) => {
-        this.$emit("pageTurned", e.data);
+      pageFlip.on('flip', (e) => {
+        this.$emit('pageTurned', e.data);
       });
 
       this.pageFlip = pageFlip;
     },
 
     updateFromHtml() {
-      this.pageFlip.updateFromHtml(document.querySelectorAll(".page"));
+      this.pageFlip.updateFromHtml(document.querySelectorAll('.page'));
     },
 
     getOrientation() {
@@ -164,14 +164,14 @@ export default {
       this.pageFlip.getPageCount();
     },
 
-    flip(pageNum, corner = "") {
-      if ((corner = "")) {
+    flip(pageNum, corner = '') {
+      if ((corner = '')) {
         corner = this.getCorner();
       }
       this.pageFlip.flip(pageNum, corner);
     },
 
-    flipNext(corner = "") {
+    flipNext(corner = '') {
       if (!corner) {
         corner = this.getCorner();
       }
@@ -179,7 +179,7 @@ export default {
       this.pageFlip.flipNext(corner);
     },
 
-    flipPrev(corner = "") {
+    flipPrev(corner = '') {
       if (!corner) {
         corner = this.getCorner();
       }
@@ -200,8 +200,8 @@ export default {
     },
 
     getCorner() {
-      var corners = ["top", "bottom"];
-      var randomCorner = corners[Math.floor(Math.random() * corners.length)];
+      let corners = ['top', 'bottom'];
+      let randomCorner = corners[Math.floor(Math.random() * corners.length)];
 
       return randomCorner;
     },

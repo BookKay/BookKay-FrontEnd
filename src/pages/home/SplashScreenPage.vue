@@ -6,17 +6,17 @@
 export default {
   beforeMount() {
     if (
-      !!this.$q.cookies.get("refreshToken") &&
-      !!this.$q.localStorage.getItem("user")
+      !!this.$q.cookies.get('refreshToken') &&
+      !!this.$q.localStorage.getItem('user')
     ) {
       this.$router.push({
-        name: "app-read"
+        name: 'app-read',
       });
     } else {
       this.$router.push({
-        name: "home-homepage"
+        name: 'home-homepage',
       });
     }
-  }
+  },
 };
 </script>

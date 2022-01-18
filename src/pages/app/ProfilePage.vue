@@ -68,20 +68,20 @@
 </template>
 
 <script>
-import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
-import AppPromptDialog from "src/components/AppPromptDialog.vue";
-import ImageCircle from "src/components/ImageCircle.vue";
+import AppConfirmDialog from 'src/components/AppConfirmDialog.vue';
+import AppPromptDialog from 'src/components/AppPromptDialog.vue';
+import ImageCircle from 'src/components/ImageCircle.vue';
 
 export default {
-  name: "PageProfile",
+  name: 'PageProfile',
   components: { AppPromptDialog, AppConfirmDialog, ImageCircle },
   data() {
     return {
-      username: this.$store.getters["user/userProperty"]("username"),
-      email: this.$store.getters["user/userProperty"]("email"),
-      authorName: this.$store.getters["user/userProperty"]("author_name"),
-      biography: this.$store.getters["user/userProperty"]("biography"),
-      dateJoined: this.$store.getters["user/userProperty"]("date_joined"),
+      username: this.$store.getters['user/userProperty']('username'),
+      email: this.$store.getters['user/userProperty']('email'),
+      authorName: this.$store.getters['user/userProperty']('author_name'),
+      biography: this.$store.getters['user/userProperty']('biography'),
+      dateJoined: this.$store.getters['user/userProperty']('date_joined'),
 
       usernameDialog: false,
       emailDialog: false,
@@ -93,61 +93,61 @@ export default {
   },
   computed: {
     getUsername() {
-      return this.$store.getters["user/userProperty"]("username");
+      return this.$store.getters['user/userProperty']('username');
     },
     getEmail() {
-      return this.$store.getters["user/userProperty"]("email");
+      return this.$store.getters['user/userProperty']('email');
     },
     getAuthorName() {
-      return this.$store.getters["user/userProperty"]("author_name");
+      return this.$store.getters['user/userProperty']('author_name');
     },
     getBiography() {
-      return this.$store.getters["user/userProperty"]("biography");
+      return this.$store.getters['user/userProperty']('biography');
     },
     getDateJoined() {
-      return this.$store.getters["user/userProperty"]("date_joined");
+      return this.$store.getters['user/userProperty']('date_joined');
     },
     fields() {
       return [
         {
-          label: "Username",
+          label: 'Username',
           value: this.getUsername,
           clickHandler: this.changeUsername,
         },
         {
-          label: "Email",
+          label: 'Email',
           value: this.getEmail,
           clickHandler: this.changeEmail,
         },
         {
-          label: "Edit Profile Image",
-          value: "",
+          label: 'Edit Profile Image',
+          value: '',
           clickHandler: this.changeProfileImage,
         },
         {
-          label: "Author Name",
+          label: 'Author Name',
           value: this.getAuthorName,
           clickHandler: this.changeAuthorName,
         },
         {
-          label: "Biography",
+          label: 'Biography',
           value: this.getBiography,
           clickHandler: this.changeBiography,
         },
         {
-          label: "Date Joined",
+          label: 'Date Joined',
           value: this.dateJoined,
         },
         {
-          label: "Change Password",
+          label: 'Change Password',
           clickHandler: this.changePassword,
         },
         {
-          label: "Logout",
+          label: 'Logout',
           clickHandler: this.confirmLogOut,
         },
         {
-          label: "Delete Account",
+          label: 'Delete Account',
           clickHandler: this.confirmDelete,
         },
       ];
@@ -156,47 +156,47 @@ export default {
     promptDialogs() {
       return [
         {
-          label: "Username",
+          label: 'Username',
           state: this.usernameDialog,
           value: this.getUsername,
           rules: [
             (val) =>
-              (val !== null && val !== "") || "Please type your username",
-            (val) => val.length <= 100 || "Username must be smaller than 100",
+              (val !== null && val !== '') || 'Please type your username',
+            (val) => val.length <= 100 || 'Username must be smaller than 100',
           ],
           confirmHandler: this.confirmUsername,
         },
         {
-          label: "Email",
+          label: 'Email',
           state: this.emailDialog,
           value: this.getEmail,
           rules: [
-            (val) => (val !== null && val !== "") || "Please type your email",
-            (val) => val.length <= 100 || "Email must be smaller than 100",
-            (val) => val.indexOf("@") != -1 || "Please type a real email",
+            (val) => (val !== null && val !== '') || 'Please type your email',
+            (val) => val.length <= 100 || 'Email must be smaller than 100',
+            (val) => val.indexOf('@') != -1 || 'Please type a real email',
           ],
           confirmHandler: this.confirmEmail,
         },
         {
-          label: "Author Name",
+          label: 'Author Name',
           state: this.authorNameDialog,
           value: this.getAuthorName,
           rules: [
             (val) =>
-              (val !== null && val !== "") || "Please type your author name",
+              (val !== null && val !== '') || 'Please type your author name',
             (val) =>
-              val.length <= 100 || "Author name must be smaller than 100",
+              val.length <= 100 || 'Author name must be smaller than 100',
           ],
           confirmHandler: this.confirmAuthorName,
         },
         {
-          label: "Biography",
+          label: 'Biography',
           state: this.biographyDialog,
           value: this.getBiography,
           rules: [
             (val) =>
               val.length <= 5000 ||
-              "Your biography must be smaller than 5000 letters",
+              'Your biography must be smaller than 5000 letters',
           ],
           confirmHandler: this.confirmBiography,
         },
@@ -206,21 +206,21 @@ export default {
     confirmDialogs() {
       return [
         {
-          label: "Log Out",
+          label: 'Log Out',
           state: this.logOutDialog,
-          text: "Are you sure you want to log out?",
-          btnLabel: "Logout",
-          btnColor: "warning",
+          text: 'Are you sure you want to log out?',
+          btnLabel: 'Logout',
+          btnColor: 'warning',
           confirmHandler: this.logOut,
         },
         {
-          label: "Delete Account",
+          label: 'Delete Account',
           state: this.deleteDialog,
           text: `Are you sure you want to delete your account? All your data like your
           purchased books and manuscripts will be deleted but books you
           published will remain.`,
-          btnLabel: "Delete",
-          btnColor: "negative",
+          btnLabel: 'Delete',
+          btnColor: 'negative',
           confirmHandler: this.deleteAccount,
         },
       ];
@@ -235,7 +235,7 @@ export default {
       this.emailDialog = true;
     },
     changeProfileImage() {
-      this.$router.push({ name: "app-profile-image-edit" });
+      this.$router.push({ name: 'app-profile-image-edit' });
     },
     changeAuthorName() {
       this.authorNameDialog = true;
@@ -244,7 +244,7 @@ export default {
       this.biographyDialog = true;
     },
     changePassword() {
-      this.$router.push({ name: "app-change-password" });
+      this.$router.push({ name: 'app-change-password' });
     },
     confirmLogOut() {
       this.logOutDialog = true;
@@ -259,17 +259,17 @@ export default {
 
       if (newUsername && this.username != newUsername) {
         this.$store
-          .dispatch("user/edit", { username: newUsername } /*, { root: true }*/)
-          .then((data) => {})
+          .dispatch('user/edit', { username: newUsername } /*, { root: true }*/)
+          .then()
           .catch((error) => {
             console.log(error);
             this.$q.notify({
-              color: "negative",
-              position: "top",
+              color: 'negative',
+              position: 'top',
               message:
                 error.response.data.message ||
-                "Please relogin to edit your credentials",
-              icon: "error",
+                'Please relogin to edit your credentials',
+              icon: 'error',
             });
             this.username = this.getUsername;
           });
@@ -279,17 +279,17 @@ export default {
       this.emailDialog = false;
       if (newEmail && this.email != newEmail) {
         this.$store
-          .dispatch("user/edit", { email: newEmail } /*, { root: true }*/)
-          .then((data) => {})
+          .dispatch('user/edit', { email: newEmail } /*, { root: true }*/)
+          .then()
           .catch((error) => {
             console.log(error);
             this.$q.notify({
-              color: "negative",
-              position: "top",
+              color: 'negative',
+              position: 'top',
               message:
                 error.response.data.message ||
-                "Please relogin to edit your credentials",
-              icon: "error",
+                'Please relogin to edit your credentials',
+              icon: 'error',
             });
             this.email = this.getEmail;
           });
@@ -300,19 +300,19 @@ export default {
       if (newAuthorName && this.authorName != newAuthorName) {
         this.$store
           .dispatch(
-            "user/edit",
+            'user/edit',
             { author_name: newAuthorName } /*, { root: true }*/
           )
-          .then((data) => {})
+          .then()
           .catch((error) => {
             console.log(error);
             this.$q.notify({
-              color: "negative",
-              position: "top",
+              color: 'negative',
+              position: 'top',
               message:
                 error.response.data.message ||
-                "Please relogin to edit your credentials",
-              icon: "error",
+                'Please relogin to edit your credentials',
+              icon: 'error',
             });
             this.authorName = this.getAuthorName;
           });
@@ -323,19 +323,19 @@ export default {
       if (newBiography && this.getBiography != newBiography) {
         this.$store
           .dispatch(
-            "user/edit",
+            'user/edit',
             { biography: newBiography } /*, { root: true }*/
           )
-          .then((data) => {})
+          .then()
           .catch((error) => {
             console.log(error);
             this.$q.notify({
-              color: "negative",
-              position: "top",
+              color: 'negative',
+              position: 'top',
               message:
                 error.response.data.message ||
-                "Please relogin to edit your credentials",
-              icon: "error",
+                'Please relogin to edit your credentials',
+              icon: 'error',
             });
             this.biography = this.getBiography;
           });
@@ -346,16 +346,16 @@ export default {
       this.logOutDialog = false;
       if (confirm) {
         this.$store
-          .dispatch("user/logout", {
-            id: this.$store.getters["user/userProperty"]("id"),
+          .dispatch('user/logout', {
+            id: this.$store.getters['user/userProperty']('id'),
           })
           .then(() => {
             this.$q.notify({
-              icon: "done",
-              color: "positive",
-              message: "Successfully Logged Out",
+              icon: 'done',
+              color: 'positive',
+              message: 'Successfully Logged Out',
             });
-            this.$router.replace({ name: "home-homepage" });
+            this.$router.replace({ name: 'home-homepage' });
           });
       }
     },
@@ -363,24 +363,24 @@ export default {
       this.deleteDialog = false;
       if (confirm) {
         this.$store
-          .dispatch("user/deleteUser" /*, { root: true }*/)
+          .dispatch('user/deleteUser' /*, { root: true }*/)
           .then((data) => {
             this.$q.notify({
-              icon: "done",
-              color: "positive",
-              message: "Successfully Deleted Account",
+              icon: 'done',
+              color: 'positive',
+              message: 'Successfully Deleted Account',
             });
-            this.$router.replace({ name: "home-homepage" });
+            this.$router.replace({ name: 'home-homepage' });
           })
           .catch((error) => {
             console.log(error);
             this.$q.notify({
-              color: "negative",
-              position: "top",
+              color: 'negative',
+              position: 'top',
               message:
                 error.response.data.message ||
-                "Please relogin to edit your credentials",
-              icon: "error",
+                'Please relogin to edit your credentials',
+              icon: 'error',
             });
           });
       }

@@ -38,13 +38,13 @@
             flat
             :label="secondaryLabel"
             color="black"
-            class="secondary-btn"
+            class="secondary-btn col"
             @click="$emit('secondaryClicked', book)"
           />
           <q-btn
             :label="primaryLabel"
             color="black"
-            class="primary-btn"
+            class="primary-btn col"
             @click="$emit('primaryClicked', book)"
           />
         </div>
@@ -54,25 +54,25 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar";
-import { computed } from "vue";
+import { useQuasar } from 'quasar';
+import { computed } from 'vue';
 
-import { Navigation, Pagination, Keyboard, A11y } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination, Keyboard, A11y } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
-import "swiper/css";
-import "swiper/css/a11y";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/keyboard";
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/keyboard';
 
 export default {
   components: {
     Swiper,
     SwiperSlide,
   },
-  name: "SimpleBookList",
+  name: 'SimpleBookList',
   props: {
     books: {
       type: Array,
@@ -90,8 +90,12 @@ export default {
 
   methods: {},
   setup(props) {
-    const onSwiper = (swiper) => {};
-    const onSlideChange = () => {};
+    const onSwiper = (swiper) => {
+      //pass
+    };
+    const onSlideChange = () => {
+      //pass
+    };
 
     const $q = useQuasar();
     const slidesCount = computed(() => {

@@ -43,7 +43,7 @@
 <script>
 export default {
   components: {},
-  name: "BookStandoutCard",
+  name: 'BookStandoutCard',
   props: {
     book: {
       type: Object,
@@ -54,7 +54,6 @@ export default {
       required: true,
     },
   },
-  setup(props) {},
 };
 </script>
 <style lang="scss" scoped>

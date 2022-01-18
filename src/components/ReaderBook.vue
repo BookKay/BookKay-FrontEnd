@@ -45,15 +45,15 @@
 </template>
 
 <script>
-import Flipbook from "src/components/Flipbook.vue";
-import BookPage from "src/components/ReaderBookPage.vue";
-import BookCover from "src/components/ReaderBookCover.vue";
-import LoadingScreen from "src/components/ReaderLoadingScreen.vue";
+import Flipbook from 'src/components/Flipbook.vue';
+import BookPage from 'src/components/ReaderBookPage.vue';
+import BookCover from 'src/components/ReaderBookCover.vue';
+import LoadingScreen from 'src/components/ReaderLoadingScreen.vue';
 
-import { useMeta } from "quasar";
+import { useMeta } from 'quasar';
 
 export default {
-  name: "Book",
+  name: 'Book',
   components: {
     // Flipbook: () => import("src/components/reader/Flipbook.vue"),
     // Page: () => import("src/components/reader/Page.vue"),
@@ -67,7 +67,7 @@ export default {
   created() {
     //Adding event listeners
     document.addEventListener(
-      "keydown",
+      'keydown',
       (e) => {
         this.handleKeyPress(e.key);
       },
@@ -75,7 +75,7 @@ export default {
     );
 
     document.addEventListener(
-      "wheel",
+      'wheel',
       (e) => {
         this.handleScroll(e.deltaY);
       },
@@ -86,17 +86,17 @@ export default {
   async mounted() {
     const self = this;
 
-    this.loadingText = "Book Loading...Please Wait.";
+    this.loadingText = 'Book Loading...Please Wait.';
 
-    if (Object.keys(this.$route.query)[0] == "manuscript_id") {
+    if (Object.keys(this.$route.query)[0] == 'manuscript_id') {
       //Fetching the manuscript
       let response;
       try {
         response = await this.$api.get(
-          "manuscripts/" + this.$route.query.manuscript_id + "/json"
+          'manuscripts/' + this.$route.query.manuscript_id + '/json'
         );
       } catch (err) {
-        this.loadingText = "Server Error :(";
+        this.loadingText = 'Server Error :(';
         console.log(err);
       }
 
@@ -105,13 +105,13 @@ export default {
       //Loading and rendering the book
 
       this.book = manuscript;
-      this.loadingText = "Configuring Covers";
+      this.loadingText = 'Configuring Covers';
       this.configureCovers();
 
       try {
         this.book = renderBook(this.book);
       } catch (err) {
-        this.loadingText = "Rendering Error :(";
+        this.loadingText = 'Rendering Error :(';
         console.log(err);
       }
 
@@ -119,14 +119,14 @@ export default {
 
       //this.turnToQueryPage();
     }
-    if (Object.keys(this.$route.query)[0] == "book_id") {
+    if (Object.keys(this.$route.query)[0] == 'book_id') {
       //Fetching the book
       let response;
       let book_id = this.$route.query.book_id;
 
       //Updating the server for the read
       if (!this.$q.cookies.has(`last_read_${book_id}`)) {
-        if (this.$store.getters["user/isLoggedIn"]) {
+        if (this.$store.getters['user/isLoggedIn']) {
           response = await this.$api.post(`books/${book_id}/read`);
         } else {
           response = await this.$api.get(
@@ -135,9 +135,9 @@ export default {
         }
 
         //Setting cookies to prevent recalling
-        this.$q.cookies.set(`last_read_${book_id}`, "", {
-          expires: "1h",
-          path: "/",
+        this.$q.cookies.set(`last_read_${book_id}`, '', {
+          expires: '1h',
+          path: '/',
         });
       }
 
@@ -150,9 +150,9 @@ export default {
 
       if (Object.keys(response.data).length == 0) {
         try {
-          response = await this.$api.get("books/" + book_id + "/json");
+          response = await this.$api.get('books/' + book_id + '/json');
         } catch (err) {
-          this.loadingText = "Server Error :(";
+          this.loadingText = 'Server Error :(';
           console.log(err);
         }
 
@@ -165,7 +165,7 @@ export default {
         this.configureCovers();
 
         try {
-          this.loadingText = "First Time Loading...may take couple of minutes";
+          this.loadingText = 'First Time Loading...may take couple of minutes';
           this.book = await renderBook(this.book);
 
           this.$api.post(`books/${book_id}/copy`, {
@@ -175,7 +175,7 @@ export default {
           });
           //this.turnToQueryPage();
         } catch (err) {
-          this.loadingText = "Rendering Error :(";
+          this.loadingText = 'Rendering Error :(';
           console.log(err);
         }
       } else {
@@ -190,11 +190,11 @@ export default {
     }
 
     async function renderBook(book) {
-      var pageNum = 1;
+      let pageNum = 1;
 
-      self.$emit("navAdded", {
-        type: "book",
-        data: book["title"],
+      self.$emit('navAdded', {
+        type: 'book',
+        data: book['title'],
         page: pageNum - 1,
         active: false,
       });
@@ -204,159 +204,159 @@ export default {
       self.book_copy.back_cover = book.back_cover;
 
       if (!self.$q.screen.lt.sm) {
-        createPage(pageNum, book["title"], ""); // creates the first page
+        createPage(pageNum, book['title'], ''); // creates the first page
         pageNum++;
       }
 
-      if ("front_matters" in book) {
-        var front_matters = book["front_matters"];
+      if ('front_matters' in book) {
+        let front_matters = book['front_matters'];
 
-        for (var i = 0; i < front_matters.length; i++) {
+        for (let i = 0; i < front_matters.length; i++) {
           let front_matter = front_matters[i];
 
           //Appending front matters
-          self.book_copy["front_matters"].push({
-            title: front_matter["title"],
+          self.book_copy['front_matters'].push({
+            title: front_matter['title'],
             pages: [],
           });
 
-          front_matter["page"] = pageNum;
+          front_matter['page'] = pageNum;
 
-          self.$emit("navAdded", {
-            type: "front_matter",
-            data: front_matter["title"],
+          self.$emit('navAdded', {
+            type: 'front_matter',
+            data: front_matter['title'],
             page: pageNum,
           });
 
           pageNum = paginateText(
-            front_matter["text"],
+            front_matter['text'],
             pageNum,
-            front_matter["title"],
+            front_matter['title'],
             self.book_copy.front_matters[i]
           );
 
-          var page = document.getElementsByClassName("page-text")[0].innerHTML;
-          if (page != "") {
+          let page = document.getElementsByClassName('page-text')[0].innerHTML;
+          if (page != '') {
             //Adding page to book copy
-            self.book_copy.front_matters[i]["pages"].push(page);
+            self.book_copy.front_matters[i]['pages'].push(page);
 
             //Creating page
-            createPage(pageNum, front_matter["title"], page);
-            document.getElementsByClassName("page-text")[0].innerHTML = "";
+            createPage(pageNum, front_matter['title'], page);
+            document.getElementsByClassName('page-text')[0].innerHTML = '';
             pageNum++;
           }
         }
       }
 
-      if ("chapters" in book && book.chapters.length > 0) {
-        var chapters = book["chapters"];
+      if ('chapters' in book && book.chapters.length > 0) {
+        let chapters = book['chapters'];
 
-        for (var i = 0; i < chapters.length; i++) {
+        for (let i = 0; i < chapters.length; i++) {
           let chapter = chapters[i];
 
           //Appending front matters
-          self.book_copy["chapters"].push({
-            title: chapter["title"],
+          self.book_copy['chapters'].push({
+            title: chapter['title'],
             pages: [],
           });
 
-          chapter["page"] = pageNum;
+          chapter['page'] = pageNum;
 
-          self.$emit("navAdded", {
-            type: "chapter",
-            data: chapter["title"],
+          self.$emit('navAdded', {
+            type: 'chapter',
+            data: chapter['title'],
             page: pageNum,
           });
 
           pageNum = paginateText(
-            chapter["text"],
+            chapter['text'],
             pageNum,
-            chapter["title"],
+            chapter['title'],
             self.book_copy.chapters[i]
           );
 
-          var page = document.getElementsByClassName("page-text")[0].innerHTML;
-          if (page != "") {
+          let page = document.getElementsByClassName('page-text')[0].innerHTML;
+          if (page != '') {
             //Adding page to book copy
-            self.book_copy.chapters[i]["pages"].push(page);
+            self.book_copy.chapters[i]['pages'].push(page);
 
-            createPage(pageNum, chapter["title"], page);
-            document.getElementsByClassName("page-text")[0].innerHTML = "";
+            createPage(pageNum, chapter['title'], page);
+            document.getElementsByClassName('page-text')[0].innerHTML = '';
             pageNum++;
           }
         }
-      } else if (book.text != "" && book.text != null) {
-        self.$emit("navAdded", {
-          type: "text",
-          data: book["title"],
+      } else if (book.text != '' && book.text != null) {
+        self.$emit('navAdded', {
+          type: 'text',
+          data: book['title'],
           page: pageNum,
         });
 
-        self.book_copy["main_text"] = {
-          title: book["title"],
+        self.book_copy['main_text'] = {
+          title: book['title'],
           pages: [],
         };
 
         pageNum = paginateText(
-          book["text"],
+          book['text'],
           pageNum,
-          book["title"],
-          self.book_copy["main_text"]
+          book['title'],
+          self.book_copy['main_text']
         );
 
-        var page = document.getElementsByClassName("page-text")[0].innerHTML;
-        if (page != "") {
+        let page = document.getElementsByClassName('page-text')[0].innerHTML;
+        if (page != '') {
           //Adding page to book copy
-          self.book_copy.main_text["pages"].push(page);
+          self.book_copy.main_text['pages'].push(page);
 
-          createPage(pageNum, book["title"], page);
-          document.getElementsByClassName("page-text")[0].innerHTML = "";
+          createPage(pageNum, book['title'], page);
+          document.getElementsByClassName('page-text')[0].innerHTML = '';
           pageNum++;
         }
       }
 
-      if ("back_matters" in book) {
-        var back_matters = book["back_matters"];
-        for (var i = 0; i < back_matters.length; i++) {
+      if ('back_matters' in book) {
+        let back_matters = book['back_matters'];
+        for (let i = 0; i < back_matters.length; i++) {
           let back_matter = back_matters[i];
 
           //Appending front matters
-          self.book_copy["back_matters"].push({
-            title: back_matter["title"],
+          self.book_copy['back_matters'].push({
+            title: back_matter['title'],
             pages: [],
           });
 
-          self.$emit("navAdded", {
-            type: "back_matter",
-            data: back_matter["title"],
+          self.$emit('navAdded', {
+            type: 'back_matter',
+            data: back_matter['title'],
             page: pageNum,
           });
 
           pageNum = paginateText(
-            back_matter["text"],
+            back_matter['text'],
             pageNum,
-            back_matters[i]["title"],
+            back_matters[i]['title'],
             self.book_copy.back_matters[i]
           );
 
-          var page = document.getElementsByClassName("page-text")[0].innerHTML;
-          if (page != "") {
+          let page = document.getElementsByClassName('page-text')[0].innerHTML;
+          if (page != '') {
             //Adding page to book copy
-            self.book_copy.back_matters[i]["pages"].push(page);
+            self.book_copy.back_matters[i]['pages'].push(page);
 
-            createPage(pageNum, back_matter["title"], page);
-            document.getElementsByClassName("page-text")[0].innerHTML = "";
+            createPage(pageNum, back_matter['title'], page);
+            document.getElementsByClassName('page-text')[0].innerHTML = '';
             pageNum++;
           }
         }
       }
 
       if (!self.$q.screen.lt.sm) {
-        createPage(pageNum, book["title"], "");
+        createPage(pageNum, book['title'], '');
         pageNum++;
 
         if (pageNum % 2 == 0) {
-          createPage(pageNum, book["title"], "");
+          createPage(pageNum, book['title'], '');
         }
       }
 
@@ -365,22 +365,22 @@ export default {
 
     function paginateText(DOM, pageNum, title, currentComponent, tags = []) {
       if (
-        "attributes" in DOM &&
-        "id" in DOM["attributes"] &&
-        DOM["attributes"]["id"] == "RootDivContainer"
+        'attributes' in DOM &&
+        'id' in DOM['attributes'] &&
+        DOM['attributes']['id'] == 'RootDivContainer'
       ) {
         //To ignore the enclosing root container
       } else {
-        var openingTag =
-          "attributes" in DOM
-            ? getOpeningTag(DOM["type"], DOM["attributes"])
-            : getOpeningTag(DOM["type"]);
-        var closingTag = getClosingTag(DOM["type"]);
+        let openingTag =
+          'attributes' in DOM
+            ? getOpeningTag(DOM['type'], DOM['attributes'])
+            : getOpeningTag(DOM['type']);
+        let closingTag = getClosingTag(DOM['type']);
 
-        var pageText = appendToLastPage(openingTag + closingTag, tags);
-        if (pageText != "") {
+        let pageText = appendToLastPage(openingTag + closingTag, tags);
+        if (pageText != '') {
           // checks if word could not be filled in last page
-          currentComponent["pages"].push(pageText);
+          currentComponent['pages'].push(pageText);
           createPage(pageNum, title, pageText); // create new empty page
           pageText = appendToLastPage(openingTag + closingTag, tags); // fill the word in the new last element
           pageNum++;
@@ -392,46 +392,46 @@ export default {
         });
       }
 
-      if (DOM["contents"]) {
-        for (var i = 0; i < DOM["contents"].length; i++) {
-          var content = DOM["contents"][i];
+      if (DOM['contents']) {
+        for (let i = 0; i < DOM['contents'].length; i++) {
+          let content = DOM['contents'][i];
 
           //check if content is string(text to render)
-          if (typeof content == "string") {
+          if (typeof content == 'string') {
             content = escapeHtml(content);
 
-            var words = content.split(" ");
+            let words = content.split(' ');
 
-            for (var j = 0; j < words.length; j++) {
-              var word = words[j] + " ";
+            for (let j = 0; j < words.length; j++) {
+              let word = words[j] + ' ';
 
-              var pageText = appendToLastPage(word, tags);
-              if (pageText != "") {
+              let pageText = appendToLastPage(word, tags);
+              if (pageText != '') {
                 // checks if word could not be filled in last page
-                currentComponent["pages"].push(pageText);
+                currentComponent['pages'].push(pageText);
                 createPage(pageNum, title, pageText); // create new empty page
-                var lastTags = []; //array to store the tags that have been appended to page
+                let lastTags = []; //array to store the tags that have been appended to page
 
                 //looping through each tags and inserting them in the next page
-                for (var index = 0; index < tags.length; index++) {
-                  var tag = tags[index];
+                for (let index = 0; index < tags.length; index++) {
+                  let tag = tags[index];
 
-                  var lastPage =
-                    self.pages[self.pages.length - 1].text.split(" "); //text of last page
+                  let lastPage =
+                    self.pages[self.pages.length - 1].text.split(' '); //text of last page
 
                   if (
-                    tag["openingTag"].startsWith("<p") &&
-                    lastPage[lastPage.length - 2] != "<p></p>"
+                    tag['openingTag'].startsWith('<p') &&
+                    lastPage[lastPage.length - 2] != '<p></p>'
                   ) {
                     //to prevent the indentation of paragraph when overflowing to the next page
                     //this is due to the fact that all p tags have automatic text indent thanks to css
                     pageText = appendToLastPage(
-                      "<p style='text-indent: 0'>" + tag["closingTag"],
+                      "<p style='text-indent: 0'>" + tag['closingTag'],
                       lastTags
                     );
                   } else {
                     pageText = appendToLastPage(
-                      tag["openingTag"] + tag["closingTag"],
+                      tag['openingTag'] + tag['closingTag'],
                       lastTags
                     ); // fill the word in the new last element
                   }
@@ -446,10 +446,10 @@ export default {
             }
           } else if (self.singleTags.includes(content.type)) {
             //check if content is a self closing tag
-            var word = "<" + content.type + "/>";
-            var pageText = appendToLastPage(word, tags);
+            let word = '<' + content.type + '/>';
+            let pageText = appendToLastPage(word, tags);
 
-            if (pageText != "") {
+            if (pageText != '') {
               // checks if word could not be filled in last page
               createPage(pageNum, title, pageText); // create new empty page
               pageText = appendToLastPage(word, tags);
@@ -473,7 +473,7 @@ export default {
     }
 
     function createPage(pageNum, header, text) {
-      var page = {
+      let page = {
         header: header,
         pageNum: pageNum,
         text: text,
@@ -482,12 +482,12 @@ export default {
     }
 
     function checkOverflow(el) {
-      var curOverflow = el.style.overflow;
+      let curOverflow = el.style.overflow;
 
-      if (!curOverflow || curOverflow === "visible")
-        el.style.overflow = "hidden";
+      if (!curOverflow || curOverflow === 'visible')
+        el.style.overflow = 'hidden';
 
-      var isOverflowing =
+      let isOverflowing =
         el.clientWidth < el.scrollWidth || el.clientHeight < el.scrollHeight;
 
       el.style.overflow = curOverflow;
@@ -496,37 +496,37 @@ export default {
     }
 
     function appendToLastPage(word, tags = []) {
-      var page = document.getElementsByClassName("page-text")[0]; // gets the fake page
-      var pageText = page.innerHTML; // gets the text from the last page
-      var originalText = pageText;
+      let page = document.getElementsByClassName('page-text')[0]; // gets the fake page
+      let pageText = page.innerHTML; // gets the text from the last page
+      let originalText = pageText;
 
       if (tags.length > 0) {
-        let lastTag = tags[tags.length - 1]["closingTag"];
+        let lastTag = tags[tags.length - 1]['closingTag'];
         let lastTagCount = 1;
 
         for (let i = 0; i < tags.length - 1; i++) {
           let tag = tags[i];
-          if (tag["closingTag"] == lastTag) {
+          if (tag['closingTag'] == lastTag) {
             lastTagCount++;
           }
         }
 
         let lastOccurance = nthLastIndexOf(pageText, lastTag, lastTagCount);
 
-        var suffix = pageText.slice(lastOccurance);
+        let suffix = pageText.slice(lastOccurance);
         pageText = pageText.slice(0, lastOccurance);
-        pageText = pageText + word + " " + suffix;
+        pageText = pageText + word + ' ' + suffix;
 
         page.innerHTML = pageText;
       } else {
-        page.innerHTML += word + " "; // saves the text of the last page
+        page.innerHTML += word + ' '; // saves the text of the last page
       }
       if (checkOverflow(page)) {
         // checks if the page overflows (more words than space)
-        page.innerHTML = ""; //resets the page-text
+        page.innerHTML = ''; //resets the page-text
         return originalText; // returns false because page is full
       } else {
-        return ""; // returns true because word was successfully filled in the page
+        return ''; // returns true because word was successfully filled in the page
       }
     }
 
@@ -545,55 +545,55 @@ export default {
     }
 
     function getClosingTag(tagName) {
-      return "</" + tagName + ">";
+      return '</' + tagName + '>';
     }
 
     function getOpeningTag(tagName, attributes = {}) {
-      var openingTag = "<" + tagName;
+      let openingTag = '<' + tagName;
       for (const attribute in attributes) {
         openingTag =
-          openingTag + " " + attribute + "='" + attributes[attribute] + "'";
+          openingTag + ' ' + attribute + "='" + attributes[attribute] + "'";
       }
-      openingTag = openingTag + ">";
+      openingTag = openingTag + '>';
 
       return openingTag;
     }
 
     function escapeHtml(unsafe) {
       return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
   },
   data() {
     return {
-      widthClass: this.$q.screen.lt.sm ? "full-page" : "half-page",
+      widthClass: this.$q.screen.lt.sm ? 'full-page' : 'half-page',
 
       width: this.$q.screen.lt.sm ? window.innerWidth : window.innerWidth / 2,
       height: screen.height,
       loading: true,
-      loadingText: "",
+      loadingText: '',
       lastScrollTop: 0,
 
       bookConfigs: {},
 
-      fontSize: "font-size: 18px",
+      fontSize: 'font-size: 18px',
 
-      singleTags: ["br", "hr"],
+      singleTags: ['br', 'hr'],
 
-      frontCover: "",
-      backCover: "",
+      frontCover: '',
+      backCover: '',
       book: {
-        title: "",
+        title: '',
         front_matters: [],
         chapters: [],
-        text: "",
+        text: '',
         back_matters: [],
       },
-      text: "",
+      text: '',
       book_copy: {
         front_matters: [],
         chapters: [],
@@ -608,8 +608,8 @@ export default {
   methods: {
     async updateMetaData() {
       //Fetching back the updated user
-      let response = await this.$api.get("books/" + this.$route.query.book_id, {
-        params: { fields: "author_name" },
+      let response = await this.$api.get('books/' + this.$route.query.book_id, {
+        params: { fields: 'author_name' },
       });
 
       let author_name = response.data.author_name;
@@ -620,14 +620,14 @@ export default {
           title: `${this.book.title} | BookKay`,
           meta: {
             description: {
-              name: "description",
+              name: 'description',
               content: this.book.description,
             },
             keywords: {
-              name: "keywords",
+              name: 'keywords',
               content: `${this.book.title}, ${author_name}, BookKay, ebook`,
             },
-            author: { name: "author", content: author_name },
+            author: { name: 'author', content: author_name },
           },
         };
       });
@@ -643,10 +643,10 @@ export default {
       let tempCover = this.book.temp_cover;
 
       //Setting up front cover url
-      this.frontCover = frontCover != "" ? frontCover : tempCover;
+      this.frontCover = frontCover != '' ? frontCover : tempCover;
 
       //Setting up back cover url
-      this.backCover = backCover != "" ? backCover : tempCover;
+      this.backCover = backCover != '' ? backCover : tempCover;
     },
 
     compareIndex(a, b) {
@@ -661,15 +661,15 @@ export default {
 
     processClosingTag(text) {
       //To standardize self closing tags
-      text = text.split("<br>").join("<br/>");
-      text = text.split("<hr>").join("<hr/>");
-      text = text.split("<img>").join("<img/>");
+      text = text.split('<br>').join('<br/>');
+      text = text.split('<hr>').join('<hr/>');
+      text = text.split('<img>').join('<img/>');
 
       return text;
     },
 
     createPage(pageNum, header, text) {
-      var page = {
+      let page = {
         header: header,
         pageNum: pageNum,
         text: text,
@@ -680,74 +680,74 @@ export default {
     loadBookCopy() {
       let pageNum = 1;
 
-      this.$emit("navAdded", {
-        type: "book",
-        data: this.book["title"],
+      this.$emit('navAdded', {
+        type: 'book',
+        data: this.book['title'],
         page: pageNum - 1,
         active: false,
       });
 
       if (!this.$q.screen.lt.sm) {
-        this.createPage(pageNum, this.book["title"], ""); // creates the first page
+        this.createPage(pageNum, this.book['title'], ''); // creates the first page
         pageNum++;
       }
 
-      for (const front_matter of this.book["front_matters"]) {
-        this.$emit("navAdded", {
-          type: "front_matter",
-          data: front_matter["title"],
+      for (const front_matter of this.book['front_matters']) {
+        this.$emit('navAdded', {
+          type: 'front_matter',
+          data: front_matter['title'],
           page: pageNum,
         });
 
         //Creating pages
-        for (const page of front_matter["pages"]) {
-          this.createPage(pageNum, front_matter["title"], page);
+        for (const page of front_matter['pages']) {
+          this.createPage(pageNum, front_matter['title'], page);
           pageNum++;
         }
       }
 
-      for (const chapter of this.book["chapters"]) {
-        this.$emit("navAdded", {
-          type: "chapter",
-          data: chapter["title"],
+      for (const chapter of this.book['chapters']) {
+        this.$emit('navAdded', {
+          type: 'chapter',
+          data: chapter['title'],
           page: pageNum,
         });
 
         //Creating pages
-        for (const page of chapter["pages"]) {
-          this.createPage(pageNum, chapter["title"], page);
+        for (const page of chapter['pages']) {
+          this.createPage(pageNum, chapter['title'], page);
           pageNum++;
         }
       }
-      if (Object.keys(this.book["main_text"]).length > 0) {
-        let main_text = this.book["main_text"];
+      if (Object.keys(this.book['main_text']).length > 0) {
+        let main_text = this.book['main_text'];
         //Creating pages
-        for (const page of main_text["pages"]) {
-          this.createPage(pageNum, main_text["title"], page);
+        for (const page of main_text['pages']) {
+          this.createPage(pageNum, main_text['title'], page);
           pageNum++;
         }
       }
 
-      for (const back_matter of this.book["back_matters"]) {
-        this.$emit("navAdded", {
-          type: "back_matter",
-          data: back_matter["title"],
+      for (const back_matter of this.book['back_matters']) {
+        this.$emit('navAdded', {
+          type: 'back_matter',
+          data: back_matter['title'],
           page: pageNum,
         });
 
         //Creating pages
-        for (const page of back_matter["pages"]) {
-          this.createPage(pageNum, back_matter["title"], page);
+        for (const page of back_matter['pages']) {
+          this.createPage(pageNum, back_matter['title'], page);
           pageNum++;
         }
       }
 
       if (!this.$q.screen.lt.sm) {
-        this.createPage(pageNum, this.book["title"], "");
+        this.createPage(pageNum, this.book['title'], '');
         pageNum++;
 
         if (pageNum % 2 == 0) {
-          this.createPage(pageNum, this.book["title"], "");
+          this.createPage(pageNum, this.book['title'], '');
         }
       }
     },
@@ -755,7 +755,7 @@ export default {
     turnToQueryPage() {
       let query = this.$route.query;
       if (
-        query.hasOwnProperty("front_matter_id") &&
+        query.hasOwnProperty('front_matter_id') &&
         front_matters in this.book
       ) {
         //For front matter query
@@ -766,14 +766,14 @@ export default {
         );
 
         this.$refs.flipbook.flip(front_matter.pageNum);
-      } else if (query.hasOwnProperty("chapter_id") && chapters in this.book) {
+      } else if (query.hasOwnProperty('chapter_id') && chapters in this.book) {
         //For chapter query
         let chapters = this.book.chapters;
         let chapter = chapters.find((o) => o.chapter_id === query.chapter_id);
 
         this.$refs.flipbook.flip(chapter.pageNum);
       } else if (
-        query.hasOwnProperty("back_matter_id") &&
+        query.hasOwnProperty('back_matter_id') &&
         back_matters in this.book
       ) {
         //For back matter query
@@ -800,7 +800,7 @@ export default {
     },
 
     onPageTurn(page) {
-      if ("book_id" in this.$route.query) {
+      if ('book_id' in this.$route.query) {
         let book_id = this.$route.query.book_id;
         this.$q.localStorage.set(`pageNumOf_${book_id}`, page);
       }
@@ -811,22 +811,22 @@ export default {
       //this if is to make lack of flipbook ref fail silently when route changes
       if (this.$refs.flipbook && !this.loading) {
         switch (key) {
-          case "ArrowLeft":
+          case 'ArrowLeft':
             this.$refs.flipbook.flipPrev();
             break;
-          case "ArrowRight":
+          case 'ArrowRight':
             this.$refs.flipbook.flipNext();
             break;
-          case "ArrowDown":
+          case 'ArrowDown':
             this.$refs.flipbook.flipNext();
             break;
-          case "ArrowUp":
+          case 'ArrowUp':
             this.$refs.flipbook.flipPrev();
             break;
-          case "AudioVolumeUp":
+          case 'AudioVolumeUp':
             this.$refs.flipbook.flipNext();
             break;
-          case "AudioVolumeDown":
+          case 'AudioVolumeDown':
             this.$refs.flipbook.flipPrev();
             break;
           default:
@@ -835,7 +835,7 @@ export default {
         }
 
         document.addEventListener(
-          "keydown",
+          'keydown',
           (e) => {
             this.handleKeyPress(e.key);
           },
@@ -855,7 +855,7 @@ export default {
         }
 
         document.addEventListener(
-          "wheel",
+          'wheel',
           (e) => {
             this.handleScroll(e.deltaY);
           },
@@ -867,16 +867,16 @@ export default {
     //Attaching swiping to turn pages in flipbook for mobile view
     handleSwipe({ evt, ...info }) {
       const direction = info.direction;
-      if (direction == "right") {
+      if (direction == 'right') {
         //this.$refs.flipbook.flipPrev();
         //Interim solution as prev flipping not working when portrait
         this.$refs.flipbook.turnToPrevPage();
-      } else if (direction == "left") {
+      } else if (direction == 'left') {
         this.$refs.flipbook.flipNext();
-      } else if (direction == "top") {
-        this.$emit("swiped", "top");
-      } else if (direction == "down") {
-        this.$emit("swiped", "down");
+      } else if (direction == 'top') {
+        this.$emit('swiped', 'top');
+      } else if (direction == 'down') {
+        this.$emit('swiped', 'down');
       }
     },
   },

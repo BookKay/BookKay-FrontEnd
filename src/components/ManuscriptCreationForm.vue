@@ -168,21 +168,21 @@
 </template>
 
 <script>
-import ManuscriptTypeChoice from "src/components/ManuscriptTypeChoice.vue";
+import ManuscriptTypeChoice from 'src/components/ManuscriptTypeChoice.vue';
 
 export default {
-  name: "MakeManuscriptPage",
+  name: 'MakeManuscriptPage',
   components: { ManuscriptTypeChoice },
   data() {
     return {
       configs: {},
       manuscript: {
-        title: "",
-        description: "",
-        genre_name: "",
+        title: '',
+        description: '',
+        genre_name: '',
         temp_cover:
-          "https://storage.googleapis.com/bookkay-dev.appspot.com/temp_covers/temp_cover.png",
-        author_id: this.$store.getters["user/userProperty"]("id"),
+          'https://storage.googleapis.com/bookkay-dev.appspot.com/temp_covers/temp_cover.png',
+        author_id: this.$store.getters['user/userProperty']('id'),
         price: 0.0,
         text: {},
       },
@@ -191,36 +191,36 @@ export default {
 
       bookTypes: [
         {
-          id: "1",
-          name: "Essay",
+          id: '1',
+          name: 'Essay',
           configs: {
             contain_chapter: false,
             contain_front_matter: false,
             contain_back_matter: false,
           },
-          hint: "A simple writing with no chapters.",
+          hint: 'A simple writing with no chapters.',
           chosen: false,
         },
         {
-          id: "2",
-          name: "Novel(Only chapters) ",
+          id: '2',
+          name: 'Novel(Only chapters) ',
           configs: {
             contain_chapter: true,
             contain_front_matter: false,
             contain_back_matter: false,
           },
-          hint: "A large long novels with several chapters.",
+          hint: 'A large long novels with several chapters.',
           chosen: false,
         },
         {
-          id: "3",
-          name: "Novel",
+          id: '3',
+          name: 'Novel',
           configs: {
             contain_chapter: true,
             contain_front_matter: true,
             contain_back_matter: true,
           },
-          hint: "A large long novels with several front matters, chapters and back matters.",
+          hint: 'A large long novels with several front matters, chapters and back matters.',
           chosen: false,
         },
       ],
@@ -232,7 +232,7 @@ export default {
   },
   async mounted() {
     //Fetching genre options
-    let response = await this.$api.get("genres");
+    let response = await this.$api.get('genres');
     let genres = response.data.results;
 
     for (const genre of genres) {
@@ -241,8 +241,8 @@ export default {
   },
   methods: {
     confirmType(configs) {
-      for (var i = 0; i < this.bookTypes.length; i++) {
-        var bookType = this.bookTypes[i];
+      for (let i = 0; i < this.bookTypes.length; i++) {
+        let bookType = this.bookTypes[i];
         if (bookType.configs == configs) {
           bookType.chosen = true;
         } else {
@@ -267,8 +267,8 @@ export default {
           time: 1634195030352,
           blocks: [
             {
-              id: "mEx28VKFcm",
-              type: "heading",
+              id: 'mEx28VKFcm',
+              type: 'heading',
               data: {
                 text: `${this.capitalizeFirstLetter(componentType).slice(
                   0,
@@ -276,10 +276,10 @@ export default {
                 )} - ${this[componentType].length + 1}`,
                 level: 3,
               },
-              tunes: { alignment: { alignment: "center" } },
+              tunes: { alignment: { alignment: 'center' } },
             },
           ],
-          version: "2.22.2",
+          version: '2.22.2',
         },
       });
     },
@@ -301,17 +301,17 @@ export default {
 
       if (Object.keys(this.configs).length == 0) {
         this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Choose the book type",
-          icon: "error",
+          color: 'negative',
+          position: 'top',
+          message: 'Choose the book type',
+          icon: 'error',
         });
-      } else if (this.manuscript.genre_name == "") {
+      } else if (this.manuscript.genre_name == '') {
         this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Choose the book genre",
-          icon: "error",
+          color: 'negative',
+          position: 'top',
+          message: 'Choose the book genre',
+          icon: 'error',
         });
       } else if (
         !this.$refs.titleInput.hasError &&
@@ -325,7 +325,7 @@ export default {
 
         this.addManuscript(this.manuscript);
 
-        this.$emit("done");
+        this.$emit('done');
       }
     },
 
@@ -333,17 +333,17 @@ export default {
       let status = true;
 
       for (const frontMatter of this.frontMatters) {
-        if (frontMatter.title == "") {
+        if (frontMatter.title == '') {
           status = false;
         }
       }
       for (const chapter of this.chapters) {
-        if (chapter.title == "") {
+        if (chapter.title == '') {
           status = false;
         }
       }
       for (const backMatter of this.backMatters) {
-        if (backMatter.title == "") {
+        if (backMatter.title == '') {
           status = false;
         }
       }
@@ -352,10 +352,10 @@ export default {
     },
 
     async addManuscript(manuscript) {
-      let res = await this.$store.dispatch("write/addManuscript", manuscript);
+      let res = await this.$store.dispatch('write/addManuscript', manuscript);
       if (res) {
         this.$router.push({
-          name: "write-overview",
+          name: 'write-overview',
           params: { manuscript_id: res.data.id },
         });
       }

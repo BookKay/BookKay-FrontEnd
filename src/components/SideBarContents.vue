@@ -83,7 +83,7 @@
 
 <script>
 export default {
-  name: "SideBarContents",
+  name: 'SideBarContents',
   components: {},
   props: {
     contents: {
@@ -97,17 +97,17 @@ export default {
       editClick: false,
     };
   },
-  mounted() {},
+
   methods: {
     handleClick(content) {
       if (this.deleteClick) {
-        this.$emit("deleted", content);
+        this.$emit('deleted', content);
         this.deleteClick = false;
       } else if (this.editClick) {
-        this.$emit("edited", content);
+        this.$emit('edited', content);
         this.editClick = false;
       } else {
-        this.$emit("clicked", content);
+        this.$emit('clicked', content);
       }
     },
   },

@@ -142,12 +142,12 @@
 </template>
 
 <script>
-import SplashScreen from "src/components/TheSplashScreen.vue";
-import Book from "src/components/ReaderBook.vue";
-import Drawer from "src/components/ReaderDrawer.vue";
-import SideBarContents from "src/components/SideBarContents.vue";
-import ReaderSettings from "src/components/ReaderSettings.vue";
-import Dictionary from "src/components/Dictionary.vue";
+import SplashScreen from 'src/components/TheSplashScreen.vue';
+import Book from 'src/components/ReaderBook.vue';
+import Drawer from 'src/components/ReaderDrawer.vue';
+import SideBarContents from 'src/components/SideBarContents.vue';
+import ReaderSettings from 'src/components/ReaderSettings.vue';
+import Dictionary from 'src/components/Dictionary.vue';
 
 export default {
   components: {
@@ -158,113 +158,113 @@ export default {
     Dictionary,
     SplashScreen,
   },
-  name: "ReadBook",
+  name: 'ReadBook',
 
   data() {
     return {
       headerShow: true,
       info: true,
 
-      text: "",
+      text: '',
       //videoURL: "video/background.mp4",
       navigations: [
         {
-          name: "Front Matters",
+          name: 'Front Matters',
           data: [],
         },
         {
-          name: "Chapters",
+          name: 'Chapters',
           data: [],
         },
         {
-          name: "Back Matters",
+          name: 'Back Matters',
           data: [],
         },
       ],
       sideBarClasses: {
-        "side-bar--dark": false,
+        'side-bar--dark': false,
       },
       purchaseAble: false,
 
-      overflow: "hidden",
+      overflow: 'hidden',
 
       settingsDialog: false,
-      bookcss: "",
+      bookcss: '',
       darkMode: this.$q.dark.isActive,
     };
   },
 
   watch: {
-    "$q.dark.isActive": function (val) {
+    '$q.dark.isActive': function (val) {
       if (val) {
-        this.sideBarClasses["side-bar--dark"] = true;
+        this.sideBarClasses['side-bar--dark'] = true;
       } else {
-        this.sideBarClasses["side-bar--dark"] = false;
+        this.sideBarClasses['side-bar--dark'] = false;
       }
     },
   },
 
   computed: {
     btnColor() {
-      let color = "";
+      let color = '';
       if (this.$q.dark.isActive) {
-        color = "white";
+        color = 'white';
       } else {
-        color = "black";
+        color = 'black';
       }
       return color;
     },
 
     videoURL() {
-      let url = "";
+      let url = '';
 
       url = this.$q.dark.isActive
-        ? "https://storage.googleapis.com/bookkay-dev.appspot.com/reader_videos/background--dark.mp4"
-        : "https://storage.googleapis.com/bookkay-dev.appspot.com/reader_videos/background.mp4";
+        ? 'https://storage.googleapis.com/bookkay-dev.appspot.com/reader_videos/background--dark.mp4'
+        : 'https://storage.googleapis.com/bookkay-dev.appspot.com/reader_videos/background.mp4';
       return url;
     },
   },
 
   mounted() {
-    this.info = !this.$q.localStorage.getItem("readerInfo");
+    this.info = !this.$q.localStorage.getItem('readerInfo');
 
     //Add hotkeys shortcuts
     let self = this;
     document.body.addEventListener(
-      "keydown",
+      'keydown',
       function (ev) {
         //ev.preventDefault();
 
         // Check for ctrl + F11 for toggling zen mode
-        if (ev.ctrlKey && ev.key == "F11") {
+        if (ev.ctrlKey && ev.key == 'F11') {
           self.toggleZen();
         }
 
         // Check for ctrl + B for toggling side bar
-        if (ev.ctrlKey && ev.key == "b") {
+        if (ev.ctrlKey && ev.key == 'b') {
           self.toggleDrawer();
         }
 
         // Check for ctrl + C for toggling side bar
-        if (ev.ctrlKey && ev.key == "c") {
+        if (ev.ctrlKey && ev.key == 'c') {
           self.toggleBook();
         }
 
         // Check for ctrl + / for searching on dictionary
-        if (ev.ctrlKey && ev.key == "/") {
+        if (ev.ctrlKey && ev.key == '/') {
           self.searchDictionary();
         }
 
         // Check for ctrl + I for toggling side bar
-        if (ev.ctrlKey && ev.key == "i") {
+        if (ev.ctrlKey && ev.key == 'i') {
           self.settingsDialog = !self.settingsDialog;
         }
       },
       false
     );
 
-    if (this.$q.localStorage.has("darkMode")) {
-      this.$q.dark.set(this.$q.localStorage.getItem("darkMode"));
+    if (this.$q.localStorage.has('darkMode')) {
+      this.$q.dark.set(this.$q.localStorage.getItem('darkMode'));
     }
 
     //Checking if book is owned
@@ -275,7 +275,7 @@ export default {
     toggleZen() {
       this.$q.fullscreen
         .toggle()
-        .then(() => {})
+        .then()
         .catch((err) => {
           alert(err);
         });
@@ -294,7 +294,7 @@ export default {
       if (window.history.length > 2) {
         this.$router.go(-1);
       } else {
-        this.$router.push({ name: "base" });
+        this.$router.push({ name: 'base' });
       }
     },
 
@@ -304,19 +304,19 @@ export default {
 
     checkPurchaseAble() {
       //Checking if the user is logged in
-      if (this.$store.getters["user/isLoggedIn"]) {
+      if (this.$store.getters['user/isLoggedIn']) {
         let purchasedBooks =
-          this.$store.getters["user/userProperty"]("books_purchased");
+          this.$store.getters['user/userProperty']('books_purchased');
         let authoredBooks =
-          this.$store.getters["user/userProperty"]("books_authored");
+          this.$store.getters['user/userProperty']('books_authored');
 
         //Checking if book id exists and initialising it
         let book_id;
-        if ("book_id" in this.$route.query) {
+        if ('book_id' in this.$route.query) {
           book_id = this.$route.query.book_id;
         } else {
           this.purchaseAble = false;
-          return "";
+          return '';
         }
 
         //Checking if book is purchased or authored
@@ -340,29 +340,29 @@ export default {
 
         //Fetching back the updated user
         let response = await this.$api.get(
-          "users/" + this.$store.getters["user/userProperty"]("id"),
+          'users/' + this.$store.getters['user/userProperty']('id'),
           {
-            params: { expand: "~all" },
+            params: { expand: '~all' },
           }
         );
 
         const user = response.data;
 
-        this.$store.commit("user/setUser", user);
-        this.$q.localStorage.set("user", user);
+        this.$store.commit('user/setUser', user);
+        this.$q.localStorage.set('user', user);
 
         this.$q.notify({
-          color: "positive",
-          position: "top",
+          color: 'positive',
+          position: 'top',
           message: `You have successfully bought the book. Hope you enjoy it.`,
-          icon: "error",
+          icon: 'error',
         });
       } catch (e) {
         this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Error when purchasing book",
-          icon: "error",
+          color: 'negative',
+          position: 'top',
+          message: 'Error when purchasing book',
+          icon: 'error',
         });
       }
       this.checkPurchaseAble();
@@ -373,17 +373,17 @@ export default {
     },
 
     onClick() {
-      this.bookcss = "";
+      this.bookcss = '';
     },
 
     toggleBook() {
-      if (this.bookcss == "") {
-        this.bookcss = "book-leave";
+      if (this.bookcss == '') {
+        this.bookcss = 'book-leave';
         this.headerShow = false;
         this.settingsDialog = false;
         this.$q.fullscreen.request();
       } else {
-        this.bookcss = "";
+        this.bookcss = '';
       }
     },
 
@@ -393,27 +393,27 @@ export default {
       //   this.navigations[0]["children"].push(nav);
       // }
 
-      switch (nav["type"]) {
-        case "book":
+      switch (nav['type']) {
+        case 'book':
           this.navigations.unshift(nav);
           break;
-        case "front_matter":
+        case 'front_matter':
           let frontMatters = this.navigations.find((obj) => {
-            return obj.name === "Front Matters";
+            return obj.name === 'Front Matters';
           });
           frontMatters.data.push(nav);
 
           break;
-        case "chapter":
+        case 'chapter':
           let chapters = this.navigations.find((obj) => {
-            return obj.name === "Chapters";
+            return obj.name === 'Chapters';
           });
           chapters.data.push(nav);
 
           break;
-        case "back_matter":
+        case 'back_matter':
           let backMatters = this.navigations.find((obj) => {
-            return obj.name === "Back Matters";
+            return obj.name === 'Back Matters';
           });
           backMatters.data.push(nav);
 
@@ -426,7 +426,7 @@ export default {
     navClicked(nav) {
       let orientation = this.$refs.book.$refs.flipbook.getOrientation();
 
-      if (orientation == "landscape") {
+      if (orientation == 'landscape') {
         this.$refs.book.$refs.flipbook.flip(nav.page);
       } else {
         this.$refs.book.$refs.flipbook.turnToPage(nav.page);
@@ -445,9 +445,9 @@ export default {
     },
 
     handleSwipe(direction) {
-      if (direction == "top") {
+      if (direction == 'top') {
         headerShow = false;
-      } else if (direction == "down") {
+      } else if (direction == 'down') {
         headerShow = true;
       }
     },
@@ -459,17 +459,17 @@ export default {
   },
 
   beforeRouteLeave(to, from, next) {
-    this.overflow = "auto";
+    this.overflow = 'auto';
     next();
   },
 
   beforeUnmount() {
     //Clearing out session storage after using it
-    if (this.$q.sessionStorage.has("currentManuscript")) {
-      this.$q.sessionStorage.remove("currentManuscript");
+    if (this.$q.sessionStorage.has('currentManuscript')) {
+      this.$q.sessionStorage.remove('currentManuscript');
     }
-    if (this.$q.sessionStorage.has("currentBook")) {
-      this.$q.sessionStorage.remove("currentBook");
+    if (this.$q.sessionStorage.has('currentBook')) {
+      this.$q.sessionStorage.remove('currentBook');
     }
 
     //Switching off the dark mode
