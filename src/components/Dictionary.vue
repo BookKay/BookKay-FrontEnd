@@ -8,8 +8,20 @@
   />
 
   <q-dialog v-model="resultDialog">
-    <q-card class="result-card">
-      <q-card-section class="result-word">
+    <q-card
+      class="result-card"
+      v-bind:class="{
+        active: this.$q.dark.isActive,
+        'result-word--dark': this.$q.dark.isActive,
+      }"
+    >
+      <q-card-section
+        class="result-word"
+        v-bind:class="{
+          active: this.$q.dark.isActive,
+          'result-word--dark': this.$q.dark.isActive,
+        }"
+      >
         <h3>{{ capitalizeFirstLetter(searchWord) }}</h3>
       </q-card-section>
 
@@ -29,7 +41,13 @@
           <swiper-slide v-for="(entry, index) in result" :key="index">
             <div class="result-container">
               <div class="result">
-                <div class="result-definition">
+                <div
+                  class="result-definition"
+                  v-bind:class="{
+                    active: this.$q.dark.isActive,
+                    'result-word--dark': this.$q.dark.isActive,
+                  }"
+                >
                   ({{ entry.pos }})
                   {{ capitalizeFirstLetter(entry.definition) }}
                 </div>
@@ -41,7 +59,7 @@
                 </div>
                 <div class="result-synonyms" v-if="entry.synonyms.length > 0">
                   <h4>
-                    <span>Synonyms:</span> {{ entry.synonyms.join(", ") }}
+                    <span>Synonyms:</span> {{ entry.synonyms.join(', ') }}
                   </h4>
                 </div>
               </div>
@@ -57,29 +75,37 @@
   </q-dialog>
 </template>
 <script>
-import AppPromptDialog from "src/components/AppPromptDialog.vue";
+import AppPromptDialog from 'src/components/AppPromptDialog.vue';
 
-import { Navigation, Pagination, Keyboard, A11y } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination, Keyboard, A11y } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
-import "swiper/css";
-import "swiper/css/a11y";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/keyboard";
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/keyboard';
 
 export default {
-  name: "Dictionary",
+  name: 'Dictionary',
   components: { AppPromptDialog, Swiper, SwiperSlide },
   data() {
     return {
       searchDialog: false,
       resultDialog: false,
-      searchWord: "",
+      searchWord: '',
       result: [],
       modules: [Navigation, Pagination, Keyboard, A11y],
+      cardClasses: {
+        'result-word--dark': this.$q.dark.isActive,
+      },
     };
+  },
+  watch: {
+    'this.$q.dark.isActive': function (val) {
+      this.cardClasses['result-word--dark'] = val;
+    },
   },
   methods: {
     openSearchDialog() {
@@ -90,7 +116,7 @@ export default {
       this.searchDialog = false;
       if (word) {
         this.searchWord = word;
-        let response = await this.$api.post("users/dictionary", {
+        let response = await this.$api.post('users/dictionary', {
           word: word,
         });
 
@@ -136,6 +162,16 @@ export default {
   font-size: 20px;
   color: #004036;
   margin-bottom: 20px;
+}
+
+.result-word--dark {
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+  padding: 0;
+  margin-top: 10px;
+  color: white;
+  font-weight: 700;
 }
 
 .result-examples {
