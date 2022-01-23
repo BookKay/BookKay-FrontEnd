@@ -105,16 +105,16 @@
 </template>
 
 <script>
-import ImageUploader from "src/components/AppImageUploader.vue";
-import AppPromptDialog from "src/components/AppPromptDialog.vue";
-import AppConfirmDialog from "src/components/AppConfirmDialog.vue";
+import ImageUploader from 'src/components/AppImageUploader.vue';
+import AppPromptDialog from 'src/components/AppPromptDialog.vue';
+import AppConfirmDialog from 'src/components/AppConfirmDialog.vue';
 
 export default {
-  name: "OverviewPage",
+  name: 'OverviewPage',
   components: { AppPromptDialog, AppConfirmDialog, ImageUploader },
   data() {
     return {
-      price: "Free",
+      price: 'Free',
 
       // containFrontMatter:
       //   this.$store.getters["write/manuscriptProperty"]("configs")
@@ -130,10 +130,10 @@ export default {
       containBackMatter: false,
       confirmDialog: {
         state: false,
-        label: "",
-        text: "",
-        data: "",
-        externalData: "",
+        label: '',
+        text: '',
+        data: '',
+        externalData: '',
       },
 
       titleDialog: false,
@@ -147,12 +147,12 @@ export default {
   watch: {
     containFrontMatter: function (val) {
       if (!val) {
-        this.confirmDialog["state"] = true;
-        this.confirmDialog["data"] = "containFrontMatter";
-        this.confirmDialog["externalData"] = "contain_front_matter";
-        this.confirmDialog["label"] = "Diable Front Matters";
-        this.confirmDialog["text"] =
-          "Are you sure you want to disable front matters? This will delete all your current front matters.";
+        this.confirmDialog['state'] = true;
+        this.confirmDialog['data'] = 'containFrontMatter';
+        this.confirmDialog['externalData'] = 'contain_front_matter';
+        this.confirmDialog['label'] = 'Diable Front Matters';
+        this.confirmDialog['text'] =
+          'Are you sure you want to disable front matters? This will delete all your current front matters.';
       } else {
         this.toggleConfigs({ contain_front_matter: true });
       }
@@ -160,12 +160,12 @@ export default {
 
     containChapter: function (val) {
       if (!val) {
-        this.confirmDialog["state"] = true;
-        this.confirmDialog["data"] = "containChapter";
-        this.confirmDialog["externalData"] = "contain_chapter";
-        this.confirmDialog["label"] = "Diable Chapters";
-        this.confirmDialog["text"] =
-          "Are you sure you want to disable chapters? This will delete all your current chapters.";
+        this.confirmDialog['state'] = true;
+        this.confirmDialog['data'] = 'containChapter';
+        this.confirmDialog['externalData'] = 'contain_chapter';
+        this.confirmDialog['label'] = 'Diable Chapters';
+        this.confirmDialog['text'] =
+          'Are you sure you want to disable chapters? This will delete all your current chapters.';
       } else {
         this.toggleConfigs({ contain_chapter: true });
       }
@@ -173,71 +173,71 @@ export default {
 
     containBackMatter: function (val) {
       if (!val) {
-        this.confirmDialog["state"] = true;
-        this.confirmDialog["data"] = "containBackMatter";
-        this.confirmDialog["externalData"] = "contain_back_matter";
-        this.confirmDialog["label"] = "Diable Back Matters";
-        this.confirmDialog["text"] =
-          "Are you sure you want to disable back matters? This will delete all your current back matters.";
+        this.confirmDialog['state'] = true;
+        this.confirmDialog['data'] = 'containBackMatter';
+        this.confirmDialog['externalData'] = 'contain_back_matter';
+        this.confirmDialog['label'] = 'Diable Back Matters';
+        this.confirmDialog['text'] =
+          'Are you sure you want to disable back matters? This will delete all your current back matters.';
       } else {
         this.toggleConfigs({ contain_back_matter: true });
       }
     },
-    "$store.state.write.manuscript": {
+    '$store.state.write.manuscript': {
       handler: function (manuscript) {
         if (manuscript != null) {
           this.containFrontMatter =
-            this.$store.getters["write/manuscriptProperty"](
-              "configs"
+            this.$store.getters['write/manuscriptProperty'](
+              'configs'
             ).contain_front_matter;
 
           this.containChapter =
-            this.$store.getters["write/manuscriptProperty"](
-              "configs"
+            this.$store.getters['write/manuscriptProperty'](
+              'configs'
             ).contain_chapter;
 
           this.containBackMatter =
-            this.$store.getters["write/manuscriptProperty"](
-              "configs"
+            this.$store.getters['write/manuscriptProperty'](
+              'configs'
             ).contain_back_matter;
         }
       },
       deep: true,
-      immediate: true,
+      immediate: false,
     },
   },
 
   computed: {
     //Book properties
     frontCover() {
-      return this.$store.getters["write/manuscriptProperty"]("front_cover");
+      return this.$store.getters['write/manuscriptProperty']('front_cover');
     },
     backCover() {
-      return this.$store.getters["write/manuscriptProperty"]("back_cover");
+      return this.$store.getters['write/manuscriptProperty']('back_cover');
     },
     title() {
-      return this.$store.getters["write/manuscriptProperty"]("title");
+      return this.$store.getters['write/manuscriptProperty']('title');
     },
     description() {
-      return this.$store.getters["write/manuscriptProperty"]("description");
+      return this.$store.getters['write/manuscriptProperty']('description');
     },
     authorName() {
-      return this.$store.getters["user/userProperty"]("author_name");
+      return this.$store.getters['user/userProperty']('author_name');
     },
 
     //Book Covers
     getFrontCoverURL() {
       let url = `${this.$api.defaults.baseURL}manuscripts/${this.$store.getters[
-        "write/manuscriptProperty"
-      ]("id")}/front_cover`;
+        'write/manuscriptProperty'
+      ]('id')}/front_cover`;
 
       return url;
     },
 
     getBackCoverURL() {
       let url = `${this.$api.defaults.baseURL}manuscripts/${this.$store.getters[
-        "write/manuscriptProperty"
-      ]("id")}/back_cover`;
+        'write/manuscriptProperty'
+      ]('id')}/back_cover`;
 
       return url;
     },
@@ -245,38 +245,38 @@ export default {
     fields() {
       return [
         {
-          label: "Title",
+          label: 'Title',
           value: this.title,
           clickHandler: this.changeTitle,
         },
         {
-          label: "Description",
+          label: 'Description',
           value: this.description,
           clickHandler: this.changeDescription,
         },
         {
-          label: "Author Name",
+          label: 'Author Name',
           value: this.authorName,
         },
         {
-          label: "Price",
+          label: 'Price',
           value: this.price,
           //clickHandler: this.changePrice,
         },
         {
-          label: "Edit Configs",
+          label: 'Edit Configs',
           clickHandler: this.editConfigs,
         },
         {
-          label: "Delete",
-          icon: "delete",
-          color: "red",
+          label: 'Delete',
+          icon: 'delete',
+          color: 'red',
           clickHandler: this.delete,
         },
         {
-          label: "Publish",
-          icon: "publish",
-          color: "green",
+          label: 'Publish',
+          icon: 'publish',
+          color: 'green',
           clickHandler: this.publish,
         },
       ];
@@ -285,33 +285,33 @@ export default {
     promptDialogs() {
       return [
         {
-          label: "Title",
+          label: 'Title',
           state: this.titleDialog,
           value: this.title,
           rules: [
-            (val) => (val !== null && val !== "") || "Please type your title",
-            (val) => val.length <= 100 || "Title must be smaller than 100",
+            (val) => (val !== null && val !== '') || 'Please type your title',
+            (val) => val.length <= 100 || 'Title must be smaller than 100',
           ],
           confirmHandler: this.confirmTitle,
         },
         {
-          label: "Description",
+          label: 'Description',
           state: this.descriptionDialog,
           value: this.description,
           rules: [
             (val) =>
-              (val !== null && val !== "") || "Please type your description",
+              (val !== null && val !== '') || 'Please type your description',
           ],
           confirmHandler: this.confirmDescription,
         },
         {
-          label: "Delete Confirmation",
+          label: 'Delete Confirmation',
           caption: `Are you sure you want to DELETE? After deleting all related data of this manuscript will be permanently lost. If you are confirmed, type in <b>${this.title}</b>`,
           state: this.deleteDialog,
-          value: "",
+          value: '',
           rules: [
             (val) =>
-              (val !== null && val !== "") ||
+              (val !== null && val !== '') ||
               `Please type in ${this.title} to confirm`,
             (val) =>
               val == this.title || `Please type in ${this.title} to confirm`,
@@ -319,13 +319,13 @@ export default {
           confirmHandler: this.confirmDelete,
         },
         {
-          label: "Publish Confirmation",
+          label: 'Publish Confirmation',
           caption: `Are you sure you want to publish? After publishing you cannot edit or delete the book. If you are confirmed, type in <b>${this.title}</b>`,
           state: this.publishDialog,
-          value: "",
+          value: '',
           rules: [
             (val) =>
-              (val !== null && val !== "") ||
+              (val !== null && val !== '') ||
               `Please type in ${this.title} to confirm`,
             (val) =>
               val == this.title || `Pleaseee type in ${this.title} to confirm`,
@@ -340,47 +340,47 @@ export default {
     async uploadHandler() {
       //Fetching back newly updated manuscript and storing it.
       let response = await this.$api.get(
-        "manuscripts/" + this.$store.state.write.manuscript.id,
+        'manuscripts/' + this.$store.state.write.manuscript.id,
         {
-          params: { expand: "~all" },
+          params: { expand: '~all' },
         }
       );
-      this.$store.commit("write/updateManuscript", response.data);
+      this.$store.commit('write/updateManuscript', response.data);
       this.$q.sessionStorage.set(
-        "currentManuscript",
+        'currentManuscript',
         this.$store.state.write.manuscript
       );
     },
 
     async clearHandler(label) {
       let key;
-      if (label == "Front Cover") {
-        key = "front_cover";
-      } else if (label == "Back Cover") {
-        key = "back_cover";
+      if (label == 'Front Cover') {
+        key = 'front_cover';
+      } else if (label == 'Back Cover') {
+        key = 'back_cover';
       }
 
       let payload = {};
-      payload[key] = "";
+      payload[key] = '';
 
-      let imgPath = this.$store.getters["write/manuscriptProperty"](key);
+      let imgPath = this.$store.getters['write/manuscriptProperty'](key);
 
       try {
         //Deleting the image
         await this.$api.delete(
-          `manuscripts/${this.$store.getters["write/manuscriptProperty"](
-            "id"
+          `manuscripts/${this.$store.getters['write/manuscriptProperty'](
+            'id'
           )}/${key}`,
           { params: { img: imgPath } }
         );
         //Emptying the image url of manuscript
-        await this.$store.dispatch("write/editManuscript", payload);
+        await this.$store.dispatch('write/editManuscript', payload);
       } catch {
         this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Edit unsuccessful",
-          icon: "error",
+          color: 'negative',
+          position: 'top',
+          message: 'Edit unsuccessful',
+          icon: 'error',
         });
       }
     },
@@ -402,28 +402,28 @@ export default {
     },
 
     publish() {
-      let errMsg = "";
+      let errMsg = '';
 
       let front_cover =
-        this.$store.getters["write/manuscriptProperty"]("front_cover");
+        this.$store.getters['write/manuscriptProperty']('front_cover');
 
       let back_cover =
-        this.$store.getters["write/manuscriptProperty"]("back_cover");
+        this.$store.getters['write/manuscriptProperty']('back_cover');
 
       //Checking for validation errors
-      if (front_cover == "") {
-        errMsg = "Please add front cover of your book";
-      } else if (back_cover == "") {
-        errMsg = "Please add back cover of your book";
+      if (front_cover == '') {
+        errMsg = 'Please add front cover of your book';
+      } else if (back_cover == '') {
+        errMsg = 'Please add back cover of your book';
       }
 
       //If there is error, the user is notified
-      if (errMsg != "") {
+      if (errMsg != '') {
         this.$q.notify({
-          color: "negative",
-          position: "top",
+          color: 'negative',
+          position: 'top',
           message: errMsg,
-          icon: "error",
+          icon: 'error',
         });
       } else {
         this.publishDialog = true;
@@ -453,30 +453,30 @@ export default {
 
     async toggleConfigs(configs) {
       try {
-        await this.$store.dispatch("write/editConfigs", configs);
+        await this.$store.dispatch('write/editConfigs', configs);
         return true;
       } catch {
         this.$q.notify({
-          color: "negative",
-          position: "top",
-          message: "Edit unsuccessful",
-          icon: "error",
+          color: 'negative',
+          position: 'top',
+          message: 'Edit unsuccessful',
+          icon: 'error',
         });
         return false;
       }
     },
 
     async deleteComponents(closedConfig) {
-      let component = "";
+      let component = '';
       switch (closedConfig) {
-        case "contain_front_matter":
-          component = "front_matter";
+        case 'contain_front_matter':
+          component = 'front_matter';
           break;
-        case "contain_chapter":
-          component = "chapter";
+        case 'contain_chapter':
+          component = 'chapter';
           break;
-        case "contain_back_matter":
-          component = "back_matter";
+        case 'contain_back_matter':
+          component = 'back_matter';
           break;
         default:
         // code block
@@ -484,11 +484,11 @@ export default {
 
       let payload = { type: component };
       let components =
-        this.$store.getters["write/manuscriptProperty"](component);
+        this.$store.getters['write/manuscriptProperty'](component);
 
       for (const component of components) {
         payload.id = component.id;
-        await this.$store.dispatch("write/deleteComponent", payload);
+        await this.$store.dispatch('write/deleteComponent', payload);
       }
     },
 
@@ -497,13 +497,13 @@ export default {
       if (newTitle && newTitle != this.title) {
         let payload = { title: newTitle };
         try {
-          await this.$store.dispatch("write/editManuscript", payload);
+          await this.$store.dispatch('write/editManuscript', payload);
         } catch {
           this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: "Edit unsuccessful",
-            icon: "error",
+            color: 'negative',
+            position: 'top',
+            message: 'Edit unsuccessful',
+            icon: 'error',
           });
         }
       }
@@ -514,13 +514,13 @@ export default {
       if (newDescription && newDescription != this.description) {
         let payload = { description: newDescription };
         try {
-          await this.$store.dispatch("write/editManuscript", payload);
+          await this.$store.dispatch('write/editManuscript', payload);
         } catch {
           this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: "Edit unsuccessful",
-            icon: "error",
+            color: 'negative',
+            position: 'top',
+            message: 'Edit unsuccessful',
+            icon: 'error',
           });
         }
       }
@@ -532,33 +532,33 @@ export default {
         try {
           //Deleting manuscript
           await this.$api.delete(
-            `manuscripts/${this.$store.getters["write/manuscriptProperty"](
-              "id"
+            `manuscripts/${this.$store.getters['write/manuscriptProperty'](
+              'id'
             )} `
           );
 
           //Getting the updated user
           let response = await this.$api.get(
-            "users/" + this.$store.getters["user/userProperty"]("id"),
+            'users/' + this.$store.getters['user/userProperty']('id'),
             {
-              params: { expand: "~all" },
+              params: { expand: '~all' },
             }
           );
 
           let user = response.data;
 
           //Saving the user
-          this.$store.commit("user/setUser", user);
+          this.$store.commit('user/setUser', user);
 
           this.$router.replace({
-            name: "app-write",
+            name: 'app-write',
           });
         } catch {
           this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: "Edit unsuccessful",
-            icon: "error",
+            color: 'negative',
+            position: 'top',
+            message: 'Edit unsuccessful',
+            icon: 'error',
           });
         }
       }
@@ -568,14 +568,14 @@ export default {
       this.publishDialog = false;
       if (result) {
         try {
-          await this.$store.dispatch("write/publishBook");
-          this.$router.push({ name: "app-read" });
+          await this.$store.dispatch('write/publishBook');
+          this.$router.push({ name: 'app-read' });
         } catch {
           this.$q.notify({
-            color: "negative",
-            position: "top",
-            message: "Edit unsuccessful",
-            icon: "error",
+            color: 'negative',
+            position: 'top',
+            message: 'Edit unsuccessful',
+            icon: 'error',
           });
         }
       }
