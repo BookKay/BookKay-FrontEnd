@@ -16,7 +16,7 @@
 import { useQuasar } from 'quasar';
 import { watch, reactive } from 'vue';
 
-import * as themes from 'src/reader/themes/themes.json';
+import * as themes from '../themes/themes.json';
 
 export default {
   name: 'Page',
@@ -63,7 +63,7 @@ export default {
 
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-@import url('../reader/themes/dark--default.scss');
+@import url('../themes/dark--default.scss');
 
 .page {
   padding: 20px;
