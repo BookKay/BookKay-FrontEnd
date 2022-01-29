@@ -1,15 +1,15 @@
 import { reactive } from 'vue';
 import { useQuasar } from 'quasar';
 
-import handlePages from 'src/reader/composables/pagesHandler';
-import handleNavigations from 'src/reader/composables/navigationHandler';
-import handleBookCopy from 'src/reader/composables/bookCopyHandler';
+import handlePages from './pagesHandler';
+import handleNavigations from './navigationHandler';
+import handleBookCopy from './bookCopyHandler';
 import textPagination from './textPagination';
 
 //Interfaces
 
-import { DOMInterface } from 'src/reader/interfaces';
-import { ComponentType } from 'src/reader/interfaces';
+import { DOMInterface } from '../interfaces';
+import { ComponentType } from '../interfaces';
 
 interface BookJSON {
   title: string;

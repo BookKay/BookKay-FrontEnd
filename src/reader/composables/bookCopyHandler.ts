@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
 
-import { ComponentType } from 'src/reader/interfaces';
+import { ComponentType } from '../interfaces';
 
 interface BookCopy {
   title: string;

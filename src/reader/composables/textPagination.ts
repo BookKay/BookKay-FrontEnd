@@ -1,11 +1,8 @@
-import handlePages from 'src/reader/composables/pagesHandler';
-import textAppending from 'src/reader/composables/textAppending';
-import {
-  getOpeningTag,
-  getClosingTag,
-  escapeHtml,
-} from 'src/reader/composables/utils';
-import { DOMInterface, Content } from 'src/reader/interfaces';
+import handlePages from './pagesHandler';
+import textAppending from './textAppending';
+
+import { getOpeningTag, getClosingTag, escapeHtml } from './utils';
+import { DOMInterface, Content } from '../interfaces';
 
 interface Component {
   pages: string[];

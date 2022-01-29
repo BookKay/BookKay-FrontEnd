@@ -1,5 +1,3 @@
-import { reactive, readonly } from 'vue';
-
 interface Tag {
   openingTag: string;
   closingTag: string;

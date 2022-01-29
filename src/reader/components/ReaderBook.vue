@@ -45,13 +45,13 @@
 </template>
 
 <script>
-import Flipbook from 'src/reader/components/Flipbook.vue';
-import BookPage from 'src/reader/components/ReaderBookPage.vue';
-import BookCover from 'src/reader/components/ReaderBookCover.vue';
-import LoadingScreen from 'src/reader/components/ReaderLoadingScreen.vue';
+import Flipbook from './Flipbook.vue';
+import BookPage from './ReaderBookPage.vue';
+import BookCover from './ReaderBookCover.vue';
+import LoadingScreen from './ReaderLoadingScreen.vue';
 
-import bookRendering from 'src/reader/composables/bookRendering';
-import handlePages from 'src/reader/composables/pagesHandler';
+import bookRendering from '../composables/bookRendering';
+import handlePages from '../composables/pagesHandler';
 
 import { useMeta } from 'quasar';
 
