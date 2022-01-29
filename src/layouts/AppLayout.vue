@@ -14,31 +14,32 @@
 </template>
 
 <script>
-import TheBottomNav from "src/components/TheBottomNav.vue";
-import SplashScreen from "src/components/TheSplashScreen.vue";
+import TheBottomNav from 'src/components/TheBottomNav.vue';
+import SplashScreen from 'src/components/TheSplashScreen.vue';
 
 export default {
   components: { TheBottomNav, SplashScreen },
   mounted() {
-    this.$store.dispatch("user/fetchUser");
+    this.$store.dispatch('user/fetchUser');
   },
 
   data() {
     return {
-      tab: "write",
+      tab: 'write',
     };
   },
+
   methods: {
     fetchUser() {
       this.$api
-        .get("users/" + this.$store.getters["user/userProperty"]("id"), {
-          params: { expand: "~all" },
+        .get('users/' + this.$store.getters['user/userProperty']('id'), {
+          params: { expand: '~all' },
         })
         .then((resp) => {
           const user = resp.data;
 
-          this.$store.commit("user/setUser", user);
-          this.$q.localStorage.set("user", user);
+          this.$store.commit('user/setUser', user);
+          this.$q.localStorage.set('user', user);
         });
     },
   },

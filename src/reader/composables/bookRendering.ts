@@ -38,13 +38,12 @@ export default function bookRendering() {
   const $q = useQuasar();
 
   const { paginateText } = textPagination();
-  const { pages, createPage, clearPages } = handlePages();
-  const { navigations, addNav, clearNav } = handleNavigations();
+  const { pages, createPage } = handlePages();
+  const { addNav } = handleNavigations();
   const {
     book_copy,
     addComponent: addComponentToBookCopy,
     addMainText: addMainTextToBookCopy,
-    clearBookCopy,
   } = handleBookCopy();
 
   //
@@ -52,22 +51,20 @@ export default function bookRendering() {
   const renderBook = (initBook: BookJSON) => {
     const book = reactive(initBook);
 
-    const pageNum = 1;
-
-    addFirstPage(book, pages.length);
+    addFirstPage(book);
 
     //Adding in the front matters
-    addComponent(book, pages.length, 'front_matters');
+    addComponent(book, 'front_matters');
 
     //Adding in the chapters
     if ('chapters' in book && book.chapters.length > 0) {
-      addComponent(book, pages.length, 'chapters');
+      addComponent(book, 'chapters');
     } else if (book.text != null) {
-      addMainText(book, pages.length);
+      addMainText(book);
     }
 
     //Adding in the back matters
-    addComponent(book, pages.length, 'back_matters');
+    addComponent(book, 'back_matters');
 
     //Adding in final blank pages if required
     addFinalPages(book);
@@ -75,7 +72,7 @@ export default function bookRendering() {
     return book;
   };
 
-  const addFirstPage = (book: BookJSON, pageNum: number) => {
+  const addFirstPage = (book: BookJSON) => {
     //Adding in navigation
     const nav: NavigationJSON = {
       type: 'book',
@@ -91,14 +88,13 @@ export default function bookRendering() {
     book_copy.back_cover = book.back_cover;
 
     if ($q.screen.gt.sm) {
-      createPage(pages.length, book['title'], ''); // creates the first page
-      pageNum++;
+      createPage(book['title'], ''); // creates the first page
     }
   };
 
   const addComponent = (
     book: BookJSON,
-    pageNum: number,
+
     component_type: ComponentType
   ) => {
     const components = book[component_type];
@@ -120,14 +116,14 @@ export default function bookRendering() {
         const nav = <NavigationJSON>{
           type: component_type_singular,
           data: component['title'],
-          page: pages.length,
+          page: pages.length + 1,
         };
 
         addNav(nav);
 
-        pageNum = paginateText(
+        paginateText(
           component['text'],
-          pages.length,
+          pages.length + 1,
           component['title'],
           book_copy[component_type][i]
         );
@@ -138,20 +134,19 @@ export default function bookRendering() {
           book_copy[component_type][i]['pages'].push(page);
 
           //Creating page
-          createPage(pages.length, component['title'], page);
+          createPage(component['title'], page);
           document.getElementsByClassName('page-text')[0].innerHTML = '';
-          pageNum++;
         }
       }
     }
   };
 
-  const addMainText = (book: BookJSON, pageNum: number) => {
+  const addMainText = (book: BookJSON) => {
     //Adding in navigation
     const nav = <NavigationJSON>{
       type: 'text',
       data: book['title'],
-      page: pages.length,
+      page: pages.length + 1,
     };
 
     addNav(nav);
@@ -161,9 +156,9 @@ export default function bookRendering() {
       pages: [],
     });
 
-    pageNum = paginateText(
+    paginateText(
       book['text'],
-      pages.length,
+      pages.length + 1,
       book['title'],
       book_copy['main_text']
     );
@@ -173,17 +168,17 @@ export default function bookRendering() {
       //Adding page to book copy
       book_copy.main_text['pages'].push(page);
 
-      createPage(pageNum, book['title'], page);
+      createPage(book['title'], page);
       document.getElementsByClassName('page-text')[0].innerHTML = '';
     }
   };
 
   const addFinalPages = (book: BookJSON) => {
     if ($q.screen.gt.sm) {
-      createPage(pages.length, book['title'], '');
+      createPage(book['title'], '');
 
       if (pages.length % 2 == 1) {
-        createPage(pages.length, book['title'], '');
+        createPage(book['title'], '');
       }
     }
   };

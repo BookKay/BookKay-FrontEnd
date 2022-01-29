@@ -150,6 +150,10 @@ export default {
           label: 'Delete Account',
           clickHandler: this.confirmDelete,
         },
+        {
+          label: 'Toggle Dark Mode',
+          clickHandler: this.$q.dark.set(!this.$q.dark.isActive),
+        },
       ];
     },
 

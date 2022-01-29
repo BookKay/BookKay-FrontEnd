@@ -17,7 +17,7 @@ interface Tag {
 }
 
 export default function textPagination() {
-  const { pages, createPage, clearPages } = handlePages();
+  const { pages, createPage } = handlePages();
   const { appendToLastPage } = textAppending();
 
   const singleTags = ['br', 'hr'];
@@ -46,7 +46,7 @@ export default function textPagination() {
       if (pageText != '') {
         // checks if word could not be filled in last page
         currentComponent['pages'].push(pageText);
-        createPage(pages.length, title, pageText); // create new empty page
+        createPage(title, pageText); // create new empty page
         pageText = appendToLastPage(openingTag + closingTag, tags); // fill the word in the new last element
       }
 
@@ -73,7 +73,7 @@ export default function textPagination() {
             if (pageText != '') {
               // checks if word could not be filled in last page
               currentComponent['pages'].push(pageText);
-              createPage(pages.length, title, pageText); // create new empty page
+              createPage(title, pageText); // create new empty page
               const lastTags = []; //array to store the tags that have been appended to page
 
               //looping through each tags and inserting them in the next page
@@ -112,12 +112,18 @@ export default function textPagination() {
 
           if (pageText != '') {
             // checks if word could not be filled in last page
-            createPage(pages.length, title, pageText); // create new empty page
+            createPage(title, pageText); // create new empty page
             pageText = appendToLastPage(word, tags);
           }
         } else {
           //if content is an object
-          paginateText(content, pages.length, title, currentComponent, tags);
+          paginateText(
+            content,
+            pages.length + 1,
+            title,
+            currentComponent,
+            tags
+          );
           tags.pop();
         }
       }

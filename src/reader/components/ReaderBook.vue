@@ -115,6 +115,7 @@ export default {
       try {
         this.book = renderBook(this.book);
         this.pages = pages;
+        console.log(pages);
       } catch (err) {
         this.loadingText = 'Rendering Error :(';
         console.log(err);

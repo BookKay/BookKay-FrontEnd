@@ -9,10 +9,10 @@ interface Page {
 const pages = reactive(<Page[]>[]);
 
 export default function handlePages() {
-  const createPage = (pageNum: number, header: string, text: string) => {
+  const createPage = (header: string, text: string) => {
     const page: Page = {
       header: header,
-      pageNum: pages.length,
+      pageNum: pages.length + 1,
       text: text,
     };
 
