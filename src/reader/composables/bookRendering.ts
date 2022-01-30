@@ -8,24 +8,21 @@ import textPagination from './textPagination';
 
 //Interfaces
 
-import { DOMInterface } from '../interfaces';
-import { ComponentType } from '../interfaces';
+import {
+  DOMInterface,
+  ComponentTypeInterface,
+  NavigationInterface,
+} from '../interfaces';
 
 interface BookJSON {
   title: string;
+  description: string;
   front_cover: string;
   back_cover: string;
   front_matters: Component[];
   chapters: Component[];
   text: DOMInterface;
   back_matters: Component[];
-}
-
-interface NavigationJSON {
-  type: 'book' | 'front_matter' | 'chapter' | 'text' | 'back_matter';
-  data: string;
-  page: number;
-  active: boolean;
 }
 
 interface Component {
@@ -74,7 +71,7 @@ export default function bookRendering() {
 
   const addFirstPage = (book: BookJSON) => {
     //Adding in navigation
-    const nav: NavigationJSON = {
+    const nav: NavigationInterface = {
       type: 'book',
       data: book['title'],
       page: 1,
@@ -84,6 +81,7 @@ export default function bookRendering() {
 
     //Adding title and cover urls to the book copy object
     book_copy.title = book.title;
+    book_copy.description = book.description;
     book_copy.front_cover = book.front_cover;
     book_copy.back_cover = book.back_cover;
 
@@ -94,8 +92,7 @@ export default function bookRendering() {
 
   const addComponent = (
     book: BookJSON,
-
-    component_type: ComponentType
+    component_type: ComponentTypeInterface
   ) => {
     const components = book[component_type];
 
@@ -113,7 +110,7 @@ export default function bookRendering() {
         const component_type_singular = component_type.slice(0, -1);
 
         //Adding in navigation
-        const nav = <NavigationJSON>{
+        const nav = <NavigationInterface>{
           type: component_type_singular,
           data: component['title'],
           page: pages.length + 1,
@@ -143,7 +140,7 @@ export default function bookRendering() {
 
   const addMainText = (book: BookJSON) => {
     //Adding in navigation
-    const nav = <NavigationJSON>{
+    const nav = <NavigationInterface>{
       type: 'text',
       data: book['title'],
       page: pages.length + 1,

@@ -52,6 +52,9 @@ import LoadingScreen from './ReaderLoadingScreen.vue';
 
 import bookRendering from '../composables/bookRendering';
 import handlePages from '../composables/pagesHandler';
+import handleBookCopy from '../composables/bookCopyHandler';
+
+import handleMetaData from '../composables/handleMetaData';
 
 import { useMeta } from 'quasar';
 
@@ -88,7 +91,9 @@ export default {
 
   async mounted() {
     const { renderBook } = bookRendering();
-    const { pages, createPage, clearPages } = handlePages();
+    const { pages } = handlePages();
+    const { loadBookCopy } = handleBookCopy();
+    const { updateMetaData } = handleMetaData();
 
     this.loadingText = 'Book Loading...Please Wait.';
 
@@ -115,7 +120,6 @@ export default {
       try {
         this.book = renderBook(this.book);
         this.pages = pages;
-        console.log(pages);
       } catch (err) {
         this.loadingText = 'Rendering Error :(';
         console.log(err);
@@ -187,10 +191,11 @@ export default {
         }
       } else {
         this.book = response.data;
-        this.updateMetaData();
+        updateMetaData(this.book.title, this.book.description);
 
         this.configureCovers();
-        this.loadBookCopy();
+        loadBookCopy(this.book);
+        this.pages = pages;
       }
 
       this.loading = false;
@@ -234,33 +239,6 @@ export default {
   },
 
   methods: {
-    async updateMetaData() {
-      //Fetching back the updated user
-      let response = await this.$api.get('books/' + this.$route.query.book_id, {
-        params: { fields: 'author_name' },
-      });
-
-      let author_name = response.data.author_name;
-
-      useMeta(() => {
-        return {
-          // whenever "title" from above changes, your meta will automatically update
-          title: `${this.book.title} | BookKay`,
-          meta: {
-            description: {
-              name: 'description',
-              content: this.book.description,
-            },
-            keywords: {
-              name: 'keywords',
-              content: `${this.book.title}, ${author_name}, BookKay, ebook`,
-            },
-            author: { name: 'author', content: author_name },
-          },
-        };
-      });
-    },
-
     loadPageFlip() {
       setTimeout(() => this.$refs.flipbook.updateFromHtml(), 1000);
     },
@@ -294,81 +272,6 @@ export default {
       text = text.split('<img>').join('<img/>');
 
       return text;
-    },
-
-    loadBookCopy() {
-      let pageNum = 1;
-
-      this.$emit('navAdded', {
-        type: 'book',
-        data: this.book['title'],
-        page: pageNum - 1,
-        active: false,
-      });
-
-      if (!this.$q.screen.lt.sm) {
-        this.createPage(pageNum, this.book['title'], ''); // creates the first page
-        pageNum++;
-      }
-
-      for (const front_matter of this.book['front_matters']) {
-        this.$emit('navAdded', {
-          type: 'front_matter',
-          data: front_matter['title'],
-          page: pageNum,
-        });
-
-        //Creating pages
-        for (const page of front_matter['pages']) {
-          this.createPage(pageNum, front_matter['title'], page);
-          pageNum++;
-        }
-      }
-
-      for (const chapter of this.book['chapters']) {
-        this.$emit('navAdded', {
-          type: 'chapter',
-          data: chapter['title'],
-          page: pageNum,
-        });
-
-        //Creating pages
-        for (const page of chapter['pages']) {
-          this.createPage(pageNum, chapter['title'], page);
-          pageNum++;
-        }
-      }
-      if (Object.keys(this.book['main_text']).length > 0) {
-        let main_text = this.book['main_text'];
-        //Creating pages
-        for (const page of main_text['pages']) {
-          this.createPage(pageNum, main_text['title'], page);
-          pageNum++;
-        }
-      }
-
-      for (const back_matter of this.book['back_matters']) {
-        this.$emit('navAdded', {
-          type: 'back_matter',
-          data: back_matter['title'],
-          page: pageNum,
-        });
-
-        //Creating pages
-        for (const page of back_matter['pages']) {
-          this.createPage(pageNum, back_matter['title'], page);
-          pageNum++;
-        }
-      }
-
-      if (!this.$q.screen.lt.sm) {
-        this.createPage(pageNum, this.book['title'], '');
-        pageNum++;
-
-        if (pageNum % 2 == 0) {
-          this.createPage(pageNum, this.book['title'], '');
-        }
-      }
     },
 
     turnToQueryPage() {
@@ -484,7 +387,7 @@ export default {
     },
 
     //Attaching swiping to turn pages in flipbook for mobile view
-    handleSwipe({ evt, ...info }) {
+    handleSwipe({ /*evt,*/ ...info }) {
       const direction = info.direction;
       if (direction == 'right') {
         //this.$refs.flipbook.flipPrev();

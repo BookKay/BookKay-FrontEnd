@@ -14,4 +14,14 @@ export interface Attribute {
   [key: string]: any;
 }
 
-export type ComponentType = 'front_matters' | 'chapters' | 'back_matters';
+export type ComponentTypeInterface =
+  | 'front_matters'
+  | 'chapters'
+  | 'back_matters';
+
+export interface NavigationInterface {
+  type: 'book' | 'front_matter' | 'chapter' | 'text' | 'back_matter';
+  data: string;
+  page: number;
+  active: boolean;
+}

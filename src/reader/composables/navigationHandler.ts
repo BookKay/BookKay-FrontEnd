@@ -1,16 +1,11 @@
 import { reactive, readonly } from 'vue';
 
-interface NavigationJSON {
-  type: 'book' | 'front_matter' | 'chapter' | 'text' | 'back_matter';
-  data: string;
-  page: number;
-  active?: boolean;
-}
+import { NavigationInterface } from 'src/reader/interfaces';
 
-const navigations = reactive(<NavigationJSON[]>[]);
+const navigations = reactive(<NavigationInterface[]>[]);
 
 export default function handleNavigations() {
-  const addNav = (nav: NavigationJSON) => {
+  const addNav = (nav: NavigationInterface) => {
     if (!('active' in nav)) {
       nav.active = false;
     }
