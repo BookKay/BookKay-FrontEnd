@@ -255,25 +255,6 @@ export default {
       this.backCover = backCover != '' ? backCover : tempCover;
     },
 
-    compareIndex(a, b) {
-      if (a.index < b.index) {
-        return -1;
-      }
-      if (a.index > b.index) {
-        return 1;
-      }
-      return 0;
-    },
-
-    processClosingTag(text) {
-      //To standardize self closing tags
-      text = text.split('<br>').join('<br/>');
-      text = text.split('<hr>').join('<hr/>');
-      text = text.split('<img>').join('<img/>');
-
-      return text;
-    },
-
     turnToQueryPage() {
       let query = this.$route.query;
       if (
