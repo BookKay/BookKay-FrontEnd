@@ -85,6 +85,21 @@ const actions: ActionTree<UserStateInterface, StateInterface> = {
     return '';
   },
 
+  syncLogout({ commit }) {
+    commit('logout');
+    for (const key in Cookies.getAll()) {
+      Cookies.remove(key);
+    }
+    for (const key in LocalStorage.getAll()) {
+      LocalStorage.remove(key);
+    }
+    for (const key in SessionStorage.getAll()) {
+      SessionStorage.remove(key);
+    }
+
+    return '';
+  },
+
   async edit({ commit, state }, user) {
     const response = await api.patch('users/' + state.user.id, user, {
       params: { expand: '~all' },

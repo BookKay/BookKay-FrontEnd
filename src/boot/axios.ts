@@ -26,7 +26,7 @@ if (process.env.DEV) {
 }
 const api = axios.create({ baseURL: baseURL });
 
-export default boot(({ app, router }) => {
+export default boot(({ app, router, store }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios;
@@ -60,6 +60,7 @@ export default boot(({ app, router }) => {
         error.response.status === 401 &&
         originalRequest.url == 'token/refresh'
       ) {
+        store.dispatch('user/syncLogout');
         error.response.data.message = 'Please login again';
         router.push({ name: 'home-sign-in' });
         return Promise.reject(error);
