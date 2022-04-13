@@ -50,12 +50,12 @@ export default defineComponent({
       //name, profile_image, contributions,
 
       //you can save profile images in public/members/<name>.jpg
-      //So, imagePath will be 'memebers/<name>.jpg'
+      //So, imagePath will be 'members/<name>.jpg'
 
       members: [
         {
           name: '',
-          imgPath: '',
+          imgPath: 'members/Placeholder-1.jpg',
           contributions: '',
           shortText: '',
         },
