@@ -17,11 +17,12 @@
       :height="height"
       size="fixed"
       :usePortrait="true"
-      :maxShadowOpacity="0.5"
+      :maxShadowOpacity="0.1"
       :autoSize="true"
       :showCover="true"
       :mobileScrollSupport="true"
       :startZIndex="0"
+      :flippingTime="800"
       :disableFlipByClick="true"
       ref="flipbook"
       v-if="!loading"
@@ -50,13 +51,12 @@ import BookPage from './ReaderBookPage.vue';
 import BookCover from './ReaderBookCover.vue';
 import LoadingScreen from './ReaderLoadingScreen.vue';
 
+import handleRequest from '../composables/requestHandler';
 import bookRendering from '../composables/bookRendering';
 import handlePages from '../composables/pagesHandler';
 import handleBookCopy from '../composables/bookCopyHandler';
 
 import handleMetaData from '../composables/handleMetaData';
-
-import { useMeta } from 'quasar';
 
 export default {
   name: 'Book',
@@ -90,6 +90,7 @@ export default {
   },
 
   async mounted() {
+    const { fetchManuscript, fetchBook } = handleRequest();
     const { renderBook } = bookRendering();
     const { pages } = handlePages();
     const { loadBookCopy } = handleBookCopy();
@@ -99,17 +100,7 @@ export default {
 
     if (Object.keys(this.$route.query)[0] == 'manuscript_id') {
       //Fetching the manuscript
-      let response;
-      try {
-        response = await this.$api.get(
-          'manuscripts/' + this.$route.query.manuscript_id + '/json'
-        );
-      } catch (err) {
-        this.loadingText = 'Server Error :(';
-        console.log(err);
-      }
-
-      const manuscript = response.data;
+      const manuscript = await fetchManuscript();
 
       //Loading and rendering the book
 
@@ -120,6 +111,7 @@ export default {
       try {
         this.book = renderBook(this.book);
         this.pages = pages;
+        console.log(this.pages);
       } catch (err) {
         this.loadingText = 'Rendering Error :(';
         console.log(err);

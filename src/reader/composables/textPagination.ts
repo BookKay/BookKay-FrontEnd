@@ -1,131 +1,99 @@
+import { extend } from 'quasar';
+
 import handlePages from './pagesHandler';
 import textAppending from './textAppending';
+import handleBlocks from './blocksHandler';
 
-import { getOpeningTag, getClosingTag, escapeHtml } from './utils';
-import { DOMInterface, Content } from '../interfaces';
-
-interface Component {
-  pages: string[];
-}
-
-interface Tag {
-  openingTag: string;
-  closingTag: string;
-}
+import { Component, BaseTextBlockInterface, BookJSON } from '../interfaces';
 
 export default function textPagination() {
-  const { pages, createPage } = handlePages();
-  const { appendToLastPage } = textAppending();
+  const { createPage } = handlePages();
+  const { remainingText, appendTextEveryNthStep, emptyRemainingText } =
+    textAppending();
+  const { convertTextBlockToHTML } = handleBlocks();
 
-  const singleTags = ['br', 'hr'];
+  const page = <HTMLElement>document.getElementsByClassName('page-text')[0]; // gets the fake page
 
-  const paginateText = (
-    DOM: DOMInterface | Content,
-    pageNum: number,
-    title: string,
-    currentComponent: Component,
-    tags = <Tag[]>[]
-  ) => {
-    if (
-      'attributes' in DOM &&
-      'id' in DOM['attributes'] &&
-      DOM['attributes']['id'] == 'RootDivContainer'
-    ) {
-      //To ignore the enclosing root container
-    } else {
-      const openingTag =
-        'attributes' in DOM
-          ? getOpeningTag(DOM['type'], DOM['attributes'])
-          : getOpeningTag(DOM['type']);
-      const closingTag = getClosingTag(DOM['type']);
+  const paginateText = (component: Component | BookJSON) => {
+    const clonedComponent: Component = extend(true, {}, component);
 
-      let pageText = appendToLastPage(openingTag + closingTag, tags);
-      if (pageText != '') {
-        // checks if word could not be filled in last page
-        currentComponent['pages'].push(pageText);
-        createPage(title, pageText); // create new empty page
-        pageText = appendToLastPage(openingTag + closingTag, tags); // fill the word in the new last element
-      }
+    const title = clonedComponent.title;
+    const text = clonedComponent.text;
 
-      tags.push({
-        openingTag: openingTag,
-        closingTag: closingTag,
-      });
-    }
+    let index = 0;
 
-    if ('contents' in DOM) {
-      for (let i = 0; i < DOM['contents'].length; i++) {
-        let content = DOM['contents'][i];
+    while (index < text.length) {
+      if (remainingText != '') {
+        createPage(title, page.innerHTML);
+        page.innerHTML = '';
 
-        //check if content is string(text to render)
-        if (typeof content == 'string') {
-          content = escapeHtml(content);
+        //const html = convertTextBlockToHTML(prevTextBlock);
+        page.innerHTML += remainingText;
 
-          const words = content.split(' ');
+        if (checkOverflow(page)) {
+          page.innerHTML = '';
 
-          for (let j = 0; j < words.length; j++) {
-            const word = words[j] + ' ';
-
-            let pageText = appendToLastPage(word, tags);
-            if (pageText != '') {
-              // checks if word could not be filled in last page
-              currentComponent['pages'].push(pageText);
-              createPage(title, pageText); // create new empty page
-              const lastTags = []; //array to store the tags that have been appended to page
-
-              //looping through each tags and inserting them in the next page
-              for (let index = 0; index < tags.length; index++) {
-                const tag = tags[index];
-
-                const lastPage = pages[pages.length - 1].text.split(' '); //text of last page
-
-                if (
-                  tag['openingTag'].startsWith('<p') &&
-                  lastPage[lastPage.length - 2] != '<p></p>'
-                ) {
-                  //to prevent the indentation of paragraph when overflowing to the next page
-                  //this is due to the fact that all p tags have automatic text indent thanks to css
-                  pageText = appendToLastPage(
-                    "<p style='text-indent: 0'>" + tag['closingTag'],
-                    lastTags
-                  );
-                } else {
-                  pageText = appendToLastPage(
-                    tag['openingTag'] + tag['closingTag'],
-                    lastTags
-                  ); // fill the word in the new last element
-                }
-
-                lastTags.push(tag);
-              }
-
-              pageText = appendToLastPage(word, tags);
-            }
-          }
-        } else if (singleTags.includes(content.type)) {
-          //check if content is a self closing tag
-          const word = '<' + content.type + '/>';
-          let pageText = appendToLastPage(word, tags);
-
-          if (pageText != '') {
-            // checks if word could not be filled in last page
-            createPage(title, pageText); // create new empty page
-            pageText = appendToLastPage(word, tags);
-          }
-        } else {
-          //if content is an object
-          paginateText(
-            content,
-            pages.length + 1,
-            title,
-            currentComponent,
-            tags
-          );
-          tags.pop();
+          handleOverflow(remainingText, title);
         }
+
+        emptyRemainingText();
+      } else {
+        const html = convertTextBlockToHTML(text[index]);
+
+        const prevInnerHTML = page.innerHTML;
+        page.innerHTML = page.innerHTML + html;
+
+        if (checkOverflow(page)) {
+          page.innerHTML = prevInnerHTML;
+
+          handleOverflow(html, title);
+        }
+
+        emptyRemainingText();
+        index++;
       }
     }
-    return pages.length;
+  };
+
+  const handleOverflow = (
+    textBlock: BaseTextBlockInterface | string,
+    title: string
+  ) => {
+    //Function that would handle overflow text
+    //It would disctate the steps to handle overflow
+
+    //initialising text
+    let text = textBlock;
+    if (typeof textBlock != 'string') {
+      text = convertTextBlockToHTML(textBlock);
+    }
+
+    console.log('text - ', text);
+
+    //steps
+    appendTextEveryNthStep(text as string, 1);
+    // if (remainingText != '') {
+    //   appendTextEveryNthStep(remainingText, 1);
+    //   const fullPageText = page.innerHTML;
+
+    //   createPage(title, fullPageText);
+    //   page.innerHTML = '';
+    // }
+
+    return remainingText;
+  };
+
+  const checkOverflow = (el: HTMLElement) => {
+    const curOverflow = el.style.overflow;
+
+    if (!curOverflow || curOverflow === 'visible') el.style.overflow = 'hidden';
+
+    const isOverflowing =
+      el.clientWidth < el.scrollWidth || el.clientHeight < el.scrollHeight;
+
+    el.style.overflow = curOverflow;
+
+    return isOverflowing;
   };
 
   return { paginateText };

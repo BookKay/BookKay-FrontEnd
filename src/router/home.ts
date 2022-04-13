@@ -37,6 +37,11 @@ const homeRoutes = [
         ],
       },
       {
+        path: 'members',
+        name: 'home-members',
+        component: () => import('src/pages/home/MembersPage.vue'),
+      },
+      {
         path: 'browse/:book_id',
         name: 'home-browse-book',
         component: () => import('src/pages/app/BookDetailPage.vue'),

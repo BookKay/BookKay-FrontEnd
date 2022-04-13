@@ -10,6 +10,12 @@
           <!-- <a href="#">Store</a> -->
           <div v-if="!$store.getters['user/isLoggedIn']">
             <q-btn
+              outline
+              label="Members"
+              :ripple="{ early: true }"
+              :to="{ name: 'home-members' }"
+            ></q-btn>
+            <q-btn
               flat
               label="Store"
               :ripple="{ early: true }"
@@ -23,6 +29,12 @@
             ></q-btn>
           </div>
           <div v-else>
+            <q-btn
+              outline
+              label="Members"
+              :ripple="{ early: true }"
+              :to="{ name: 'home-members' }"
+            ></q-btn>
             <q-btn
               color="black"
               icon="local_library"
@@ -311,15 +323,15 @@
 </template>
 
 <script>
-import AOS from "aos";
-import "aos/dist/aos.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
-import { onMounted, reactive } from "vue";
-import { api } from "boot/axios";
-import { gsap } from "gsap";
+import { onMounted, reactive } from 'vue';
+import { api } from 'boot/axios';
+import { gsap } from 'gsap';
 
 export default {
-  name: "HomePage",
+  name: 'HomePage',
   setup() {
     let topBooks = reactive({ value: [] });
 
@@ -332,23 +344,23 @@ export default {
       });
 
       //Initialising gsap for animations
-      const tl = gsap.timeline({ defaults: { ease: "power1.out" } });
+      const tl = gsap.timeline({ defaults: { ease: 'power1.out' } });
 
-      tl.to(".text", { y: "0%", duration: 1.5, stagger: 0.25 });
-      tl.to(".slider", { y: "-100%", duration: 2, delay: 0.5 });
-      tl.to(".intro", { y: "-100%", duration: 1 }, "-=1.5");
-      tl.fromTo(".main", { opacity: 0 }, { opacity: 1, duration: 1 });
-      tl.fromTo(".content", { opacity: 0 }, { opacity: 1, duration: 0.7 });
-      tl.fromTo(".info", { opacity: 0 }, { opacity: 1, duration: 1 });
+      tl.to('.text', { y: '0%', duration: 1.5, stagger: 0.25 });
+      tl.to('.slider', { y: '-100%', duration: 2, delay: 0.5 });
+      tl.to('.intro', { y: '-100%', duration: 1 }, '-=1.5');
+      tl.fromTo('.main', { opacity: 0 }, { opacity: 1, duration: 1 });
+      tl.fromTo('.content', { opacity: 0 }, { opacity: 1, duration: 0.7 });
+      tl.fromTo('.info', { opacity: 0 }, { opacity: 1, duration: 1 });
 
       //Fetching books
       topBooks.value = await fetchTopBooks();
     });
 
     async function fetchTopBooks() {
-      let response = await api.get("books/top_read", {
+      let response = await api.get('books/top_read', {
         params: {
-          fields: "id,title,author_name,front_cover",
+          fields: 'id,title,author_name,front_cover',
         },
       });
 
@@ -361,13 +373,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 /*font imported: Montserrat*/
 * {
   // margin: 0;
   // padding: 0;
   // box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .main_page {
@@ -377,7 +389,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background: url("../../../public/homepage/background.svg") no-repeat;
+  background: url('../../../public/homepage/background.svg') no-repeat;
   background-size: cover;
   background-position: center;
 }
@@ -386,7 +398,8 @@ export default {
   position: relative;
   top: 0;
   width: 100%;
-  padding: 30px 100px;
+  //padding: 30px 100px;
+  padding: 0 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -562,7 +575,7 @@ label {
   }
 
   .main_page {
-    background-image: url("../../../public/homepage/background_stupigirl.svg");
+    background-image: url('../../../public/homepage/background_stupigirl.svg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: left;
@@ -582,7 +595,7 @@ label {
 }
 
 .slider {
-  background-image: url("../../../public/homepage/meditation.svg");
+  background-image: url('../../../public/homepage/meditation.svg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -659,7 +672,7 @@ section .second_page .container {
   margin-top: 0px;
   overflow: auto;
   padding: 0 10rem;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.05rem;
 }
 
@@ -742,7 +755,7 @@ section .second_page .container {
 }
 
 .third_page {
-  background-image: url("../../../public/homepage/book-shop.svg");
+  background-image: url('../../../public/homepage/book-shop.svg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -937,7 +950,7 @@ section .second_page .container {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background-image: url("../../../public/homepage/last_background.svg");
+  background-image: url('../../../public/homepage/last_background.svg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -947,7 +960,7 @@ section .second_page .container {
   .fourth_page {
     background: #fff;
   }
-  
+
   .writer,
   .typing {
     opacity: 0;
@@ -1071,7 +1084,7 @@ section .second_page .container {
 }
 
 .fourth_page .typing .dynamic-txts li span::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   height: 100%;
@@ -1125,7 +1138,7 @@ footer .container h2 {
   margin-bottom: 15px;
 }
 footer .container h2:before {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -5px;
   left: 0;

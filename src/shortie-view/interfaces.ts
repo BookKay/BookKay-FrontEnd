@@ -1,32 +1,3 @@
-export interface DOMInterface {
-  contents: string[] | Content[] | DOMInterface[];
-  attributes: Attribute;
-  type: string;
-}
-
-export interface Content {
-  type: string;
-}
-
-export interface Attribute {
-  id?: string;
-  class?: string[];
-  [key: string]: any;
-}
-
-export interface NavigationInterface {
-  type: 'book' | 'front_matter' | 'chapter' | 'text' | 'back_matter';
-  data: string;
-  page: number;
-  active: boolean;
-}
-
-export interface TagInterface {
-  openingTag: string;
-  closingTag: string;
-}
-
-//////////////////////
 export type ComponentTypeInterface =
   | 'front_matters'
   | 'chapters'
@@ -43,17 +14,25 @@ export interface BookJSON {
   back_matters: Component[];
 }
 
-export interface Component {
+interface Component {
   title: string;
   text: BaseTextBlockInterface[];
 }
-/////////////////
+
+////////
+interface TextBlockMetaInterface {
+  index: number;
+  header: string;
+  state: TextBlockStateInterface;
+}
+
 export type TextBlockStateInterface = 'notShown' | 'showing' | 'shown';
 
 export interface BaseTextBlockInterface {
   id: string;
-  type: 'paragraph' | 'heading' | 'list' | 'delimiter' | 'image';
+  type: 'paragraph' | 'heading' | 'list' | 'delimiter';
   tunes: { [x: string]: any };
+  meta: TextBlockMetaInterface;
 }
 
 export interface ParagraphTextBlockInterface extends BaseTextBlockInterface {

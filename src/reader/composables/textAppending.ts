@@ -1,77 +1,173 @@
-interface Tag {
-  openingTag: string;
-  closingTag: string;
-}
+import handleTags from './tagsHandler';
+import handlePages from './pagesHandler';
+import { getNextWordContainingLetter } from './utils';
+
+let remainingText = '';
 
 export default function textAppending() {
-  const appendToLastPage = (word: string, tags = <Tag[]>[]) => {
-    const page = <HTMLElement>document.getElementsByClassName('page-text')[0]; // gets the fake page
-    let pageText = page.innerHTML; // gets the text from the last page
-    const originalText = pageText;
+  const page = <HTMLElement>document.getElementsByClassName('page-text')[0]; // gets the fake page
 
-    if (tags.length > 0) {
-      const lastTag = tags[tags.length - 1]['closingTag'];
-      let lastTagCount = 1;
+  const {
+    getTags,
+    addTags,
+    removeTags,
+    addTextBetweenTags,
+    addOpeningTagsToText,
+  } = handleTags();
+  const { createPage } = handlePages();
 
-      for (let i = 0; i < tags.length - 1; i++) {
-        const tag = tags[i];
-        if (tag['closingTag'] == lastTag) {
-          lastTagCount++;
-        }
-      }
+  const appendTextEveryNthStep1 = (text: string, steps: number) => {
+    const words = text.split(' ');
+    let index = 0;
+    let wordsNum = 0;
+    let textToAdd = '';
+    let calls = 0;
 
-      const lastOccurance = nthLastIndexOf(pageText, lastTag, lastTagCount);
+    remainingText = '';
+    console.log(words);
 
-      if (lastOccurance != -1) {
-        const suffix = pageText.slice(lastOccurance);
-        pageText = pageText.slice(0, lastOccurance);
-        pageText = pageText + word + ' ' + suffix;
-      } else {
-        //In case words are being added on the next blank page.
-        //This ensures tags are being followed.
+    while (index < words.length) {
+      console.log('wordsNum ', wordsNum);
 
-        for (let i = tags.length - 1; i >= 0; i--) {
-          const tag = tags[i];
-          let toAdd = pageText;
+      if (wordsNum < steps && index + 1 != words.length) {
+        const word = words[index];
+        console.log(index);
+        console.log('word ', words[index]);
 
-          if (i == tags.length - 1) {
-            toAdd = pageText + word;
+        if (word.indexOf('</') != -1) {
+          //handling closing tag like </p>
+          console.log('1 - ', page.innerHTML);
+          callTextAppending(textToAdd, words, index - wordsNum);
+          removeTags();
+
+          wordsNum = 0;
+          textToAdd = '';
+        } else if (word.includes('<')) {
+          //handling opening tag like <p>
+          console.log('2 - ', page.innerHTML);
+
+          const tag = getTags(text, index);
+          //const tags = tag?.openingTag + ' ' + tag?.closingTag;
+
+          const fullTags = tag.openingTag + ' ' + tag.closingTag;
+          textToAdd = textToAdd + ' ' + fullTags;
+
+          callTextAppending(textToAdd, words, index - wordsNum);
+          console.log('testing', page.innerHTML);
+
+          if (!(tag.closingTag == '')) {
+            addTags(tag);
           }
 
-          pageText = tag['openingTag'] + toAdd + tag['closingTag'];
+          index = getNextWordContainingLetter(text, '>', index);
+
+          wordsNum = 0;
+          textToAdd = '';
+        } else {
+          console.log('3 - ', page.innerHTML);
+          //handling normal text
+
+          textToAdd = addTextBetweenTags(textToAdd, word);
+          wordsNum++;
         }
+      } else {
+        console.log('textToAdd', textToAdd);
+        callTextAppending(textToAdd, words, index - wordsNum);
+        //console.log('4 - ', page.innerHTML);
+
+        wordsNum = 0;
+        textToAdd = '';
+
+        //index--;
       }
 
-      page.innerHTML = pageText;
-    } else {
-      page.innerHTML += word + ' '; // saves the text of the last page
+      if (remainingText != '') {
+        return;
+      }
+
+      index++;
+
+      //To delete later
+      calls += 1;
+      if (calls > 100) {
+        debugger;
+      }
     }
-    if (checkOverflow(page)) {
-      // checks if the page overflows (more words than space)
-      page.innerHTML = ''; //resets the page-text
-      return originalText; // returns false because page is full
-    } else {
-      return ''; // returns true because word was successfully filled in the page
-    }
+
+    return '';
   };
 
-  const nthLastIndexOf = (
-    string: string,
-    searchString: string,
-    n: number
-  ): number => {
-    if (string === null) {
-      return -1;
-    }
-    if (!n || isNaN(n) || n <= 1) {
-      return string.lastIndexOf(searchString);
-    }
-    n--;
+  const appendTextEveryNthStep = (text: string, steps: number) => {
+    const words = text.split(' ');
+    let index = 0;
+    let wordsNum = 0;
+    let textToAdd = '';
+    let calls = 0;
 
-    return string.lastIndexOf(
-      searchString,
-      nthLastIndexOf(string, searchString, n) - 1
-    );
+    remainingText = '';
+    console.log(words);
+
+    while (index < words.length) {
+      console.log('wordsNum ', wordsNum);
+
+      if (wordsNum < steps && index + 1 != words.length) {
+        const word = words[index];
+
+        textToAdd = textToAdd + ' ' + word;
+      } else {
+        console.log('textToAdd', textToAdd);
+        callTextAppending(textToAdd, words, index - wordsNum);
+        //console.log('4 - ', page.innerHTML);
+
+        wordsNum = 0;
+        textToAdd = '';
+
+        //index--;
+      }
+
+      if (remainingText != '') {
+        return;
+      }
+
+      index++;
+
+      //To delete later
+      calls += 1;
+      if (calls > 100) {
+        debugger;
+      }
+    }
+
+    return '';
+  };
+
+  const callTextAppending = (
+    text: string,
+    words: string[],
+    lastAddedWordIndex: number
+  ) => {
+    const prevText = page.innerHTML;
+    emptyRemainingText();
+
+    const returnedOne = addTextBetweenTags(page.innerHTML, text);
+    console.log('returned', returnedOne);
+    page.innerHTML = returnedOne;
+    if (checkOverflow(page)) {
+      page.innerHTML = prevText;
+
+      remainingText = words.slice(lastAddedWordIndex).join(' ');
+      remainingText = ' ' + remainingText; //adding space before text
+      remainingText = addOpeningTagsToText(remainingText);
+    }
+    //remainingText = 'Hello';
+
+    return remainingText;
+  };
+
+  const appendToLastPage = (text: string) => {
+    page.innerHTML = addTextBetweenTags(page.innerHTML, text);
+
+    return checkOverflow(page);
   };
 
   const checkOverflow = (el: HTMLElement) => {
@@ -87,7 +183,14 @@ export default function textAppending() {
     return isOverflowing;
   };
 
+  const emptyRemainingText = () => {
+    remainingText = '';
+  };
+
   return {
+    remainingText,
+    appendTextEveryNthStep,
     appendToLastPage,
+    emptyRemainingText,
   };
 }

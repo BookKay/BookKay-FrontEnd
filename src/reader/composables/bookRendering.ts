@@ -9,26 +9,10 @@ import textPagination from './textPagination';
 //Interfaces
 
 import {
-  DOMInterface,
+  BookJSON,
   ComponentTypeInterface,
   NavigationInterface,
 } from '../interfaces';
-
-interface BookJSON {
-  title: string;
-  description: string;
-  front_cover: string;
-  back_cover: string;
-  front_matters: Component[];
-  chapters: Component[];
-  text: DOMInterface;
-  back_matters: Component[];
-}
-
-interface Component {
-  title: string;
-  text: DOMInterface;
-}
 
 export default function bookRendering() {
   //Setting up composable functions
@@ -118,12 +102,7 @@ export default function bookRendering() {
 
         addNav(nav);
 
-        paginateText(
-          component['text'],
-          pages.length + 1,
-          component['title'],
-          book_copy[component_type][i]
-        );
+        paginateText(component);
 
         const page = document.getElementsByClassName('page-text')[0].innerHTML;
         if (page != '') {
@@ -153,12 +132,7 @@ export default function bookRendering() {
       pages: [],
     });
 
-    paginateText(
-      book['text'],
-      pages.length + 1,
-      book['title'],
-      book_copy['main_text']
-    );
+    paginateText(book);
 
     const page = document.getElementsByClassName('page-text')[0].innerHTML;
     if (page != '') {

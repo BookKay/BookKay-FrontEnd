@@ -113,13 +113,14 @@
 
     <div class="transparent-area" @click="headerShow = true"></div>
     <div @click="onClick">
-      <book
+      <flipbook-view
         @navAdded="addNav"
         @swiped="handleSwipe"
         ref="book"
         class="book"
         :class="bookcss"
       />
+      <shortie-view v-if="false" />
     </div>
     <drawer :direction="'left'" :exist="true" ref="drawer">
       <div class="relative side-bar" :class="sideBarClasses">
@@ -143,7 +144,8 @@
 
 <script>
 import SplashScreen from 'src/components/TheSplashScreen.vue';
-import Book from 'src/reader/components/ReaderBook.vue';
+import FlipbookView from 'src/reader/components/ReaderBook.vue';
+import ShortieView from 'src/shortie-view/components/ReaderBook.vue';
 import Drawer from 'src/components/ReaderDrawer.vue';
 import SideBarContents from 'src/components/SideBarContents.vue';
 import ReaderSettings from 'src/components/ReaderSettings.vue';
@@ -151,7 +153,8 @@ import Dictionary from 'src/components/Dictionary.vue';
 
 export default {
   components: {
-    Book,
+    FlipbookView,
+    ShortieView,
     Drawer,
     SideBarContents,
     ReaderSettings,
