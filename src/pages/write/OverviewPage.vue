@@ -101,6 +101,12 @@
       btnColor="red"
       @confirmed="confirmConfigs"
     />
+
+    <app-alert-dialog ref="alertDialog" @close="confirmGenre" header="Genre">
+      <template #main-content>
+        <genre-dropdown v-model="currentGenre" />
+      </template>
+    </app-alert-dialog>
   </q-page>
 </template>
 
@@ -108,10 +114,18 @@
 import ImageUploader from 'src/components/AppImageUploader.vue';
 import AppPromptDialog from 'src/components/AppPromptDialog.vue';
 import AppConfirmDialog from 'src/components/AppConfirmDialog.vue';
+import AppAlertDialog from 'src/components/AppAlertDialog.vue';
+import GenreDropdown from 'src/components/GenreDropdown';
 
 export default {
   name: 'OverviewPage',
-  components: { AppPromptDialog, AppConfirmDialog, ImageUploader },
+  components: {
+    AppPromptDialog,
+    AppConfirmDialog,
+    AppAlertDialog,
+    ImageUploader,
+    GenreDropdown,
+  },
   data() {
     return {
       price: 'Free',
@@ -141,6 +155,8 @@ export default {
       configsDialog: false,
       deleteDialog: false,
       publishDialog: false,
+
+      currentGenre: '',
     };
   },
 
@@ -200,6 +216,8 @@ export default {
             this.$store.getters['write/manuscriptProperty'](
               'configs'
             ).contain_back_matter;
+
+          this.currentGenre = this.genre;
         }
       },
       deep: true,
@@ -220,6 +238,9 @@ export default {
     },
     description() {
       return this.$store.getters['write/manuscriptProperty']('description');
+    },
+    genre() {
+      return this.$store.getters['write/manuscriptProperty']('genre').name;
     },
     authorName() {
       return this.$store.getters['user/userProperty']('author_name');
@@ -253,6 +274,11 @@ export default {
           label: 'Description',
           value: this.description,
           clickHandler: this.changeDescription,
+        },
+        {
+          label: 'Genre',
+          value: this.genre,
+          clickHandler: this.changeGenre,
         },
         {
           label: 'Author Name',
@@ -393,6 +419,10 @@ export default {
       this.descriptionDialog = true;
     },
 
+    changeGenre() {
+      this.$refs.alertDialog.openDialog();
+    },
+
     editConfigs() {
       this.configsDialog = true;
     },
@@ -522,6 +552,25 @@ export default {
             message: 'Edit unsuccessful',
             icon: 'error',
           });
+        }
+      }
+    },
+
+    async confirmGenre() {
+      if (this.currentGenre != this.genre) {
+        {
+          let payload = { genre: this.currentGenre };
+          try {
+            console.log(this.currentGenre);
+            await this.$store.dispatch('write/editGenre', payload);
+          } catch {
+            this.$q.notify({
+              color: 'negative',
+              position: 'top',
+              message: 'Edit unsuccessful',
+              icon: 'error',
+            });
+          }
         }
       }
     },

@@ -75,6 +75,8 @@
             id="editorjs"
             v-on:keyup.ctrl.up.exact="editor.caret.setToPreviousBlock()"
             v-on:keyup.ctrl.down.exact="editor.caret.setToNextBlock()"
+            v-on:keydown.ctrl.s.prevent=""
+            @paste="handlePaste"
           ></div>
         </div>
       </div>
@@ -90,49 +92,49 @@
 
 <script>
 //Importing Components
-import HotKeysInfoDialog from "src/components/HotKeysInfoDialog.vue";
+import HotKeysInfoDialog from 'src/components/HotKeysInfoDialog.vue';
 
-import EditorJS from "@editorjs/editorjs";
-import Marker from "@editorjs/marker";
-import Underline from "@editorjs/underline";
+import EditorJS from '@editorjs/editorjs';
+import Marker from '@editorjs/marker';
+import Underline from '@editorjs/underline';
 
-import Header from "@editorjs/header";
-import Paragraph from "@editorjs/paragraph";
-import NestedList from "@editorjs/nested-list";
-import Delimiter from "@editorjs/delimiter";
-import InlineImage from "editorjs-inline-image";
+import Header from '@editorjs/header';
+import Paragraph from '@editorjs/paragraph';
+import NestedList from '@editorjs/nested-list';
+import Delimiter from '@editorjs/delimiter';
+import InlineImage from 'editorjs-inline-image';
 
 //import List from "@editorjs/list";
 
-import AlignmentBlockTune from "editorjs-text-alignment-blocktune";
-import DragDrop from "editorjs-drag-drop";
-import Undo from "editorjs-undo";
+import AlignmentBlockTune from 'editorjs-text-alignment-blocktune';
+import DragDrop from 'editorjs-drag-drop';
+import Undo from 'editorjs-undo';
 
-import { editorHotkeys } from "src/data/EditorHotKeys.js";
+import { editorHotkeys } from 'src/data/EditorHotKeys.js';
 
 //Helper function debounce
-import { debounce } from "quasar";
+import { debounce } from 'quasar';
 
 export default {
-  name: "EditorPage",
+  name: 'EditorPage',
   components: { HotKeysInfoDialog },
 
   data() {
     return {
       editor: null,
-      savedStatus: "saved",
+      savedStatus: 'saved',
       hotkeysDialog: false,
       hotkeys: editorHotkeys,
 
       data: [],
-      query: "",
+      query: '',
     };
   },
   watch: {
     $route: {
       handler: function (route) {
         this.editor.destroy();
-        this.makeEditor("editorjs");
+        this.makeEditor('editorjs');
       },
       deep: true,
       //immediate: true,
@@ -143,24 +145,25 @@ export default {
     //this.editor.destroy();
     next();
   },
+
   mounted() {
     //Initialize the editor
 
-    this.makeEditor("editorjs");
+    this.makeEditor('editorjs');
 
     //Add hotkeys shortcuts
     let self = this;
     document.body.addEventListener(
-      "keydown",
+      'keydown',
       function (ev) {
         // Check for ctrl + F11 for toggling zen mode
-        if (ev.ctrlKey && ev.key == "F11") {
+        if (ev.ctrlKey && ev.key == 'F11') {
           self.toggleZen();
         }
 
         // Check for ctrl + / for focusing on editor
-        if (ev.ctrlKey && ev.key == "/") {
-          self.editor.caret.setToLastBlock("end");
+        if (ev.ctrlKey && ev.key == '/') {
+          self.editor.caret.setToLastBlock('end');
         }
       },
       false
@@ -169,7 +172,7 @@ export default {
 
   methods: {
     toggleZen() {
-      const target = document.getElementById("editorContainer");
+      const target = document.getElementById('editorContainer');
 
       this.$q.fullscreen
         .toggle(target)
@@ -189,32 +192,32 @@ export default {
       const editor = new EditorJS({
         holder: id,
 
-        inlineToolbar: ["bold", "italic", "underline", "link", "marker"],
+        inlineToolbar: ['bold', 'italic', 'underline', 'link', 'marker'],
 
         tools: {
           underline: {
             class: Underline,
-            shortcut: "CMD+U",
+            shortcut: 'CMD+U',
           },
           marker: {
             class: Marker,
-            shortcut: "CMD+M",
+            shortcut: 'CMD+M',
           },
 
           heading: {
             class: Header,
             //inlineToolbar: ["link"],
             config: {
-              placeholder: "Enter a heading",
+              placeholder: 'Enter a heading',
               defaultLevel: 3,
             },
 
-            tunes: ["alignment"],
+            tunes: ['alignment'],
           },
           paragraph: {
             class: Paragraph,
             //inlineToolbar: false,
-            tunes: ["alignment"],
+            tunes: ['alignment'],
           },
           list: {
             class: NestedList,
@@ -229,8 +232,8 @@ export default {
                 display: true,
               },
               unsplash: {
-                appName: "8MeSNDcetPzIRf3mcLc-_6rrHYPaZnbo6ZSLcAIFniI",
-                clientId: "vVpzIjmedfdCC5ZVrvwhKvsmK1TiIs8h7xY_4pD-49M",
+                appName: '8MeSNDcetPzIRf3mcLc-_6rrHYPaZnbo6ZSLcAIFniI',
+                clientId: 'vVpzIjmedfdCC5ZVrvwhKvsmK1TiIs8h7xY_4pD-49M',
               },
             },
           },
@@ -244,16 +247,16 @@ export default {
           alignment: {
             class: AlignmentBlockTune,
             config: {
-              default: "left",
+              default: 'left',
               blocks: {
-                header: "center",
-                list: "left",
+                header: 'center',
+                list: 'left',
               },
             },
           },
         },
         autofocus: true,
-        placeholder: "Let`s write an awesome story!",
+        placeholder: 'Let`s write an awesome story!',
         data: this.data,
 
         onReady: () => {
@@ -272,17 +275,17 @@ export default {
         },
 
         onChange: () => {
-          this.savedStatus = "saving";
+          this.savedStatus = 'saving';
 
           //const data = await editor.save();
           editor
             .save()
             .then((outputData) => {
               this.saveText(outputData);
-              console.log("Article data: ", outputData);
+              console.log('Article data: ', outputData);
             })
             .catch((error) => {
-              console.log("Saving failed: ", error);
+              console.log('Saving failed: ', error);
             });
           //console.log(data);
           //console.log("blocks", data[0]);
@@ -297,20 +300,20 @@ export default {
     saveText: debounce(async function (text) {
       try {
         await this.saveData(text);
-        this.savedStatus = "saved";
+        this.savedStatus = 'saved';
       } catch (err) {
-        this.savedStatus = "error";
+        this.savedStatus = 'error';
       }
     }, 2000),
 
     async saveData(text) {
-      if (this.query == "manuscript_id") {
+      if (this.query == 'manuscript_id') {
         let payload = {
           prototype: { text: text },
           manuscript_id: this.$route.query[this.query],
         };
 
-        await this.$store.dispatch("write/editPrototype", payload);
+        await this.$store.dispatch('write/editPrototype', payload);
       } else {
         let payload = {
           component: { text: text },
@@ -318,57 +321,75 @@ export default {
         };
 
         let type = this.query.slice(0, -3);
-        payload["type"] = type;
+        payload['type'] = type;
 
-        await this.$store.dispatch("write/editComponent", payload);
+        await this.$store.dispatch('write/editComponent', payload);
       }
     },
 
     async initData() {
       let component;
 
-      if (this.$route.query.hasOwnProperty("front_matter_id")) {
-        this.query = "front_matter_id";
+      if (this.$route.query.hasOwnProperty('front_matter_id')) {
+        this.query = 'front_matter_id';
         component = await this.$api.get(
-          "front-matters/" + this.$route.query.front_matter_id
+          'front-matters/' + this.$route.query.front_matter_id
         );
-      } else if (this.$route.query.hasOwnProperty("chapter_id")) {
-        this.query = "chapter_id";
+      } else if (this.$route.query.hasOwnProperty('chapter_id')) {
+        this.query = 'chapter_id';
         component = await this.$api.get(
-          "chapters/" + this.$route.query.chapter_id
+          'chapters/' + this.$route.query.chapter_id
         );
-      } else if (this.$route.query.hasOwnProperty("back_matter_id")) {
-        this.query = "back_matter_id";
+      } else if (this.$route.query.hasOwnProperty('back_matter_id')) {
+        this.query = 'back_matter_id';
         component = await this.$api.get(
-          "back-matters/" + this.$route.query.back_matter_id
+          'back-matters/' + this.$route.query.back_matter_id
         );
-      } else if (this.$route.query.hasOwnProperty("manuscript_id")) {
-        this.query = "manuscript_id";
+      } else if (this.$route.query.hasOwnProperty('manuscript_id')) {
+        this.query = 'manuscript_id';
         let res = await this.$api.get(
-          "manuscripts/" + this.$route.query.manuscript_id
+          'manuscripts/' + this.$route.query.manuscript_id
         );
 
         component = await this.$api.get(
-          "default-book-prototypes/" + res.data.prototype_id
+          'default-book-prototypes/' + res.data.prototype_id
         );
       }
 
       if (Object.keys(this.$route.query).length != 0) {
         this.data = component.data.text;
 
-        if (this.data == "" || this.data == null) {
+        if (this.data == '' || this.data == null) {
           this.data = {
             time: 1634195030352,
             blocks: [],
-            version: "2.22.2",
+            version: '2.22.2',
           };
         }
       }
     },
+
+    handlePaste() {
+      //To overcome bug that does not save new data when immediately saved after being pasted
+      //So, I just delay the operation by 0.5 seconds.
+      this.savedStatus = 'saving';
+
+      setTimeout(() => {
+        this.editor
+          .save()
+          .then((outputData) => {
+            this.saveText(outputData);
+            console.log('Article data: ', outputData);
+          })
+          .catch((error) => {
+            console.log('Saving failed: ', error);
+          });
+      }, 500);
+    },
   },
 
   unmounted() {
-    document.removeEventListener("keydown", this.nextItem);
+    document.removeEventListener('keydown', this.nextItem);
   },
 };
 </script>

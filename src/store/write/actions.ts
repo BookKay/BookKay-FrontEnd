@@ -48,6 +48,7 @@ const actions: ActionTree<WriteStateInterface, StateInterface> = {
 
     return response;
   },
+
   async getChapter({ commit, state }, payload) {
     //Unpack the payload to form the request path
     const type = payload.type;
@@ -104,6 +105,7 @@ const actions: ActionTree<WriteStateInterface, StateInterface> = {
 
     return response;
   },
+
   async deleteComponent({ commit, state }, payload) {
     const type = payload.type;
     const id = payload.id;
@@ -128,6 +130,7 @@ const actions: ActionTree<WriteStateInterface, StateInterface> = {
 
     return response;
   },
+
   async editConfigs({ commit, state }, configs) {
     //Update the configs and retrieve back the updated prototype
     //Then, update the prototype from vuex and session storage
@@ -152,6 +155,7 @@ const actions: ActionTree<WriteStateInterface, StateInterface> = {
 
     return response;
   },
+
   async addManuscript({ commit, rootGetters }, manuscript) {
     let response;
 
@@ -200,9 +204,10 @@ const actions: ActionTree<WriteStateInterface, StateInterface> = {
 
     return manuscript_response;
   },
+
   async editManuscript({ commit, state }, manuscript) {
-    //Update the configs and retrieve back the updated prototype
-    //Then, update the prototype from vuex and session storage
+    //Update the property of manuscript and retrieve back the updated manuscript
+    //Then, update the manuscript from vuex and session storage
     let response;
 
     response = await api.patch(
@@ -220,6 +225,28 @@ const actions: ActionTree<WriteStateInterface, StateInterface> = {
 
     return response;
   },
+
+  async editGenre({ commit, state }, manuscript) {
+    //Update the genre and retrieve back the updated manuscript
+    //Then, update the manuscript from vuex and session storage
+    let response;
+
+    response = await api.patch(
+      `manuscripts/${state.manuscript.id}/genre`,
+      manuscript
+    );
+    response = await api.get('manuscripts/' + state.manuscript.id, {
+      params: { expand: '~all' },
+    });
+
+    const data = response.data;
+    commit('updateManuscript', data);
+
+    SessionStorage.set('currentManuscript', state.manuscript);
+
+    return response;
+  },
+
   async editPrototype({ commit, state }, payload) {
     //Update the configs and retrieve back the updated prototype
     //Then, update the prototype from vuex and session storage

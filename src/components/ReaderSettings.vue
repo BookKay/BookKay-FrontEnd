@@ -5,6 +5,33 @@
         class="q-my-sm"
         clickable
         v-ripple.early
+        @click="toggleGestureControl(false)"
+      >
+        <q-item-section avatar>
+          <q-avatar color="black" text-color="white">
+            <q-icon name="front_hand" />
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label> Gesture Control</q-item-label>
+        </q-item-section>
+
+        <q-item-section side
+          ><q-btn
+            @click="toggleGestureControl(true)"
+            icon="info"
+            color="grey"
+            round
+            flat
+            dense
+        /></q-item-section>
+      </q-item>
+
+      <q-item
+        class="q-my-sm"
+        clickable
+        v-ripple.early
         @click="$emit('toggleBook')"
       >
         <q-item-section avatar>
@@ -69,6 +96,23 @@
       </q-item>
 
       <q-item
+        class="q-my-sm"
+        clickable
+        v-ripple.early
+        @click="$refs.bookmarkDialog.toggleDialog()"
+      >
+        <q-item-section avatar>
+          <q-avatar color="black" text-color="white">
+            <q-icon name="bookmark" />
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label> Bookmark </q-item-label>
+        </q-item-section>
+      </q-item>
+
+      <q-item
         v-if="purchaseAble"
         class="q-my-sm"
         clickable
@@ -111,15 +155,20 @@
     :hotkeys="hotkeys"
     @close="hotkeysDialog = false"
   />
+
+  <hands-gesture-dialog ref="handsGestureDialog" />
+  <reader-bookmark-dialog ref="bookmarkDialog" />
 </template>
 
 <script>
-import HotKeysInfoDialog from "src/components/HotKeysInfoDialog.vue";
-import { readerHotkeys } from "src/data/ReaderHotKeys.js";
+import HotKeysInfoDialog from 'src/components/HotKeysInfoDialog.vue';
+import { readerHotkeys } from 'src/data/ReaderHotKeys.js';
+import HandsGestureDialog from 'src/components/HandsGestureDialog';
+import ReaderBookmarkDialog from 'src/components/ReaderBookmarkDialog';
 
 export default {
-  name: "ReaderSettings",
-  components: { HotKeysInfoDialog },
+  name: 'ReaderSettings',
+  components: { HotKeysInfoDialog, HandsGestureDialog, ReaderBookmarkDialog },
   props: {
     purchaseAble: {
       type: Boolean,
@@ -131,22 +180,35 @@ export default {
       hotkeysDialog: false,
       hotkeys: readerHotkeys,
       darkMode: this.$q.dark.isActive,
+      isToggleGestureInfoClicked: false,
     };
   },
   watch: {
     darkMode: function (val) {
-      this.$emit("themeChanged");
+      this.$emit('themeChanged');
       if (val == true) {
         this.$q.dark.set(true);
       } else {
         this.$q.dark.set(false);
       }
       //Storing dark mode status in local storage
-      this.$q.localStorage.set("darkMode", this.$q.dark.isActive);
+      this.$q.localStorage.set('darkMode', this.$q.dark.isActive);
     },
   },
 
-  methods: {},
+  methods: {
+    toggleGestureControl(isInfo = false) {
+      if (isInfo) {
+        this.isToggleGestureInfoClicked = true;
+        this.$refs.handsGestureDialog.toggleDialog();
+      } else if (this.isToggleGestureInfoClicked == false) {
+        this.$refs.handsGestureDialog.toggleHandsFree();
+        this.$emit('close');
+      } else {
+        this.isToggleGestureInfoClicked = false;
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

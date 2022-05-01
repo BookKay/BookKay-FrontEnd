@@ -18,7 +18,7 @@ declare module '@vue/runtime-core' {
 //Defining the base url for axios
 let baseURL = '';
 if (process.env.DEV) {
-  //baseURL = "http://localhost:8000/api/v1.0/";
+  //baseURL = 'http://localhost:8000/api/v1.0/';
   baseURL = ' https://bookkay-backend-dev.herokuapp.com/api/v1.0/';
 } else {
   //baseURL = "api.bookkay.com/api/v1.0/";

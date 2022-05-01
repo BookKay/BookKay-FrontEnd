@@ -16,9 +16,11 @@
     <q-dialog v-model="settingsDialog">
       <reader-settings
         :purchaseAble="purchaseAble"
+        @close="settingsDialog = false"
         @toggleBook="toggleBook"
         @searchDictionary="searchDictionary"
         @themeChanged="reloadsBook"
+        @bookmarkAdded="addBookmark"
         @purchase="purchase"
       />
     </q-dialog>
@@ -139,6 +141,7 @@
         />
       </div>
     </drawer>
+    <reader-pop-ups />
   </div>
 </template>
 
@@ -150,6 +153,7 @@ import Drawer from 'src/components/ReaderDrawer.vue';
 import SideBarContents from 'src/components/SideBarContents.vue';
 import ReaderSettings from 'src/components/ReaderSettings.vue';
 import Dictionary from 'src/components/Dictionary.vue';
+import ReaderPopUps from 'src/components/ReaderPopUps.vue';
 
 export default {
   components: {
@@ -160,6 +164,7 @@ export default {
     ReaderSettings,
     Dictionary,
     SplashScreen,
+    ReaderPopUps,
   },
   name: 'ReadBook',
 
@@ -303,6 +308,10 @@ export default {
 
     searchDictionary() {
       this.$refs.dictionary.openSearchDialog();
+    },
+
+    addBookmark() {
+      browser.bookmarks.getTree();
     },
 
     checkPurchaseAble() {

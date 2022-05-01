@@ -107,7 +107,7 @@ export default function bookRendering() {
         const page = document.getElementsByClassName('page-text')[0].innerHTML;
         if (page != '') {
           //Adding page to book copy
-          book_copy[component_type][i]['pages'].push(page);
+          //book_copy[component_type][i]['pages'].push(page);
 
           //Creating page
           createPage(component['title'], page);
@@ -137,7 +137,7 @@ export default function bookRendering() {
     const page = document.getElementsByClassName('page-text')[0].innerHTML;
     if (page != '') {
       //Adding page to book copy
-      book_copy.main_text['pages'].push(page);
+      //book_copy.main_text['pages'].push(page);
 
       createPage(book['title'], page);
       document.getElementsByClassName('page-text')[0].innerHTML = '';

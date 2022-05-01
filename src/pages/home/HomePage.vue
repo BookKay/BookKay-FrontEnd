@@ -9,12 +9,12 @@
         <div class="navigation">
           <!-- <a href="#">Store</a> -->
           <div v-if="!$store.getters['user/isLoggedIn']">
-            <q-btn
+            <!-- <q-btn
               outline
               label="Members"
               :ripple="{ early: true }"
               :to="{ name: 'home-members' }"
-            ></q-btn>
+            ></q-btn> -->
             <q-btn
               flat
               label="Store"

@@ -4,6 +4,7 @@
       <q-card-section>
         <div class="text-h6">{{ label }}</div>
         <div class="text-subtitle1 q-mt-md" v-html="caption"></div>
+        <slot name="main-content"></slot>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
@@ -39,22 +40,22 @@
 
 <script>
 export default {
-  name: "AppPromptDialog",
+  name: 'AppPromptDialog',
   props: {
     open: {
       type: Boolean,
     },
     label: {
       type: String,
-      default: "",
+      default: '',
     },
     caption: {
       type: String,
-      default: "",
+      default: '',
     },
     value: {
       type: String,
-      default: "",
+      default: '',
     },
     rules: {},
   },
@@ -94,7 +95,7 @@ export default {
 
       if (!input.hasError) {
         this.isChanged = false;
-        this.$emit("confirmed", this.newValue);
+        this.$emit('confirmed', this.newValue);
       } else {
         input.focus();
       }
@@ -102,7 +103,7 @@ export default {
     handleCancel() {
       this.isChanged = false;
       this.currentValue = this.$props.value;
-      this.$emit("confirmed", false);
+      this.$emit('confirmed', false);
     },
     updateNewValue() {
       this.newValue = this.$props.value;

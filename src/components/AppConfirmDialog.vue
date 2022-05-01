@@ -7,6 +7,7 @@
 
       <q-card-section class="q-pt-none">
         {{ text }}
+        <slot name="main-content"> </slot>
       </q-card-section>
 
       <q-card-actions align="right">
@@ -22,6 +23,7 @@
           :label="btnLabel"
           :color="btnColor"
           :ripple="{ early: true }"
+          :loading="isLoading"
           @click="handleConfirm"
         />
       </q-card-actions>
@@ -31,32 +33,39 @@
 
 <script>
 export default {
-  name: "AppConfirmDialog",
+  name: 'AppConfirmDialog',
   props: {
     open: {
       type: Boolean,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     header: {
       type: String,
-      default: "",
+      default: '',
     },
     text: {
       type: String,
-      default: "",
+      default: '',
     },
     btnLabel: {
       type: String,
-      default: "",
+      default: '',
     },
     btnColor: {
       type: String,
-      default: "warning",
+      default: 'warning',
     },
   },
 
   computed: {
     isOpen() {
       return this.$props.open;
+    },
+    isLoading() {
+      return this.$props.loading;
     },
   },
 
@@ -67,10 +76,10 @@ export default {
   },
   methods: {
     handleConfirm() {
-      this.$emit("confirmed", true);
+      this.$emit('confirmed', true);
     },
     handleCancel() {
-      this.$emit("confirmed", false);
+      this.$emit('confirmed', false);
     },
   },
 };
@@ -79,6 +88,7 @@ export default {
 .card {
   min-width: 350px;
 }
+
 @media (max-width: 330px) {
   .card {
     min-width: 300px;

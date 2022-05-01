@@ -1,4 +1,5 @@
 import { reactive, readonly } from 'vue';
+import handleBookCopy from './bookCopyHandler';
 
 interface Page {
   header: string;

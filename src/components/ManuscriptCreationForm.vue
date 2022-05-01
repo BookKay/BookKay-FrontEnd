@@ -22,13 +22,14 @@
       />
     </div>
     <div class="field">
-      <q-select
+      <!-- <q-select
         outlined
         color="black"
         v-model="manuscript.genre_name"
         :options="genreOptions"
         label="Genre"
-      />
+      /> -->
+      <genre-dropdown v-model="manuscript.genre_name" />
     </div>
     <q-separator inset />
     <div class="field">
@@ -168,11 +169,12 @@
 </template>
 
 <script>
+import GenreDropdown from 'src/components/GenreDropdown.vue';
 import ManuscriptTypeChoice from 'src/components/ManuscriptTypeChoice.vue';
 
 export default {
   name: 'MakeManuscriptPage',
-  components: { ManuscriptTypeChoice },
+  components: { GenreDropdown, ManuscriptTypeChoice },
   data() {
     return {
       configs: {},

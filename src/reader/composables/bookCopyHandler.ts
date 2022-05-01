@@ -54,11 +54,14 @@ export default function handleBookCopy() {
 
     if (Array.isArray(property)) {
       property.push(component);
+      updateCurrentComponent(component_type, property.length - 1);
     }
   };
 
   const addMainText = (text: MainText) => {
     book_copy['main_text'] = text;
+
+    updateCurrentComponent('main_text', 0);
   };
 
   const clearBookCopy = () => {
@@ -67,6 +70,30 @@ export default function handleBookCopy() {
     book_copy.main_text['title'] = '';
     book_copy.main_text['pages'].length = 0;
     book_copy.back_matters.length = 0;
+  };
+
+  let currentComponentType = <
+    'front_matters' | 'chapters' | 'main_text' | 'back_matters'
+  >'chapters';
+  let currentComponentNum = 0;
+
+  const updateCurrentComponent = (
+    componentType: 'front_matters' | 'chapters' | 'main_text' | 'back_matters',
+    componentNum: number
+  ) => {
+    currentComponentType = componentType;
+    currentComponentNum = componentNum;
+  };
+
+  const addPageToCurrentComponent = (text: string) => {
+    let currentComponent;
+    if (currentComponentType == 'main_text') {
+      currentComponent = book_copy[currentComponentType];
+    } else {
+      currentComponent = book_copy[currentComponentType][currentComponentNum];
+    }
+
+    currentComponent.pages.push(text);
   };
 
   //All the functions below are for loading the book copy to render
@@ -155,6 +182,7 @@ export default function handleBookCopy() {
     addComponent,
     addMainText,
     clearBookCopy,
+    addPageToCurrentComponent,
     loadBookCopy,
   };
 }

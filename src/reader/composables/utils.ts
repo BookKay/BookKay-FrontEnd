@@ -12,7 +12,12 @@ export const getOpeningTag = (tagName: string, attributes = <Attribute>{}) => {
   return openingTag;
 };
 
+export const singleTags = ['img', 'hr', 'br'];
+
 export const getClosingTag = (tagName: string) => {
+  if (singleTags.includes(tagName)) {
+    return '';
+  }
   return '</' + tagName + '>';
 };
 

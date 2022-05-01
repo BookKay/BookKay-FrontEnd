@@ -6,9 +6,10 @@ import {
   nthIndexOf,
 } from './utils';
 import { TagInterface, Attribute } from '../interfaces';
+import { reactive } from 'vue';
 
 export default function handleTags() {
-  const tags: TagInterface[] = [];
+  const tags: TagInterface[] = reactive([]);
 
   const getTags = (text: string, openingTagIndex: number) => {
     const textList = text.split(' ');
@@ -51,6 +52,10 @@ export default function handleTags() {
     const tag = tags.pop();
 
     return tag;
+  };
+
+  const clearTags = () => {
+    tags.length = 0;
   };
 
   const getAttribute = (text: string) => {
@@ -102,73 +107,6 @@ export default function handleTags() {
     return attributes;
   };
 
-  const addTextBetweenTags = (textWithTags: string, textToAdd: string) => {
-    //Function that adds text between the tags
-    //<div> Hi, <b> I am </b> </div>   ...   'Kevin'   ... tags = [b, div]
-    //...
-    //<div> Hi, <b> I am Kevin </b> </div>
-
-    //First tag in the tags list
-    let firstTag;
-    if (tags.length > 0) {
-      firstTag = tags[tags.length - 1]['closingTag'];
-
-      let firstTagCount = 1;
-      let calls = 0;
-
-      //Counting the time number of first tag appears among the tags
-      for (let i = 0; i < tags.length - 1; i++) {
-        if (tags[i]['closingTag'] == firstTag) {
-          firstTagCount++;
-        }
-        calls += 1;
-        if (calls > 100) {
-          debugger;
-        }
-      }
-
-      //<div> <div> <div> text here </div> </div> </div>
-      //                            ------
-      const lastOccurance = nthLastIndexOf(
-        textWithTags,
-        firstTag,
-        firstTagCount
-      );
-
-      const suffix = textWithTags.slice(lastOccurance);
-      textWithTags = textWithTags.slice(0, lastOccurance);
-      textWithTags = textWithTags + textToAdd + ' ' + suffix;
-    } else {
-      textWithTags = textWithTags + textToAdd;
-    }
-
-    return textWithTags;
-  };
-
-  const addOpeningTagsToText = (text: string) => {
-    let calls = 0;
-    for (let i = tags.length - 1; i >= 0; i--) {
-      const tag = tags[i];
-      text = tag.openingTag + text;
-
-      calls += 1;
-      if (calls > 100) {
-        debugger;
-      }
-    }
-
-    return text;
-  };
-
-  const addClosingTagsToText = (text: string) => {
-    for (let i = tags.length - 1; i >= 0; i--) {
-      const tag = tags[i];
-      text = text + tag.closingTag;
-    }
-
-    return text;
-  };
-
   const checkIfSingleTag = (text: string, startIndex: number) => {
     const index = getNextWordContainingLetter(text, '>', startIndex);
     const word = text.split(' ')[index];
@@ -183,8 +121,6 @@ export default function handleTags() {
     getTags,
     addTags,
     removeTags,
-    addTextBetweenTags,
-    addOpeningTagsToText,
-    addClosingTagsToText,
+    clearTags,
   };
 }

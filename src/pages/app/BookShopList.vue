@@ -38,12 +38,12 @@
   </div>
 </template>
 <script>
-import BookListSwipeable from "src/components/BookListSwipeable.vue";
-import LinkingCard from "src/components/LinkingCard.vue";
-import BookStandoutCard from "src/components/BookStandoutCard.vue";
+import BookListSwipeable from 'src/components/BookListSwipeable.vue';
+import LinkingCard from 'src/components/LinkingCard.vue';
+import BookStandoutCard from 'src/components/BookStandoutCard.vue';
 
 export default {
-  name: "BookShopList",
+  name: 'BookShopList',
   components: { BookListSwipeable, LinkingCard, BookStandoutCard },
   data() {
     return {
@@ -55,7 +55,7 @@ export default {
   },
   async mounted() {
     //Fetching genre options
-    let response = await this.$api.get("genres");
+    let response = await this.$api.get('genres');
     let genres = response.data.results;
 
     for (const genre of genres) {
@@ -72,9 +72,9 @@ export default {
   },
   methods: {
     async refresh() {
-      let heading = document.getElementById("shop-heading");
+      let heading = document.getElementById('shop-heading');
 
-      heading.scrollIntoView({ behavior: "smooth" });
+      heading.scrollIntoView({ behavior: 'smooth' });
       await this.fetchBooks();
     },
 
@@ -89,10 +89,10 @@ export default {
       //Requesting server for books of each genre
       for (const genre of this.genres) {
         //Sending request
-        let response = await this.$api.get("books/genres", {
+        let response = await this.$api.get('books/genres', {
           params: {
-            name: genre.name,
-            fields: "id,title,author_name,front_cover",
+            names: genre.name,
+            fields: 'id,title,author_name,front_cover',
           },
         });
 
@@ -107,8 +107,8 @@ export default {
     },
 
     async fetchBestOfTheDay() {
-      let response = await this.$api.get("books/best_of_the_day", {
-        params: { fields: "id,title,author_name,description,front_cover" },
+      let response = await this.$api.get('books/best_of_the_day', {
+        params: { fields: 'id,title,author_name,description,front_cover' },
       });
 
       this.bestOfTheDay = response.data[0];
@@ -116,7 +116,7 @@ export default {
 
     onPrimaryClicked(book) {
       this.$router.push({
-        name: "read-book",
+        name: 'read-book',
         query: { book_id: book.id },
       });
     },
@@ -125,10 +125,10 @@ export default {
       //Setting up name for router
 
       let name;
-      if (this.$store.getters["user/isLoggedIn"]) {
-        name = "app-browse-book";
+      if (this.$store.getters['user/isLoggedIn']) {
+        name = 'app-browse-book';
       } else {
-        name = "home-browse-book";
+        name = 'home-browse-book';
       }
 
       this.$router.push({

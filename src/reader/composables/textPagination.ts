@@ -1,16 +1,27 @@
 import { extend } from 'quasar';
 
 import handlePages from './pagesHandler';
+import handleBookCopy from './bookCopyHandler';
 import textAppending from './textAppending';
+import handleTags from './tagsHandler';
 import handleBlocks from './blocksHandler';
+import mapDOM from './DOMMapper';
 
-import { Component, BaseTextBlockInterface, BookJSON } from '../interfaces';
+import {
+  Component,
+  BaseTextBlockInterface,
+  BookJSON,
+  DOMInterface,
+} from '../interfaces';
 
 export default function textPagination() {
   const { createPage } = handlePages();
-  const { remainingText, appendTextEveryNthStep, emptyRemainingText } =
-    textAppending();
+  const { addPageToCurrentComponent } = handleBookCopy();
+  const { appendTextToLastPage, emptyRemainingText } = textAppending();
+  let { remainingText } = textAppending();
+  const { clearTags } = handleTags();
   const { convertTextBlockToHTML } = handleBlocks();
+  const { HTML2DOM } = mapDOM();
 
   const page = <HTMLElement>document.getElementsByClassName('page-text')[0]; // gets the fake page
 
@@ -23,11 +34,10 @@ export default function textPagination() {
     let index = 0;
 
     while (index < text.length) {
-      if (remainingText != '') {
-        createPage(title, page.innerHTML);
-        page.innerHTML = '';
+      if (remainingText != ' ') {
+        //If there is remaining text from previous page, we adds it
+        //and check if it is overflowing too
 
-        //const html = convertTextBlockToHTML(prevTextBlock);
         page.innerHTML += remainingText;
 
         if (checkOverflow(page)) {
@@ -36,7 +46,9 @@ export default function textPagination() {
           handleOverflow(remainingText, title);
         }
 
-        emptyRemainingText();
+        //Emptying back the remaining text
+
+        remainingText = ' ';
       } else {
         const html = convertTextBlockToHTML(text[index]);
 
@@ -45,13 +57,30 @@ export default function textPagination() {
 
         if (checkOverflow(page)) {
           page.innerHTML = prevInnerHTML;
+          emptyRemainingText();
 
           handleOverflow(html, title);
+
+          createPage(title, page.innerHTML);
+          //Adding to current component
+          addPageToCurrentComponent(page.innerHTML);
+          page.innerHTML = '';
         }
 
-        emptyRemainingText();
         index++;
       }
+    }
+
+    //Adding in the last page if there is still any remaining text
+    if (remainingText != ' ') {
+      page.innerHTML += remainingText;
+      createPage(title, page.innerHTML);
+      //Adding to current component
+      addPageToCurrentComponent(page.innerHTML);
+
+      page.innerHTML = '';
+
+      remainingText = ' ';
     }
   };
 
@@ -68,19 +97,22 @@ export default function textPagination() {
       text = convertTextBlockToHTML(textBlock);
     }
 
-    console.log('text - ', text);
+    text = addTabs(text as string);
 
-    //steps
-    appendTextEveryNthStep(text as string, 1);
-    // if (remainingText != '') {
-    //   appendTextEveryNthStep(remainingText, 1);
-    //   const fullPageText = page.innerHTML;
+    const DOM = <DOMInterface>HTML2DOM(text, false);
 
-    //   createPage(title, fullPageText);
-    //   page.innerHTML = '';
-    // }
+    clearTags();
+    remainingText = appendTextToLastPage(DOM);
+    //removeTabs(remainingText);
+  };
 
-    return remainingText;
+  const addTabs = (text: string) => {
+    return text.replace(/&nbsp;/g, '');
+    //return text.replace(/&nbsp;/g, '<span class="tab"></span>');
+  };
+
+  const removeTabs = (text: string) => {
+    return text.replace(new RegExp('<span class="tab"></span>', 'g'), '&nbsp;');
   };
 
   const checkOverflow = (el: HTMLElement) => {

@@ -17,7 +17,7 @@
       :height="height"
       size="fixed"
       :usePortrait="true"
-      :maxShadowOpacity="0.1"
+      :maxShadowOpacity="0.3"
       :autoSize="true"
       :showCover="true"
       :mobileScrollSupport="true"
@@ -53,10 +53,15 @@ import LoadingScreen from './ReaderLoadingScreen.vue';
 
 import handleRequest from '../composables/requestHandler';
 import bookRendering from '../composables/bookRendering';
+import textAppending from '../composables/textAppending';
 import handlePages from '../composables/pagesHandler';
 import handleBookCopy from '../composables/bookCopyHandler';
 
 import handleMetaData from '../composables/handleMetaData';
+import useHandsFree from 'src/composables/useHandsFree';
+
+//Helper function throttle
+import { throttle } from 'quasar';
 
 export default {
   name: 'Book',
@@ -93,8 +98,18 @@ export default {
     const { fetchManuscript, fetchBook } = handleRequest();
     const { renderBook } = bookRendering();
     const { pages } = handlePages();
-    const { loadBookCopy } = handleBookCopy();
+    const { loadBookCopy, book_copy } = handleBookCopy();
     const { updateMetaData } = handleMetaData();
+    const { useHandsGesture } = useHandsFree();
+
+    //await initHandsFree();
+    useHandsGesture((gesture) => {
+      if (gesture == 'LeftHandOpened') {
+        this.throttledFlipNext();
+      } else if (gesture == 'LeftHandClosed') {
+        this.throttledFlipPrev();
+      }
+    });
 
     this.loadingText = 'Book Loading...Please Wait.';
 
@@ -111,7 +126,6 @@ export default {
       try {
         this.book = renderBook(this.book);
         this.pages = pages;
-        console.log(this.pages);
       } catch (err) {
         this.loadingText = 'Rendering Error :(';
         console.log(err);
@@ -152,8 +166,7 @@ export default {
 
       if (Object.keys(response.data).length == 0) {
         try {
-          response = await this.$api.get('books/' + book_id + '/json');
-          this.pages = pages;
+          response = await this.$api.get('books/' + book_id + '/blocks');
         } catch (err) {
           this.loadingText = 'Server Error :(';
           console.log(err);
@@ -170,11 +183,12 @@ export default {
         try {
           this.loadingText = 'First Time Loading...may take couple of minutes';
           this.book = renderBook(this.book);
+          this.pages = pages;
 
           this.$api.post(`books/${book_id}/copy`, {
             height: height,
             width: width,
-            json: this.book_copy,
+            json: book_copy,
           });
           //this.turnToQueryPage();
         } catch (err) {
@@ -230,7 +244,27 @@ export default {
     };
   },
 
+  watch: {
+    $route(to, from) {
+      //Clearing out pages, book copy and remaining text
+      const { clearPages } = handlePages();
+      clearPages();
+      const { clearBookCopy } = handleBookCopy();
+      clearBookCopy();
+      const { emptyRemainingText } = textAppending();
+      emptyRemainingText();
+    },
+  },
+
   methods: {
+    throttledFlipNext: throttle(function () {
+      this.$refs.flipbook.flipNext();
+    }, 2000),
+
+    throttledFlipPrev: throttle(function () {
+      this.$refs.flipbook.flipPrev();
+    }, 2000),
+
     loadPageFlip() {
       setTimeout(() => this.$refs.flipbook.updateFromHtml(), 1000);
     },
@@ -379,6 +413,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// #flipbook {
+//   background-image: url('../../../public/reader/pages.png');
+// }
+
 .half-page {
   width: 50vw;
   height: 105vh;

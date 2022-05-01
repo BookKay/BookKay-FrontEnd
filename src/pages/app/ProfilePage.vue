@@ -119,11 +119,11 @@ export default {
           value: this.getEmail,
           clickHandler: this.changeEmail,
         },
-        {
-          label: 'Edit Profile Image',
-          value: '',
-          clickHandler: this.changeProfileImage,
-        },
+        // {
+        //   label: 'Edit Profile Image',
+        //   value: '',
+        //   clickHandler: this.changeProfileImage,
+        // },
         {
           label: 'Author Name',
           value: this.getAuthorName,
@@ -150,10 +150,10 @@ export default {
           label: 'Delete Account',
           clickHandler: this.confirmDelete,
         },
-        {
-          label: 'Toggle Dark Mode',
-          clickHandler: this.$q.dark.set(!this.$q.dark.isActive),
-        },
+        // {
+        //   label: 'Toggle Dark Mode',
+        //   clickHandler: this.$q.dark.set(!this.$q.dark.isActive),
+        // },
       ];
     },
 

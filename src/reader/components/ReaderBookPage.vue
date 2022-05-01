@@ -63,6 +63,7 @@ export default {
 
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
 @import url('../themes/dark--default.scss');
 
 .page {
@@ -102,7 +103,8 @@ export default {
     .page-text {
       height: 100%;
       flex-grow: 1;
-      font-family: 'Lato', sans-serif;
+      //font-family: 'Lato', sans-serif;
+      font-family: 'EB Garamond' !important;
       //font-size: 120%;
       //text-align: justify;
       margin-top: 10px;
@@ -158,6 +160,7 @@ export default {
     .page-text ::v-deep(p) {
       text-indent: 10%;
       font-size: 1em;
+      line-height: 1.7;
       text-align: justify;
     }
 
