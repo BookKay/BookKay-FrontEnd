@@ -3,7 +3,7 @@
 //It is to ensure it gets higher css priority
 
 .page.page-dark--default {
-  background-color: #231f20;
+  background-color: #231f20 !important;
   color: #d3d3d3;
 
   .page-text ::v-deep(mark) {
