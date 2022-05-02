@@ -56,6 +56,7 @@ import bookRendering from '../composables/bookRendering';
 import textAppending from '../composables/textAppending';
 import handlePages from '../composables/pagesHandler';
 import handleBookCopy from '../composables/bookCopyHandler';
+import handleNavigations from '../composables/navigationHandler';
 
 import handleMetaData from '../composables/handleMetaData';
 import useHandsFree from 'src/composables/useHandsFree';
@@ -251,6 +252,8 @@ export default {
       clearPages();
       const { clearBookCopy } = handleBookCopy();
       clearBookCopy();
+      const { clearNav } = handleNavigations();
+      clearNav();
       const { emptyRemainingText } = textAppending();
       emptyRemainingText();
     },

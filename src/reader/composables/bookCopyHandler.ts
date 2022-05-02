@@ -38,6 +38,10 @@ const empty_book_copy: BookCopy = {
   back_matters: [],
 };
 const book_copy = reactive(empty_book_copy);
+let currentComponentType = <
+  'front_matters' | 'chapters' | 'main_text' | 'back_matters'
+>'chapters';
+let currentComponentNum = 0;
 
 export default function handleBookCopy() {
   //Initialising the imported composables
@@ -54,7 +58,7 @@ export default function handleBookCopy() {
 
     if (Array.isArray(property)) {
       property.push(component);
-      updateCurrentComponent(component_type, property.length - 1);
+      updateCurrentComponent(component_type, property.length);
     }
   };
 
@@ -72,11 +76,6 @@ export default function handleBookCopy() {
     book_copy.back_matters.length = 0;
   };
 
-  let currentComponentType = <
-    'front_matters' | 'chapters' | 'main_text' | 'back_matters'
-  >'chapters';
-  let currentComponentNum = 0;
-
   const updateCurrentComponent = (
     componentType: 'front_matters' | 'chapters' | 'main_text' | 'back_matters',
     componentNum: number
@@ -90,7 +89,8 @@ export default function handleBookCopy() {
     if (currentComponentType == 'main_text') {
       currentComponent = book_copy[currentComponentType];
     } else {
-      currentComponent = book_copy[currentComponentType][currentComponentNum];
+      currentComponent =
+        book_copy[currentComponentType][currentComponentNum - 1];
     }
 
     currentComponent.pages.push(text);

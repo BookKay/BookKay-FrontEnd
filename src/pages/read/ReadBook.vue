@@ -155,6 +155,8 @@ import ReaderSettings from 'src/components/ReaderSettings.vue';
 import Dictionary from 'src/components/Dictionary.vue';
 import ReaderPopUps from 'src/components/ReaderPopUps.vue';
 
+import handleNavigations from 'src/reader/composables/navigationHandler';
+
 export default {
   components: {
     FlipbookView,
@@ -234,6 +236,9 @@ export default {
   },
 
   mounted() {
+    const { navigations } = handleNavigations();
+    this.navigations = navigations;
+
     this.info = !this.$q.localStorage.getItem('readerInfo');
 
     //Add hotkeys shortcuts

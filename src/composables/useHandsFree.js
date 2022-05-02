@@ -74,11 +74,11 @@ export default function useHandsFree() {
         //console.log('catching gestures - ', handsfree.data.hands.gesture);
         if (handsfree.data.hands.gesture[0] != null) {
           if (handsfree.data.hands.gesture[0].name == 'LeftHandOpened') {
-            console.log('LeftHandOpened');
+            
             callback('LeftHandOpened');
           }
           if (handsfree.data.hands.gesture[0].name == 'LeftHandClosed') {
-            console.log('LeftHandClosed');
+            
             callback('LeftHandClosed');
           }
         }
