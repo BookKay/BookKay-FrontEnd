@@ -48,7 +48,7 @@
               <h2>{{ browser.name }}</h2>
               <div v-for="step in browser.steps" :key="step.index">
                 <p>{{ `${step.index}. ` }}{{ step.text }}</p>
-                <div class="browser-steps__image">
+                <div class="browser-steps__image" v-if="step.img != ''">
                   <img :alt="`Step - ${step.index}`" :src="step.img" />
                 </div>
                 <q-separator inset class="browser-steps__seperator" />
@@ -166,6 +166,100 @@ export default defineComponent({
             index: 4,
             img: 'browsers/chrome_steps/step_4.png',
             text: 'To open this bookmark back, click on the "Other Bookmarks" button on the right side underneath the search bar. There, hover over "BookKay folder" and open the link of the book back. Note: If you do not see this bar, pls click Ctrl + Shift + B',
+          },
+        ],
+      },
+      {
+        name: 'Edge',
+        condition: 'edge',
+        steps: [
+          {
+            index: 1,
+            img: 'browsers/edge_steps/step_1.png',
+            text: 'Click on the star button on the right side of the search bar. (Or) Press ctrl + D',
+          },
+          {
+            index: 2,
+            img: 'browsers/edge_steps/step_2.png',
+            text: 'Rewrite the name into the title of the book. Choose the folder you would like to save in.',
+          },
+          {
+            index: 3,
+            img: 'browsers/edge_steps/step_3.png',
+            text: '(Optional) Make a new folder for BookKay links. Click on "More", then "New Folder" button and fill in BookKay. Then, press "Save" Button.',
+          },
+          {
+            index: 4,
+            img: '',
+            text: 'To open this bookmark back, click on the "Other Bookmarks" button on the right side underneath the search bar. There, hover over "BookKay folder" and open the link of the book back. Note: If you do not see this bar, pls click Ctrl + Shift + B',
+          },
+        ],
+      },
+      {
+        name: 'Opera',
+        condition: 'opera',
+        steps: [
+          {
+            index: 1,
+            img: '',
+            text: 'Click on the star button on the right side of the search bar. (Or) Press ctrl + D',
+          },
+          {
+            index: 2,
+            img: '',
+            text: 'Rewrite the name into the title of the book. Choose the folder you would like to save in.',
+          },
+          {
+            index: 3,
+            img: '',
+            text: '(Optional) Make a new folder for BookKay links. Click on "More", then "New Folder" button and fill in BookKay. Then, press "Save" Button.',
+          },
+          {
+            index: 4,
+            img: '',
+            text: 'To open this bookmark back, click on the "Other Bookmarks" button on the right side underneath the search bar. There, hover over "BookKay folder" and open the link of the book back. Note: If you do not see this bar, pls click Ctrl + Shift + B',
+          },
+        ],
+      },
+      {
+        name: 'Safari',
+        condition: 'safari',
+        steps: [
+          {
+            index: 1,
+            img: '',
+            text: 'Click the Share button in the toolbar, then choose Add Bookmark',
+          },
+          {
+            index: 2,
+            img: '',
+            text: 'Choose where to add the bookmark, and rename it to the title of the book.',
+          },
+          {
+            index: 3,
+            img: '',
+            text: '(Optional) Make a new folder for BookKay links.',
+          },
+          {
+            index: 4,
+            img: '',
+            text: 'To open this bookmark back, In the Safari app  on your Mac, click the Sidebar button  in the toolbar, then click Bookmarks.',
+          },
+        ],
+      },
+      {
+        name: 'Samsung Internet',
+        condition: 'samsung_internet',
+        steps: [
+          {
+            index: 1,
+            img: 'browsers/samsung_internet_steps/step_1.png',
+            text: 'Tap on the bookmark star icon in the URL bar on the top left.',
+          },
+          {
+            index: 2,
+            img: 'browsers/samsung_internet_steps/step_2.png',
+            text: 'To open this bookmark back, tap on bookmark star icon at the bottom of the screen',
           },
         ],
       },
