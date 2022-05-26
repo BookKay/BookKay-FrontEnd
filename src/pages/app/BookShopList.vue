@@ -89,7 +89,7 @@ export default {
       //Requesting server for books of each genre
       for (const genre of this.genres) {
         //Sending request
-        let response = await this.$api.get('books/genres', {
+        let response = await this.$api.get('books/genre', {
           params: {
             names: genre.name,
             fields: 'id,title,author_name,front_cover',
