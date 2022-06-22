@@ -91,7 +91,7 @@ export default {
         //Sending request
         let response = await this.$api.get('books/genre', {
           params: {
-            names: genre.name,
+            name: genre.name,
             fields: 'id,title,author_name,front_cover',
           },
         });

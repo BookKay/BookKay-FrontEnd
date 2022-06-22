@@ -29,12 +29,12 @@
             ></q-btn>
           </div>
           <div v-else>
-            <q-btn
+            <!-- <q-btn
               outline
               label="Members"
               :ripple="{ early: true }"
               :to="{ name: 'home-members' }"
-            ></q-btn>
+            ></q-btn> -->
             <q-btn
               color="black"
               icon="local_library"
